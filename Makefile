@@ -13,3 +13,4 @@ update:
 
 install:
 	ln -s ${CURRENT_DIR}/kitty ~/.config/kitty
+	ln -s ${CURRENT_DIR}/.zshrc ~/.zshrc
