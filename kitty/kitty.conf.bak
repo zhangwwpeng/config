@@ -1473,9 +1473,3 @@ tab_bar_style powerline
 #: }}}
 
 #: }}}
-
-
-# BEGIN_KITTY_THEME
-# Everforest Dark Soft
-include current-theme.conf
-# END_KITTY_THEME
