@@ -88,5 +88,5 @@ zstyle ':completion:*:*sh:*:' tag-order files
 # add zoxide config zsh script
 eval "$(zoxide init zsh --cmd cd)"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# To customize prompt, run `p10k configure` or edit ~/.config/config/.p10k.zsh.
+[[ ! -f ~/.config/config/.p10k.zsh ]] || source ~/.config/config/.p10k.zsh
