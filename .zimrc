@@ -23,11 +23,10 @@ zmodule utility
 # Prompt
 #
 
-zmodule asciiship
 # Exposes to prompts how long the last command took to execute, used by asciiship.
-zmodule duration-info
+# zmodule duration-info
 # Exposes git repository status information to prompts, used by asciiship.
-zmodule git-info
+# zmodule git-info
 # A heavily reduced, ASCII-only version of the Spaceship and Starship prompts.
 # zmodule asciiship
 
@@ -57,3 +56,6 @@ zmodule zsh-users/zsh-autosuggestions
 
 # cat-> batcat
 zmodule https://github.com/fdellwing/zsh-bat.git
+
+#powerlevel10k
+zmodule romkatv/powerlevel10k --use degit
