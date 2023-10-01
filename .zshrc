@@ -27,19 +27,17 @@ export TERM="xterm-256color"
 # syntax color definition
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
 
-typeset -A ZSH_HIGHLIGHT_STYLES
+# typeset -A ZSH_HIGHLIGHT_STYLES
 
 # ZSH_HIGHLIGHT_STYLES[command]=fg=white,bold
 # ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
 
 # ZSH_HIGHLIGHT_STYLES[default]=none
-# ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=009
 # ZSH_HIGHLIGHT_STYLES[reserved-word]=fg=009,standout
 # ZSH_HIGHLIGHT_STYLES[alias]=fg=cyan
 # ZSH_HIGHLIGHT_STYLES[builtin]=fg=cyan
 # ZSH_HIGHLIGHT_STYLES[function]=fg=cyan
 # ZSH_HIGHLIGHT_STYLES[command]=fg=white
-# ZSH_HIGHLIGHT_STYLES[precommand]=fg=white,underline
 # ZSH_HIGHLIGHT_STYLES[commandseparator]=none
 # ZSH_HIGHLIGHT_STYLES[hashed-command]=fg=009
 # ZSH_HIGHLIGHT_STYLES[path]=fg=214
@@ -53,10 +51,14 @@ typeset -A ZSH_HIGHLIGHT_STYLES
 # ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=009
 # ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=009
 # ZSH_HIGHLIGHT_STYLES[assign]=none
+ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=009
+ZSH_HIGHLIGHT_STYLES[precommand]=fg=red
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=magenta'
+
 (( ${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
 ZSH_HIGHLIGHT_STYLES[path]=none
 ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+
 
 # options
 unsetopt correct_all
