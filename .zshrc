@@ -90,5 +90,10 @@ zstyle ':completion:*:*sh:*:' tag-order files
 # add zoxide config zsh script
 eval "$(zoxide init zsh --cmd cd)"
 
+# alias
+alias nv='neovide --multigrid'
+
 # To customize prompt, run `p10k configure` or edit ~/.config/config/.p10k.zsh.
 [[ ! -f ~/.config/config/.p10k.zsh ]] || source ~/.config/config/.p10k.zsh
+
+eval $(thefuck --alias)
