@@ -17,3 +17,4 @@ install:
 	-ln -s ${CURRENT_DIR}/bat/config ~/.config/bat/config
 	-ln -s ${CURRENT_DIR}/kitty ~/.config
 	-ln -s ${CURRENT_DIR}/.zshrc ~/.zshrc
+	-ln -s ${CURRENT_DIR}/lua ~/.config/nvim/lua
