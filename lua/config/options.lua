@@ -7,34 +7,28 @@ local g = vim.g
 local o = vim.o
 
 if vim.g.neovide then
-  -- set font
-  o.guifont = "FiraCode Nerd Font:h12"
-  -- set padding
-  g.neovide_padding_top = 0
-  g.neovide_padding_bottom = 0
-  g.neovide_padding_right = 0
-  g.neovide_padding_left = 0
-  -- set transparent
-  g.neovide_transparency = 0.9
-  g.transparency = 0.9
-  -- floting windows
-  g.neovide_floating_blur_amount_x = 0
-  g.neovide_floating_blur_amount_y = 0
-  -- hidden mouse
-  g.neovide_hide_mouse_when_typing = true
-  -- rate
-  g.neovide_refresh_rate = 60
-  -- quit
-  g.neovide_confirm_quit = true
-  -- remember window sizw
-  g.neovide_remember_window_size = true
-  -- touch deadzone
-  g.neovide_touch_deadzone = 6.0
-  -- set title
-  opt.title = true
-  -- set animal
-  vim.g.neovide_cursor_vfx_mode = "pixiedust"
-  vim.g.neovide_cursor_vfx_mode = "ripple"
+	-- set font
+	o.guifont = "FiraCode Nerd Font:h12"
+	-- set padding
+	g.neovide_padding_top = 0
+	g.neovide_padding_bottom = 0
+	g.neovide_padding_right = 0
+	g.neovide_padding_left = 0
+	-- set transparent
+	g.neovide_transparency = 0.95
+	g.transparency = 0.95
+	-- hidden mouse
+	g.neovide_hide_mouse_when_typing = true
+	-- rate
+	g.neovide_refresh_rate = 60
+	-- quit
+	g.neovide_confirm_quit = true
+	-- remember window sizw
+	g.neovide_remember_window_size = true
+	-- touch deadzone
+	g.neovide_touch_deadzone = 6.0
+	-- set title
+	opt.title = true
 end
 
 -- ui for everforest
