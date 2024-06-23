@@ -4,6 +4,8 @@ export PATH=$PATH:$TOOLS_BIN
 export PATH="/opt/homebrew/bin:$PATH"
 export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
 export XDG_CONFIG_HOME="$HOME/.config"
+#export DYLD_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_LIBRARY_PATH"
+export DYLD_LIBRARY_PATH="/usr/local/lib"
 
 # p10k config
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
