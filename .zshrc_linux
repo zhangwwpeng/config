@@ -110,6 +110,7 @@ alias nv='nvim'
 alias pdf='zathura'
 alias btm='btm --color gruvbox'
 alias cip='xclip -sel clip'
+alias gi='lazygit'
 
 # To customize prompt, run `p10k configure` or edit ~/.config/config/.p10k.zsh.
 [[ ! -f ~/.config/config/.p10k.zsh ]] || source ~/.config/config/.p10k.zsh

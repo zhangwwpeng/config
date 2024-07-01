@@ -76,6 +76,7 @@ alias nd='neovide'
 alias nv='nvim'
 alias btm='btm --color gruvbox'
 alias cip='xclip -sel clip'
+alias gi='lazygit'
 
 # for python env
 eval "$(_PIPENV_COMPLETE=zsh_source pipenv)"
