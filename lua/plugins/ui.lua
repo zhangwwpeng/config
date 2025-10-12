@@ -1,8 +1,12 @@
 return {
+    -- Using lazy.nvim
     {
-        'nvim-lualine/lualine.nvim',
+        -- 'zhangwwpeng/bamboo.nvim',
+        "bamboo_zhangwwpeng.nvim",
+        dir = "~/workspace/bamboo.nvim",
+        priority = 1000,
         config = function()
-            require('lualine').setup()
-        end
-    }
+            vim.cmd([[colorscheme bamboo]])
+        end,
+    },
 }

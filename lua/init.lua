@@ -1,7 +1,6 @@
 ------------------------------------------------------------------------
 -- Bootstrap lazy.nvim
 ------------------------------------------------------------------------
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -18,25 +17,49 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+
 ------------------------------------------------------------------------
 -- Load opt setting and auto commands
 ------------------------------------------------------------------------
 
+require("config.util")
+require("config.options")
 require("config.autocmds")
 require("config.keymaps")
-require("config.options")
+
+------------------------------------------------------------------------
+-- Start Load LSP
+------------------------------------------------------------------------
+vim.lsp.enable({
+    "lua_ls",    -- lua
+    "perlnavigator", -- perl
+})
 
 ------------------------------------------------------------------------
 -- Load installed plugins and their Configurations
 ------------------------------------------------------------------------
-
-require("lazy").setup("plugins",{
+require("lazy").setup("plugins", {
     -- Configure any other settings here. See the documentation for more details.
     -- colorscheme that will be used when installing plugins.
     -- install = { colorscheme = { "habamax" } },
     -- automatically check for plugin updates
     -- checker = { enabled = true },
-  	change_detection = {
-  	  notify = false,
-  	},
+    change_detection = {
+        notify = false,
+    },
+    performance = {
+        rtp = {
+            -- disable some rtp plugins
+            disabled_plugins = {
+                "gzip",
+                -- "matchit",
+                -- "matchparen",
+                -- "netrwPlugin",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
 })
