@@ -112,7 +112,34 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
         -- Fold
         -- FoldColumn = { fg = c.main_blue, bg = c.main_bg }, -- 折叠的符号 already link SignColumn
         Folded = { fg = color.blue, bg = color.bg }, -- 折叠的那一行
-        SignColumn = { fg = color.debug } -- 符号
+        SignColumn = { bg = color.debug, fg = color.debug }, -- 符号
+
+        -- TODO:
+        CursorLine = { fg = none , bg = color.debug}, -- 当前行高亮
+        Visual = { fg = none , bg = color.debug },
+        Cursor = { fg = color.bg, bg = color.fg }, -- Cursour
+        lCursor = { link = 'Cursor' },
+        CursorIM = { link = 'Cursor' },
+        CursorColumn = { link = 'CursorLine' },
+        ColorColumn = { link = 'CursorLine' },
+        VisualNOS = { link = 'CursorLine' },
+
+        CursorLineNr = { fg = colo.debug }, -- 左侧行的颜色
+        LineNr = { fg = color.debug }
+        -- LineNrAbove = { links = LineNr }, -- already link linenr
+        -- LineNrBelow = { links = LineNr }, -- already link linenr
+        -- Conceal = { color.debug } -- Conceal signal
+
+        -- Not use
+        -- DiffAdd             = { fg = c.none, bg = c.de_diff_add },
+        -- DiffChange          = { fg = c.none, bg = c.de_diff_change },
+        -- DiffDelete          = { fg = c.none, bg = c.de_diff_delete },
+        -- DiffText            = { fg = c.none, bg = c.de_diff_text },
+        -- DiffAdded           = colors.Green,
+        -- DiffRemoved         = colors.Red,
+        -- DiffFile            = colors.Cyan,
+        -- DiffIndexLine       = colors.Grey,
+
 
     }
     vim_highlights(common)
