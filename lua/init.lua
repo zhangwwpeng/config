@@ -54,7 +54,7 @@ vim.opt.wildmode = "" --disable self cmp
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 ------------------------------------------------------------------------
--- stateline
+-- stateline & flod
 ------------------------------------------------------------------------
 vim.t.name = "Editor"
 function _G.current_tab_name()
@@ -81,6 +81,25 @@ local statusline = {
 }
 vim.o.statusline = table.concat(statusline, "")
 
+-- 设置折叠方法和折叠符号
+-- vim.opt.fillchars = { foldopen = "▾", foldsep = "│", foldclose = "▸" }
+
+-- 全局函数，用于 foldtext
+_G.fold_text = function()
+  local line = vim.fn.getline(vim.v.foldstart)        -- 折叠首行文本
+  local folded = vim.v.foldend - vim.v.foldstart + 1  -- 折叠行数
+  local width = vim.api.nvim_win_get_width(0)
+  local suffix = string.format(" >>> %d lines", folded)  -- 放到后面
+  local avail = math.max(10, width - vim.fn.strdisplaywidth(suffix) - 5)
+  local disp = vim.fn.strcharpart(line, 0, avail)
+  if vim.fn.strdisplaywidth(line) > avail then
+    disp = disp .. "…"
+  end
+  return disp .. suffix
+end
+
+vim.opt.foldtext = 'v:lua.fold_text()'
+
 ------------------------------------------------------------------------
 -- colorscheme
 ------------------------------------------------------------------------
@@ -95,9 +114,11 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
     -- vim.notify("main_bg set to " .. color, vim.log.levels.INFO)
     color = {
         debug = '#ffffff', -- for debug color
-        bg = '#000000',
+        dark = '#000000',
+        bg = '#282828',
         fg = '#f2e9d2',
-        blue = '#6dceeb'
+        blue = '#6dceeb',
+        test = '#a397a7'
     }
     common = {
         -- main windows
@@ -111,11 +132,11 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
         -- FloatFooter = { bg = c.main_bg }, -- already link float title
         -- Fold
         -- FoldColumn = { fg = c.main_blue, bg = c.main_bg }, -- 折叠的符号 already link SignColumn
-        Folded = { fg = color.blue, bg = color.bg }, -- 折叠的那一行
+        Folded = { bg = color.test, fg = color.dark }, -- 折叠的那一行
         SignColumn = { bg = color.debug, fg = color.debug }, -- 符号
 
         -- TODO:
-        CursorLine = { fg = none , bg = color.debug}, -- 当前行高亮
+        CursorLine = { fg = none , bg = color.test}, -- 当前行高亮
         Visual = { fg = none , bg = color.debug },
         Cursor = { fg = color.bg, bg = color.fg }, -- Cursour
         lCursor = { link = 'Cursor' },
@@ -124,7 +145,7 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
         ColorColumn = { link = 'CursorLine' },
         VisualNOS = { link = 'CursorLine' },
 
-        CursorLineNr = { fg = colo.debug }, -- 左侧行的颜色
+        CursorLineNr = { fg = color.debug }, -- 左侧行的颜色
         LineNr = { fg = color.debug }
         -- LineNrAbove = { links = LineNr }, -- already link linenr
         -- LineNrBelow = { links = LineNr }, -- already link linenr
