@@ -109,16 +109,16 @@ local function vim_highlights(highlights)
     end
 end
 
-vim.api.nvim_create_user_command("USERsetbg", function(opts)
-    vim.g.main_bg = opts.args
+vim.api.nvim_create_user_command("Settheme", function(opts)
     -- vim.notify("main_bg set to " .. color, vim.log.levels.INFO)
     color = {
         white = '#ffffff',
         dark = '#000000',
-        bg = '#282828',
-        bg_light1 = '#383838',
-        bg_light2 = '#484038',
-        bg_light3 = '#b8b8b8',
+        bg = '#333333',
+        bg_light1 = '#484848',
+        bg_light2 = '#666666',
+        bg_light3 = '#a8a8a8',
+        bg_light4 = '#928374',
         fg = '#ebdbb2',
         blue = '#6dceeb',
         green = '#6A9955',
@@ -164,26 +164,29 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
         -- DiffRemoved         = colors.Red,
         -- DiffFile            = colors.Cyan,
         -- DiffIndexLine       = colors.Grey,
-
-
     }
     syntax = {
-        Comment = { fg = color.fg },
+        Comment = { fg = color.bg_light4 },
         Function = { fg = color.blue },
-        -- String = { fg = color.green },
+        String = { fg = color.bg_light3  },
         PreProc = { fg = color.test },
+        Constant = { fg = color.test },
+        Delimiter = { fg = color.bg_light3 },
+        Operator = { fg = color.bg_light3 },
     }
     treesitter = {
         ['@variable'] = { fg = color.green },
         ['@keyword'] = { fg = color.bg_light3 },
         ['@keyword.function'] = { fg = color.bg_light3 },
         ['@keyword.return'] = { fg = color.bg_light3 },
+        ['@function.call'] = { fg = color.blue },
+        ['@function.builtin'] = { fg = color.blue },
+        ['@constructor'] = { links = Delimiter },
+
     }
     vim_highlights(common)
     vim_highlights(syntax)
     vim_highlights(treesitter)
-end, {
-    nargs = 1, -- 必须传一个参数
-})
+end, {})
 
-vim.cmd('USERsetbg #123456')
+vim.cmd('Settheme')
