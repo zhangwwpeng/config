@@ -113,12 +113,17 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
     vim.g.main_bg = opts.args
     -- vim.notify("main_bg set to " .. color, vim.log.levels.INFO)
     color = {
-        debug = '#ffffff', -- for debug color
+        white = '#ffffff',
         dark = '#000000',
         bg = '#282828',
-        fg = '#f2e9d2',
+        bg_light1 = '#383838',
+        bg_light2 = '#484038',
+        bg_light3 = '#b8b8b8',
+        fg = '#ebdbb2',
         blue = '#6dceeb',
-        test = '#a397a7'
+        green = '#6A9955',
+        gray = '#a397a7',
+        test = '#9d7cd8'
     }
     common = {
         -- main windows
@@ -132,23 +137,22 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
         -- FloatFooter = { bg = c.main_bg }, -- already link float title
         -- Fold
         -- FoldColumn = { fg = c.main_blue, bg = c.main_bg }, -- 折叠的符号 already link SignColumn
-        Folded = { bg = color.test, fg = color.dark }, -- 折叠的那一行
+        Folded = { bg = color.gray, fg = color.dark }, -- 折叠的那一行
         SignColumn = { bg = color.debug, fg = color.debug }, -- 符号
-
-        -- TODO:
-        CursorLine = { fg = none , bg = color.test}, -- 当前行高亮
-        Visual = { fg = none , bg = color.debug },
-        Cursor = { fg = color.bg, bg = color.fg }, -- Cursour
+        CursorLine = { fg = none , bg = color.bg_light1}, -- 当前行高亮
+        Cursor = { fg = color.bg, bg = color.white }, -- Cursour
+        Visual = { bg = color.bg_light2 }, -- v mode
         lCursor = { link = 'Cursor' },
         CursorIM = { link = 'Cursor' },
         CursorColumn = { link = 'CursorLine' },
         ColorColumn = { link = 'CursorLine' },
         VisualNOS = { link = 'CursorLine' },
-
-        CursorLineNr = { fg = color.debug }, -- 左侧行的颜色
-        LineNr = { fg = color.debug }
+        LineNr = { fg = color.gray },
+        CursorLineNr = { link = 'LinNr' }, -- 左侧行的颜色
         -- LineNrAbove = { links = LineNr }, -- already link linenr
         -- LineNrBelow = { links = LineNr }, -- already link linenr
+
+        -- TODO:
         -- Conceal = { color.debug } -- Conceal signal
 
         -- Not use
@@ -163,7 +167,21 @@ vim.api.nvim_create_user_command("USERsetbg", function(opts)
 
 
     }
+    syntax = {
+        Comment = { fg = color.fg },
+        Function = { fg = color.blue },
+        -- String = { fg = color.green },
+        PreProc = { fg = color.test },
+    }
+    treesitter = {
+        ['@variable'] = { fg = color.green },
+        ['@keyword'] = { fg = color.bg_light3 },
+        ['@keyword.function'] = { fg = color.bg_light3 },
+        ['@keyword.return'] = { fg = color.bg_light3 },
+    }
     vim_highlights(common)
+    vim_highlights(syntax)
+    vim_highlights(treesitter)
 end, {
     nargs = 1, -- 必须传一个参数
 })
