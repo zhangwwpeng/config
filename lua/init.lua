@@ -1,7 +1,6 @@
 ------------------------------------------------------------------------
 -- Load vim.opt setting and auto commands
 ------------------------------------------------------------------------
-
 -- require("config.util")
 -- require("config.vim.options")
 -- require("config.autocmds")
@@ -69,6 +68,7 @@ function _G.current_macro_status()
     end
 end
 local statusline = {
+    "▊ ",
     "%<", -- 截断
     "%-.80F", -- 文件路径
     "%m%r", -- 文件buf属性
@@ -78,12 +78,11 @@ local statusline = {
     "  %.(%l  ALL:%L%)", -- 行数
     "  %{v:lua.current_tab_name()}", -- 展示tab的名字
     "  %3.p%%", -- 百分比
+    " ▊"
 }
 vim.o.statusline = table.concat(statusline, "")
-
 -- 设置折叠方法和折叠符号
 -- vim.opt.fillchars = { foldopen = "▾", foldsep = "│", foldclose = "▸" }
-
 -- 全局函数，用于 foldtext
 _G.fold_text = function()
   local line = vim.fn.getline(vim.v.foldstart)        -- 折叠首行文本
@@ -160,6 +159,11 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         -- LineNrAbove = { links = LineNr }, -- already link linenr
         -- LineNrBelow = { links = LineNr }, -- already link linenr
 
+        -- statusline
+        StatusLine = { links = Normal },
+        StatusLineNC = { links = Normal },
+        StatusLineTerm = { links = Normal },
+        StatusLineTermNC = { links = Normal },
         -- TODO:
         -- Conceal = { color.debug } -- Conceal signal
 
