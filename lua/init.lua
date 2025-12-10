@@ -114,15 +114,23 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
     color = {
         white = '#ffffff',
         dark = '#000000',
-        bg = '#333333',
+        bg = '#282828',
+        bg_gray   = '#928374',
+        bg_yellow = '#e2c792',
         bg_light1 = '#484848',
         bg_light2 = '#666666',
         bg_light3 = '#a8a8a8',
-        bg_light4 = '#928374',
-        fg = '#ebdbb2',
-        blue = '#6dceeb',
+        fg = '#bdaa86', -- ebdbb2
+        blue = '#9d7cd8',
+        blue_light1 = '#9bbcb5',
         green = '#6A9955',
-        gray = '#a397a7',
+        green_light1 = '#8fb573',
+        gray = '#838781',
+        gray_light1 = '#928374',
+        red = '#e75a7c',
+        orange = '#f0945d',
+        purple = '#d3869b',
+        purple1 = '#aaaaff',
         test = '#9d7cd8'
     }
     common = {
@@ -137,7 +145,7 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         -- FloatFooter = { bg = c.main_bg }, -- already link float title
         -- Fold
         -- FoldColumn = { fg = c.main_blue, bg = c.main_bg }, -- 折叠的符号 already link SignColumn
-        Folded = { bg = color.gray, fg = color.dark }, -- 折叠的那一行
+        Folded = { bg = color.gray_light1, fg = color.dark }, -- 折叠的那一行
         SignColumn = { bg = color.debug, fg = color.debug }, -- 符号
         CursorLine = { fg = none , bg = color.bg_light1}, -- 当前行高亮
         Cursor = { fg = color.bg, bg = color.white }, -- Cursour
@@ -166,22 +174,24 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         -- DiffIndexLine       = colors.Grey,
     }
     syntax = {
-        Comment = { fg = color.bg_light4 },
+        Comment = { fg = color.bg_gray },
         Function = { fg = color.blue },
-        String = { fg = color.bg_light3  },
+        String = { fg = color.green  },
         PreProc = { fg = color.test },
-        Constant = { fg = color.test },
-        Delimiter = { fg = color.bg_light3 },
-        Operator = { fg = color.bg_light3 },
+        Constant = { fg = color.orange },
+        Delimiter = { fg = color.gray },
+        Operator = { fg = color.gray },
     }
     treesitter = {
-        ['@variable'] = { fg = color.green },
-        ['@keyword'] = { fg = color.bg_light3 },
-        ['@keyword.function'] = { fg = color.bg_light3 },
+        ['@variable'] = { fg = color.fg },
+        ['@variable.member'] = { fg = color.blue_light1 },
+        ['@keyword'] = { fg = color.red },
+        ['@keyword.function'] = { fg = color.red },
         ['@keyword.return'] = { fg = color.bg_light3 },
         ['@function.call'] = { fg = color.blue },
         ['@function.builtin'] = { fg = color.blue },
         ['@constructor'] = { links = Delimiter },
+        ['@module.builtin'] = { fg = color.red },
 
     }
     vim_highlights(common)
