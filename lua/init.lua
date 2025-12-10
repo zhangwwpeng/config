@@ -156,7 +156,7 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         ColorColumn = { link = 'CursorLine' },
         VisualNOS = { link = 'CursorLine' },
         LineNr = { fg = color.gray },
-        CursorLineNr = { link = 'LinNr' }, -- 左侧行的颜色
+        CursorLineNr = { link = 'LineNr' }, -- 左侧行的颜色
         -- LineNrAbove = { links = LineNr }, -- already link linenr
         -- LineNrBelow = { links = LineNr }, -- already link linenr
 
