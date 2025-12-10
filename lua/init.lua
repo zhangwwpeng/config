@@ -134,7 +134,7 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
     }
     common = {
         -- main windows
-        Normal = { fg = color.fg, bg = color.bg },   -- active windows下配色
+        Normal = { fg = color.bg_light3, bg = color.bg },   -- active windows下配色
         NormalNC = { link = 'Normal' },   -- non active windows下配色
         NormalFloat = { link = 'Normal' },   -- float windows下配色
         Terminal = { link = 'Normal' },   -- Terminal 配色
@@ -160,10 +160,10 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         -- LineNrBelow = { links = LineNr }, -- already link linenr
 
         -- statusline
-        StatusLine = { links = Normal },
-        StatusLineNC = { links = Normal },
-        StatusLineTerm = { links = Normal },
-        StatusLineTermNC = { links = Normal },
+        StatusLine = { fg = color.gray, bg = color.bg },
+        StatusLineNC = { links = StatusLine },
+        StatusLineTerm = { links = StatusLine },
+        StatusLineTermNC = { links = StatusLine },
         -- TODO:
         -- Conceal = { color.debug } -- Conceal signal
 
