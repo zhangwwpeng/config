@@ -119,8 +119,9 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         bg_yellow = '#e2c792',
         bg_light1 = '#484848',
         bg_light2 = '#666666',
-        bg_light3 = '#a8a8a8',
+        bg_light3 = '#aaaaaa',
         fg = '#bdaa86', -- ebdbb2
+        fg_light1 = '#eb8f3b', -- ebdbb2
         blue = '#9d7cd8',
         blue_light1 = '#9bbcb5',
         green = '#6A9955',
@@ -129,8 +130,7 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         gray_light1 = '#928374',
         red = '#e75a7c',
         orange = '#f0945d',
-        purple = '#d3869b',
-        purple1 = '#aaaaff',
+        purple = '#e49cb1',
         test = '#9d7cd8'
     }
     common = {
@@ -184,14 +184,15 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
     }
     treesitter = {
         ['@variable'] = { fg = color.fg },
-        ['@variable.member'] = { fg = color.blue_light1 },
-        ['@keyword'] = { fg = color.red },
-        ['@keyword.function'] = { fg = color.red },
+        ['@variable.member'] = { fg = color.fg },
+        ['@keyword'] = { fg = color.bg_light3 },
+        ['@keyword.function'] = { fg = color.bg_light3 },
         ['@keyword.return'] = { fg = color.bg_light3 },
         ['@function.call'] = { fg = color.blue },
         ['@function.builtin'] = { fg = color.blue },
         ['@constructor'] = { links = Delimiter },
-        ['@module.builtin'] = { fg = color.red },
+        ['@module.builtin'] = { fg = color.fg },
+        ['@property'] = { fg = color.bg_light3 },
 
     }
     vim_highlights(common)
