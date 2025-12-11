@@ -1,20 +1,4 @@
 ------------------------------------------------------------------------
--- Load vim.opt setting and auto commands
-------------------------------------------------------------------------
--- require("config.util")
--- require("config.vim.options")
--- require("config.autocmds")
-require("config.keymaps")
-
-------------------------------------------------------------------------
--- Start Load LSP
-------------------------------------------------------------------------
-vim.lsp.enable({
-    "lua_ls", -- lua
-    "perlnavigator", -- perl
-})
-
-------------------------------------------------------------------------
 -- vim option set
 ------------------------------------------------------------------------
 vim.g.mapleader = " " -- set to leader key
@@ -38,7 +22,7 @@ vim.opt.showtabline = 0 -- tab栏
 vim.opt.cursorline = true -- 当前行高亮
 vim.opt.splitbelow = true -- 窗口打开位置
 vim.opt.splitright = true -- 窗口打开位置
-vim.opt.winborder = "rounded" -- 窗口圆角
+-- vim.opt.winborder = "rounded" -- 窗口圆角
 vim.opt.tabstop = 4 -- 一个 tab 显示为 4 个空格
 vim.opt.shiftwidth = 0 -- 首行缩进时用 4 个空格
 vim.opt.softtabstop = 4 -- 插入模式按 Tab = 4 个空格
@@ -96,9 +80,7 @@ _G.fold_text = function()
   end
   return disp .. suffix
 end
-
 vim.opt.foldtext = 'v:lua.fold_text()'
-
 ------------------------------------------------------------------------
 -- colorscheme
 ------------------------------------------------------------------------
@@ -205,3 +187,88 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
 end, {})
 
 vim.cmd('Settheme')
+
+------------------------------------------------------------------------
+-- key mapping
+------------------------------------------------------------------------
+local map = vim.keymap.set
+local unmap = vim.keymap.del
+
+-- save file
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+map({ "i", "x", "n", "s" }, "<C-q>", "<cmd>q<cr><esc>", { desc = "Save File and Quit nvim" })
+
+-- ui move
+map("n", "<Up>", "<cmd>resize -2<CR>", { desc = "Remove windows up" })
+map("n", "<Down>", "<cmd>resize +2<CR>", { desc = "Remove windows down" })
+map("n", "<Left>", "<cmd>vertical resize -2<CR>", { desc = "Remove windows left" })
+map("n", "<Right>", "<cmd>vertical resize +2<CR>", { desc = "Remove windows right" })
+
+-- yazi
+map({ "n", "v" }, "<leader>e", "<cmd>Yazi toggle<cr>", { desc = "Open yazi at the current file" })
+
+-- comment
+local comment_opts = { desc = "comment keybinding", remap = true }
+map("n", "<C-/>", "gcc", comment_opts)
+map("x", "<C-/>", "gc", comment_opts)
+map("i", "<C-/>", function()
+    vim.cmd.normal("gcc")
+end, comment_opts)
+
+-- code format
+map({ "i", "n", "v" }, "<C-l>", function()
+    require("conform").format({ async = true })
+end, { desc = "Formate Code" })
+
+------------------------------------------------------------------------
+-- Start Load LSP
+------------------------------------------------------------------------
+vim.lsp.enable({
+    "lua_ls", -- lua
+    "perlnavigator", -- perl
+})
+
+------------------------------------------------------------------------
+-- install plugin
+------------------------------------------------------------------------
+vim.pack.add({
+    { src = 'https://github.com/nvim-treesitter/nvim-treesitter',version = 'main' },
+    { src = 'https://github.com/saghen/blink.cmp'},
+    { src = 'https://github.com/stevearc/conform.nvim'},
+    { src = 'https://github.com/gfontenot/nvim-external-tui'},
+})
+
+------------------------------------------------------------------------
+-- Plugin config
+------------------------------------------------------------------------
+-- require('nvim-treesitter').install({ 'systemverilog', 'c', 'python', 'shell' }):wait(300000) -- wait max. 5 minutes
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'systemverilog', 'c', 'python', 'shell' },
+    callback = function() vim.treesitter.start() end,
+})
+require('blink.cmp').setup()
+require('conform').setup()
+require('external-tui').setup({
+  terminal_provider = {
+    builtin = {
+      width = 0.9,
+      height = 0.9,
+      border = 'single',
+      style = 'minimal',
+    }
+  }
+})
+local external_tui = require('external-tui')
+local config = external_tui.add({
+  user_cmd = 'Yazi',          -- Creates :Neatui command
+  cmd = 'yazi',               -- External command to run
+  -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
+  -- editor_command = '--editor',  -- Flag for configuring the external editor
+})
+
+local config = external_tui.add({
+  user_cmd = 'Lazygit',          -- Creates :Neatui command
+  cmd = 'lazygit',               -- External command to run
+  -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
+  -- editor_command = '--editor',  -- Flag for configuring the external editor
+})
