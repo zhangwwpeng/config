@@ -236,6 +236,7 @@ vim.pack.add({
     { src = 'https://github.com/saghen/blink.cmp'},
     { src = 'https://github.com/stevearc/conform.nvim'},
     { src = 'https://github.com/gfontenot/nvim-external-tui'},
+    { src = 'https://github.com/brianhuster/unnest.nvim'}
 })
 
 ------------------------------------------------------------------------
@@ -246,6 +247,7 @@ vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'systemverilog', 'c', 'python', 'shell' },
     callback = function() vim.treesitter.start() end,
 })
+require('unnest')
 require('blink.cmp').setup()
 require('conform').setup()
 require('external-tui').setup({
