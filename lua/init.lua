@@ -233,7 +233,7 @@ vim.lsp.enable({
 ------------------------------------------------------------------------
 vim.pack.add({
     { src = 'https://github.com/nvim-treesitter/nvim-treesitter',version = 'main' },
-    { src = 'https://github.com/saghen/blink.cmp'},
+    { src = 'https://github.com/saghen/blink.cmp' , version = vim.version.range('1.*') },
     { src = 'https://github.com/stevearc/conform.nvim'},
     { src = 'https://github.com/gfontenot/nvim-external-tui'},
     { src = 'https://github.com/brianhuster/unnest.nvim'}
