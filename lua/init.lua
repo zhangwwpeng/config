@@ -236,7 +236,8 @@ vim.pack.add({
     { src = 'https://github.com/saghen/blink.cmp' , version = vim.version.range('1.*') },
     { src = 'https://github.com/stevearc/conform.nvim'},
     { src = 'https://github.com/gfontenot/nvim-external-tui'},
-    { src = 'https://github.com/brianhuster/unnest.nvim'}
+    { src = 'https://github.com/brianhuster/unnest.nvim'},
+    { src = 'https://github.com/folke/snacks.nvim'},
 })
 
 ------------------------------------------------------------------------
@@ -246,6 +247,16 @@ vim.pack.add({
 vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'systemverilog', 'c', 'python', 'shell' },
     callback = function() vim.treesitter.start() end,
+})
+require("snacks").setup({
+    input = {
+        icon = " ",
+        icon_hl = "SnacksInputIcon",
+        icon_pos = "left",
+        prompt_pos = "title",
+        win = { style = "input" },
+        expand = true,
+    }
 })
 require('unnest')
 require('blink.cmp').setup()
