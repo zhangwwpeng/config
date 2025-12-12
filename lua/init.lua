@@ -250,27 +250,28 @@ vim.api.nvim_create_autocmd('FileType', {
 require('unnest')
 require('blink.cmp').setup()
 require('conform').setup()
+require('indent').setup()
 require('external-tui').setup({
-  terminal_provider = {
-    builtin = {
-      width = 0.9,
-      height = 0.9,
-      border = 'single',
-      style = 'minimal',
+    terminal_provider = {
+        builtin = {
+        width = 0.9,
+        height = 0.9,
+        border = 'single',
+        style = 'minimal',
     }
   }
 })
 local external_tui = require('external-tui')
 local config = external_tui.add({
-  user_cmd = 'Yazi',          -- Creates :Neatui command
-  cmd = 'yazi',               -- External command to run
-  -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
-  -- editor_command = '--editor',  -- Flag for configuring the external editor
+    user_cmd = 'Yazi',          -- Creates :Neatui command
+    cmd = 'yazi',               -- External command to run
+    -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
+    -- editor_command = '--editor',  -- Flag for configuring the external editor
 })
 
 local config = external_tui.add({
-  user_cmd = 'Lazygit',          -- Creates :Neatui command
-  cmd = 'lazygit',               -- External command to run
-  -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
+    user_cmd = 'Lazygit',          -- Creates :Neatui command
+    cmd = 'lazygit',               -- External command to run
+    -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
   -- editor_command = '--editor',  -- Flag for configuring the external editor
 })
