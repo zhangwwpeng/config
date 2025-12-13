@@ -216,11 +216,22 @@ end, comment_opts)
 
 -- code format
 map({ "i", "n", "v" }, "<C-l>", function()
-    require("conform").format({ async = true })
+    require("conform").format({ async = true }, function(err, did_edit)
+        if err then
+            vim.notify("format error", vim.log.levels.ERROR)
+        else
+            vim.notify("format successfully", vim.log.levels.INFO)
+        end
+    end)
 end, { desc = "Formate Code" })
 
 -- cmd
 map("c", "<C-a>", "<Home>", { noremap = true })
+
+-- picker
+map({ "n" }, "<leader><leader>", function()
+    Snacks.picker.smart()
+end, { desc = "Smart Find Files" })
 
 ------------------------------------------------------------------------
 -- Start Load LSP
@@ -245,7 +256,7 @@ vim.pack.add({
 ------------------------------------------------------------------------
 -- Plugin config
 ------------------------------------------------------------------------
--- require('nvim-treesitter').install({ 'systemverilog', 'c', 'python', 'shell' }):wait(300000) -- wait max. 5 minutes
+require("nvim-treesitter").install({ "systemverilog", "c", "python", "shell" }):wait(300000) -- wait max. 5 minutes
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "systemverilog", "c", "python", "shell" },
     callback = function()
@@ -253,6 +264,37 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 require("snacks").setup({
+    bigfile = { enabled = true },
+    quickfile = { enabled = true },
+    notifier = {
+        enabled = true,
+        style = "minimal",
+        width = { min = 0, max = 0.4 },
+    },
+    picker = {
+        enabled = true,
+        layout = "ivy",
+        layouts = {
+            ivy = {
+                layout = {
+                    box = "vertical",
+                    backdrop = true,
+                    row = -1,
+                    width = 0,
+                    height = 0.6,
+                    border = "top",
+                    title = " {title} {live} {flags}",
+                    title_pos = "left",
+                    { win = "input", height = 1, border = "bottom" },
+                    {
+                        box = "horizontal",
+                        { win = "list", border = "none" },
+                        { win = "preview", title = "{preview}", width = 0.6, border = "left" },
+                    },
+                },
+            },
+        },
+    },
     input = {
         icon = " ",
         icon_hl = "SnacksInputIcon",
@@ -383,15 +425,6 @@ require("conform").setup({
     },
 })
 require("indent").setup()
-require("vim._extui").enable({
-    enable = true, -- Whether to enable or disable the UI.
-    msg = { -- Options related to the message module.
-        ---@type 'cmd'|'msg' Where to place regular messages, either in the
-        ---cmdline or in a separate ephemeral message window.
-        target = "cmd",
-        timeout = 4000, -- Time a message is visible in the message window.
-    },
-})
 require("noice").setup({
     cmdline = {
         enabled = true, -- enables the Noice cmdline UI
@@ -416,12 +449,91 @@ require("noice").setup({
             help = false,
         },
     },
-    messages = { enabled = false },
-    popupmenu = { enabled = false },
-    redirect = { filter = {} },
-    notify = { enabled = false },
-    presets = { command_palette = true },
-    health = { checker = true },
-    lsp = { progress = { enabled = true }, hover = { enabled = false }, signature = { enabled = true } },
-    documentation = { opts = { replace = true } },
+    routes = {
+        {
+            filter = {
+                event = "msg_show",
+                any = {
+                    { find = "%d+L, %d+B" },
+                    { find = "; after #%d+" },
+                    { find = "; before #%d+" },
+                },
+            },
+            view = "mini",
+        },
+    },
+    presets = { command_palette = true, long_message_to_split = true },
+    -- messages = { enabled = false },
+    -- popupmenu = { enabled = false },
+    -- redirect = { filter = {} },
+    -- notify = { enabled = false },
+    health = { checker = false },
+    lsp = { progress = { enabled = false }, hover = { enabled = false }, signature = { enabled = false } },
+    documentation = { opts = { replace = false } },
 })
+
+------------------------------------------------------------------------
+-- neovide config
+------------------------------------------------------------------------
+if vim.g.neovide then
+    -- for macos keybind
+    -- Allow clipboard copy paste in neovim
+    vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
+    vim.keymap.set("v", "<D-c>", '"+y') -- Copy
+    vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
+    vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
+    vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+    vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+    vim.api.nvim_set_keymap("", "<D-v>", "+p<CR>", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+    vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+
+    -- 控制缩放
+    vim.g.neovide_scale_factor = 1.0
+    local change_scale_factor = function(delta)
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+    end
+    vim.keymap.set("n", "<C-+>", function()
+        change_scale_factor(1.25)
+    end)
+    vim.keymap.set("n", "<C-_>", function()
+        change_scale_factor(1 / 1.25)
+    end)
+
+    -- blur & opacity
+    vim.g.neovide_window_blurred = true
+    vim.g.neovide_floating_blur_amount_x = 2.0
+    vim.g.neovide_floating_blur_amount_y = 2.0
+
+    -- float showdown
+    vim.g.neovide_floating_shadow = true
+    vim.g.neovide_floating_z_height = 10
+    vim.g.neovide_light_angle_degrees = 45
+    vim.g.neovide_light_radius = 5
+    vim.g.neovide_floating_corner_radius = 0.5
+
+    -- background not opacity , windows opacity
+    vim.g.neovide_opacity = 0.8
+    vim.g.neovide_opacity_point = 1
+    vim.g.neovide_show_border = true
+
+    -- disable some animial
+    vim.g.neovide_scroll_animation_length = 0
+    vim.g.neovide_cursor_animate_command_line = flase
+    vim.g.neovide_cursor_animation_length = 0
+    vim.g.neovide_cursor_short_animation_length = 0
+
+    -- new feaature
+    vim.g.neovide_progress_bar_enabled = true
+    vim.g.neovide_progress_bar_height = 5.0
+    vim.g.neovide_progress_bar_animation_speed = 200.0
+    vim.g.neovide_progress_bar_hide_delay = 0.2
+    vim.g.neovide_cursor_hack = flase
+
+    -- alt
+    vim.g.neovide_input_macos_option_key_is_meta = "only_left"
+
+    -- 输入法
+    vim.g.neovide_input_ime = true
+end
