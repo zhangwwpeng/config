@@ -5,7 +5,7 @@ vim.g.mapleader = " " -- set to leader key
 vim.g.maplocalleader = "\\" -- disable maplocalleader
 vim.g.bigfile_size = 1024 * 1024 * 1.5 -- 1.5 MB
 vim.o.list = true -- signal visual
-vim.o.inccommand = 'split' -- Preview substitutions live, as you type!
+vim.o.inccommand = "split" -- Preview substitutions live, as you type!
 vim.o.scrolloff = 10
 vim.o.confirm = true
 vim.o.jumpoptions = "stack" -- better CTRL-O CTRL-I
@@ -34,7 +34,7 @@ vim.opt.mouse = "a" -- mouse on
 vim.opt.undofile = true -- undo file
 vim.opt.wildmenu = false --  disable self cmp
 vim.opt.wildmode = "" --disable self cmp
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 ------------------------------------------------------------------------
 -- stateline & flod
@@ -62,25 +62,25 @@ local statusline = {
     "  %.(%l  ALL:%L%)", -- 行数
     "  %{v:lua.current_tab_name()}", -- 展示tab的名字
     "  %3.p%%", -- 百分比
-    " ▊"
+    " ▊",
 }
 vim.o.statusline = table.concat(statusline, "")
 -- 设置折叠方法和折叠符号
 -- vim.opt.fillchars = { foldopen = "▾", foldsep = "│", foldclose = "▸" }
 -- 全局函数，用于 foldtext
 _G.fold_text = function()
-  local line = vim.fn.getline(vim.v.foldstart)        -- 折叠首行文本
-  local folded = vim.v.foldend - vim.v.foldstart + 1  -- 折叠行数
-  local width = vim.api.nvim_win_get_width(0)
-  local suffix = string.format(" >>> %d lines", folded)  -- 放到后面
-  local avail = math.max(10, width - vim.fn.strdisplaywidth(suffix) - 5)
-  local disp = vim.fn.strcharpart(line, 0, avail)
-  if vim.fn.strdisplaywidth(line) > avail then
-    disp = disp .. "…"
-  end
-  return disp .. suffix
+    local line = vim.fn.getline(vim.v.foldstart) -- 折叠首行文本
+    local folded = vim.v.foldend - vim.v.foldstart + 1 -- 折叠行数
+    local width = vim.api.nvim_win_get_width(0)
+    local suffix = string.format(" >>> %d lines", folded) -- 放到后面
+    local avail = math.max(10, width - vim.fn.strdisplaywidth(suffix) - 5)
+    local disp = vim.fn.strcharpart(line, 0, avail)
+    if vim.fn.strdisplaywidth(line) > avail then
+        disp = disp .. "…"
+    end
+    return disp .. suffix
 end
-vim.opt.foldtext = 'v:lua.fold_text()'
+vim.opt.foldtext = "v:lua.fold_text()"
 ------------------------------------------------------------------------
 -- colorscheme
 ------------------------------------------------------------------------
@@ -93,34 +93,34 @@ end
 vim.api.nvim_create_user_command("Settheme", function(opts)
     -- vim.notify("main_bg set to " .. color, vim.log.levels.INFO)
     color = {
-        white = '#ffffff',
-        dark = '#000000',
-        bg = '#282828',
-        bg_gray   = '#928374',
-        bg_yellow = '#e2c792',
-        bg_light1 = '#484848',
-        bg_light2 = '#666666',
-        bg_light3 = '#aaaaaa',
-        fg = '#bdaa86', -- ebdbb2
-        fg_light1 = '#eb8f3b', -- ebdbb2
-        blue = '#9d7cd8',
-        blue_light1 = '#9bbcb5',
-        green = '#6A9955',
-        green_light1 = '#8fb573',
-        gray = '#838781',
-        gray_light1 = '#928374',
-        red = '#e75a7c',
-        orange = '#f0945d',
-        purple = '#e49cb1',
-        test = '#9d7cd8'
+        white = "#ffffff",
+        dark = "#000000",
+        bg = "#282828",
+        bg_gray = "#928374",
+        bg_yellow = "#e2c792",
+        bg_light1 = "#484848",
+        bg_light2 = "#666666",
+        bg_light3 = "#aaaaaa",
+        fg = "#bdaa86", -- ebdbb2
+        fg_light1 = "#eb8f3b", -- ebdbb2
+        blue = "#9d7cd8",
+        blue_light1 = "#9bbcb5",
+        green = "#6A9955",
+        green_light1 = "#8fb573",
+        gray = "#838781",
+        gray_light1 = "#928374",
+        red = "#e75a7c",
+        orange = "#f0945d",
+        purple = "#e49cb1",
+        test = "#9d7cd8",
     }
     common = {
         -- main windows
-        Normal = { fg = color.bg_light3, bg = color.bg },   -- active windows下配色
-        NormalNC = { link = 'Normal' },   -- non active windows下配色
-        NormalFloat = { link = 'Normal' },   -- float windows下配色
-        Terminal = { link = 'Normal' },   -- Terminal 配色
-        EndOfBuffer = { link = 'Normal' }, -- end buf 配色
+        Normal = { fg = color.bg_light3, bg = color.bg }, -- active windows下配色
+        NormalNC = { link = "Normal" }, -- non active windows下配色
+        NormalFloat = { link = "Normal" }, -- float windows下配色
+        Terminal = { link = "Normal" }, -- Terminal 配色
+        EndOfBuffer = { link = "Normal" }, -- end buf 配色
         -- FloatBorder = { fg = color.fg , bg = color.bg }, -- 浮动窗口外边 already link normalflaot
         -- FloatTitle = { bg = c.main_bg }, -- already link tittle
         -- FloatFooter = { bg = c.main_bg }, -- already link float title
@@ -128,16 +128,16 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
         -- FoldColumn = { fg = c.main_blue, bg = c.main_bg }, -- 折叠的符号 already link SignColumn
         Folded = { bg = color.gray_light1, fg = color.dark }, -- 折叠的那一行
         SignColumn = { bg = color.debug, fg = color.debug }, -- 符号
-        CursorLine = { fg = none , bg = color.bg_light1}, -- 当前行高亮
+        CursorLine = { fg = none, bg = color.bg_light1 }, -- 当前行高亮
         Cursor = { fg = color.bg, bg = color.white }, -- Cursour
         Visual = { bg = color.bg_light2 }, -- v mode
-        lCursor = { link = 'Cursor' },
-        CursorIM = { link = 'Cursor' },
-        CursorColumn = { link = 'CursorLine' },
-        ColorColumn = { link = 'CursorLine' },
-        VisualNOS = { link = 'CursorLine' },
+        lCursor = { link = "Cursor" },
+        CursorIM = { link = "Cursor" },
+        CursorColumn = { link = "CursorLine" },
+        ColorColumn = { link = "CursorLine" },
+        VisualNOS = { link = "CursorLine" },
         LineNr = { fg = color.gray },
-        CursorLineNr = { link = 'LineNr' }, -- 左侧行的颜色
+        CursorLineNr = { link = "LineNr" }, -- 左侧行的颜色
         -- LineNrAbove = { links = LineNr }, -- already link linenr
         -- LineNrBelow = { links = LineNr }, -- already link linenr
 
@@ -162,31 +162,30 @@ vim.api.nvim_create_user_command("Settheme", function(opts)
     syntax = {
         Comment = { fg = color.bg_gray },
         Function = { fg = color.blue },
-        String = { fg = color.green  },
+        String = { fg = color.green },
         PreProc = { fg = color.test },
         Constant = { fg = color.orange },
         Delimiter = { fg = color.gray },
         Operator = { fg = color.gray },
     }
     treesitter = {
-        ['@variable'] = { fg = color.fg },
-        ['@variable.member'] = { fg = color.fg },
-        ['@keyword'] = { fg = color.bg_light3 },
-        ['@keyword.function'] = { fg = color.bg_light3 },
-        ['@keyword.return'] = { fg = color.bg_light3 },
-        ['@function.call'] = { fg = color.blue },
-        ['@function.builtin'] = { fg = color.blue },
-        ['@constructor'] = { links = Delimiter },
-        ['@module.builtin'] = { fg = color.fg },
-        ['@property'] = { fg = color.bg_light3 },
-
+        ["@variable"] = { fg = color.fg },
+        ["@variable.member"] = { fg = color.fg },
+        ["@keyword"] = { fg = color.bg_light3 },
+        ["@keyword.function"] = { fg = color.bg_light3 },
+        ["@keyword.return"] = { fg = color.bg_light3 },
+        ["@function.call"] = { fg = color.blue },
+        ["@function.builtin"] = { fg = color.blue },
+        ["@constructor"] = { links = Delimiter },
+        ["@module.builtin"] = { fg = color.fg },
+        ["@property"] = { fg = color.bg_light3 },
     }
     vim_highlights(common)
     vim_highlights(syntax)
     vim_highlights(treesitter)
 end, {})
 
-vim.cmd('Settheme')
+vim.cmd("Settheme")
 
 ------------------------------------------------------------------------
 -- key mapping
@@ -220,6 +219,9 @@ map({ "i", "n", "v" }, "<C-l>", function()
     require("conform").format({ async = true })
 end, { desc = "Formate Code" })
 
+-- cmd
+map("c", "<C-a>", "<Home>", { noremap = true })
+
 ------------------------------------------------------------------------
 -- Start Load LSP
 ------------------------------------------------------------------------
@@ -232,21 +234,23 @@ vim.lsp.enable({
 -- install plugin
 ------------------------------------------------------------------------
 vim.pack.add({
-    { src = 'https://github.com/nvim-treesitter/nvim-treesitter',version = 'main' },
-    { src = 'https://github.com/saghen/blink.cmp' , version = vim.version.range('1.*') },
-    { src = 'https://github.com/stevearc/conform.nvim'},
-    { src = 'https://github.com/gfontenot/nvim-external-tui'},
-    { src = 'https://github.com/brianhuster/unnest.nvim'},
-    { src = 'https://github.com/folke/snacks.nvim'},
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+    { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+    { src = "https://github.com/stevearc/conform.nvim" },
+    { src = "https://github.com/folke/snacks.nvim" },
+    { src = "https://github.com/folke/noice.nvim" },
+    { src = "https://github.com/MunifTanjim/nui.nvim" },
 })
 
 ------------------------------------------------------------------------
 -- Plugin config
 ------------------------------------------------------------------------
 -- require('nvim-treesitter').install({ 'systemverilog', 'c', 'python', 'shell' }):wait(300000) -- wait max. 5 minutes
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'systemverilog', 'c', 'python', 'shell' },
-    callback = function() vim.treesitter.start() end,
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "systemverilog", "c", "python", "shell" },
+    callback = function()
+        vim.treesitter.start()
+    end,
 })
 require("snacks").setup({
     input = {
@@ -256,33 +260,168 @@ require("snacks").setup({
         prompt_pos = "title",
         win = { style = "input" },
         expand = true,
-    }
+    },
 })
-require('unnest')
-require('blink.cmp').setup()
-require('conform').setup()
-require('indent').setup()
-require('external-tui').setup({
-    terminal_provider = {
-        builtin = {
-        width = 0.9,
-        height = 0.9,
-        border = 'single',
-        style = 'minimal',
-    }
-  }
-})
-local external_tui = require('external-tui')
-local config = external_tui.add({
-    user_cmd = 'Yazi',          -- Creates :Neatui command
-    cmd = 'yazi',               -- External command to run
-    -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
-    -- editor_command = '--editor',  -- Flag for configuring the external editor
-})
+require("blink.cmp").setup({
+    -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+    -- 'super-tab' for mappings similar to vscode (tab to accept)
+    -- 'enter' for enter to accept
+    -- 'none' for no mappings
+    --
+    -- All presets have the following mappings:
+    -- C-space: Open menu or open docs if already open
+    -- C-n/C-p or Up/Down: Select next/previous item
+    -- C-e: Hide menu
+    -- C-k: Toggle signature help (if signature.enabled = true)
+    --
+    -- See :h blink-cmp-config-keymap for defining your own keymap
+    keymap = {
+        preset = "none",
+        ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+        ["<C-n>"] = { "select_next", "fallback_to_mappings" },
 
-local config = external_tui.add({
-    user_cmd = 'Lazygit',          -- Creates :Neatui command
-    cmd = 'lazygit',               -- External command to run
-    -- text_flag = '--prefill-text', -- Flag to pass selected/input text to the command
-  -- editor_command = '--editor',  -- Flag for configuring the external editor
+        ["<C-y>"] = { "select_and_accept", "fallback" },
+
+        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+    },
+
+    appearance = {
+        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = "mono",
+    },
+
+    -- (Default) Only show the documentation popup when manually triggered
+    completion = {
+        documentation = { auto_show = true },
+        accept = {
+            -- experimental auto-brackets support
+            auto_brackets = {
+                enabled = true,
+            },
+        },
+        menu = {
+            draw = {
+                treesitter = { "lsp" },
+            },
+        },
+        list = { selection = { preselect = false, auto_insert = true } },
+    },
+
+    -- Default list of enabled providers defined so that you can extend it
+    -- elsewhere in your config, without redefining it, due to `opts_extend`
+    sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+        providers = {
+            path = {
+                name = "Path",
+                module = "blink.cmp.sources.path",
+                score_offset = 3,
+                opts = {
+                    trailing_slash = false,
+                    label_trailing_slash = true,
+                    get_cwd = function(context)
+                        return vim.fn.expand(("#%d:p:h"):format(context.bufnr))
+                    end,
+                    show_hidden_files_by_default = false,
+                },
+            },
+        },
+    },
+
+    -- significantly
+    signature = { enabled = true },
+
+    -- cmd line setting
+    cmdline = {
+        enabled = true,
+        keymap = {
+            preset = "cmdline",
+            ["<Right>"] = false,
+            ["<Left>"] = false,
+        },
+        completion = {
+            list = { selection = { preselect = false } },
+            menu = {
+                auto_show = function(ctx)
+                    return vim.fn.getcmdtype() == ":"
+                end,
+            },
+            ghost_text = { enabled = true },
+        },
+    },
+
+    -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+    -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+    -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+    --
+    -- See the fuzzy documentation for more information
+    fuzzy = { implementation = "prefer_rust_with_warning" },
+})
+require("conform").setup({
+    -- Define your formatters
+    formatters_by_ft = {
+        lua = { "stylua" },
+        perl = { "perltidy" },
+        python = { "isort", "black" },
+    },
+    -- Set default options
+    default_format_opts = {
+        lsp_format = "never",
+    },
+    -- Set up format-on-save
+    -- format_on_save = { timeout_ms = 500 },
+    -- Customize formatters
+    formatters = {
+        shfmt = {
+            append_args = { "-i", "2" },
+        },
+        stylua = {
+            append_args = { "--indent-type", "Spaces" },
+        },
+    },
+})
+require("indent").setup()
+require("vim._extui").enable({
+    enable = true, -- Whether to enable or disable the UI.
+    msg = { -- Options related to the message module.
+        ---@type 'cmd'|'msg' Where to place regular messages, either in the
+        ---cmdline or in a separate ephemeral message window.
+        target = "cmd",
+        timeout = 4000, -- Time a message is visible in the message window.
+    },
+})
+require("noice").setup({
+    cmdline = {
+        enabled = true, -- enables the Noice cmdline UI
+        view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
+        opts = {}, -- global options for the cmdline. See section on views
+        ---@type table<string, CmdlineFormat>
+        format = {
+            -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
+            -- view: (default is cmdline view)
+            -- opts: any options passed to the view
+            -- icon_hl_group: optional hl_group for the icon
+            -- title: set to anything or empty string to hide
+            cmdline = { pattern = "^:", icon = "", lang = "vim" },
+            search_down = { kind = "search", pattern = "^/", icon = "", lang = "regex" },
+            search_up = { kind = "search", pattern = "^%?", icon = "", lang = "regex" },
+            -- filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+            -- lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+            -- help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
+            input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
+            lua = false, -- to disable a format, set to `false`
+            filter = false,
+            help = false,
+        },
+    },
+    messages = { enabled = false },
+    popupmenu = { enabled = false },
+    redirect = { filter = {} },
+    notify = { enabled = false },
+    presets = { command_palette = true },
+    health = { checker = true },
+    lsp = { progress = { enabled = true }, hover = { enabled = false }, signature = { enabled = true } },
+    documentation = { opts = { replace = true } },
 })
