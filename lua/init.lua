@@ -1,6 +1,25 @@
 ------------------------------------------------------------------------
 -- vim option set
 ------------------------------------------------------------------------
+--- forbiden plugin
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_gzip = 1
+vim.g.loaded_tar = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_zip = 1
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_getscript = 1
+vim.g.loaded_getscriptPlugin = 1
+vim.g.loaded_vimball = 1
+vim.g.loaded_vimballPlugin = 1
+vim.g.loaded_2html_plugin = 1
+vim.g.loaded_logiPat = 1
+vim.g.loaded_rrhelper = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.c_syntax_for_h = 1
 vim.g.mapleader = " " -- set to leader key
 vim.g.maplocalleader = "\\" -- disable maplocalleader
 vim.g.bigfile_size = 1024 * 1024 * 1.5 -- 1.5 MB
@@ -91,7 +110,6 @@ local function vim_highlights(highlights)
 end
 
 vim.api.nvim_create_user_command("Settheme", function(opts)
-    -- vim.notify("main_bg set to " .. color, vim.log.levels.INFO)
     color = {
         white = "#ffffff",
         dark = "#000000",
@@ -188,291 +206,6 @@ end, {})
 vim.cmd("Settheme")
 
 ------------------------------------------------------------------------
--- key mapping
-------------------------------------------------------------------------
-local map = vim.keymap.set
-local unmap = vim.keymap.del
-
--- save file
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
-map({ "i", "x", "n", "s" }, "<C-q>", "<cmd>q<cr><esc>", { desc = "Save File and Quit nvim" })
-
--- ui move
-map("n", "<Up>", "<cmd>resize -2<CR>", { desc = "Remove windows up" })
-map("n", "<Down>", "<cmd>resize +2<CR>", { desc = "Remove windows down" })
-map("n", "<Left>", "<cmd>vertical resize -2<CR>", { desc = "Remove windows left" })
-map("n", "<Right>", "<cmd>vertical resize +2<CR>", { desc = "Remove windows right" })
-
--- yazi
-map({ "n", "v" }, "<leader>e", "<cmd>Yazi toggle<cr>", { desc = "Open yazi at the current file" })
-
--- comment
-local comment_opts = { desc = "comment keybinding", remap = true }
-map("n", "<C-/>", "gcc", comment_opts)
-map("x", "<C-/>", "gc", comment_opts)
-map("i", "<C-/>", function()
-    vim.cmd.normal("gcc")
-end, comment_opts)
-
--- code format
-map({ "i", "n", "v" }, "<C-l>", function()
-    require("conform").format({ async = true }, function(err, did_edit)
-        if err then
-            vim.notify("format error", vim.log.levels.ERROR)
-        else
-            vim.notify("format successfully", vim.log.levels.INFO)
-        end
-    end)
-end, { desc = "Formate Code" })
-
--- cmd
-map("c", "<C-a>", "<Home>", { noremap = true })
-
--- picker
-map({ "n" }, "<leader><leader>", function()
-    Snacks.picker.smart()
-end, { desc = "Smart Find Files" })
-
-------------------------------------------------------------------------
--- Start Load LSP
-------------------------------------------------------------------------
-vim.lsp.enable({
-    "lua_ls", -- lua
-    "perlnavigator", -- perl
-})
-
-------------------------------------------------------------------------
--- install plugin
-------------------------------------------------------------------------
-vim.pack.add({
-    { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
-    { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
-    { src = "https://github.com/stevearc/conform.nvim" },
-    { src = "https://github.com/folke/snacks.nvim" },
-    { src = "https://github.com/folke/noice.nvim" },
-    { src = "https://github.com/MunifTanjim/nui.nvim" },
-})
-
-------------------------------------------------------------------------
--- Plugin config
-------------------------------------------------------------------------
-require("nvim-treesitter").install({ "systemverilog", "c", "python", "shell" }):wait(300000) -- wait max. 5 minutes
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "systemverilog", "c", "python", "shell" },
-    callback = function()
-        vim.treesitter.start()
-    end,
-})
-require("snacks").setup({
-    bigfile = { enabled = true },
-    quickfile = { enabled = true },
-    notifier = {
-        enabled = true,
-        style = "minimal",
-        width = { min = 0, max = 0.4 },
-    },
-    picker = {
-        enabled = true,
-        layout = "ivy",
-        layouts = {
-            ivy = {
-                layout = {
-                    box = "vertical",
-                    backdrop = true,
-                    row = -1,
-                    width = 0,
-                    height = 0.6,
-                    border = "top",
-                    title = " {title} {live} {flags}",
-                    title_pos = "left",
-                    { win = "input", height = 1, border = "bottom" },
-                    {
-                        box = "horizontal",
-                        { win = "list", border = "none" },
-                        { win = "preview", title = "{preview}", width = 0.6, border = "left" },
-                    },
-                },
-            },
-        },
-    },
-    input = {
-        icon = " ",
-        icon_hl = "SnacksInputIcon",
-        icon_pos = "left",
-        prompt_pos = "title",
-        win = { style = "input" },
-        expand = true,
-    },
-})
-require("blink.cmp").setup({
-    -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-    -- 'super-tab' for mappings similar to vscode (tab to accept)
-    -- 'enter' for enter to accept
-    -- 'none' for no mappings
-    --
-    -- All presets have the following mappings:
-    -- C-space: Open menu or open docs if already open
-    -- C-n/C-p or Up/Down: Select next/previous item
-    -- C-e: Hide menu
-    -- C-k: Toggle signature help (if signature.enabled = true)
-    --
-    -- See :h blink-cmp-config-keymap for defining your own keymap
-    keymap = {
-        preset = "none",
-        ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
-        ["<C-n>"] = { "select_next", "fallback_to_mappings" },
-
-        ["<C-y>"] = { "select_and_accept", "fallback" },
-
-        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
-        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
-    },
-
-    appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = "mono",
-    },
-
-    -- (Default) Only show the documentation popup when manually triggered
-    completion = {
-        documentation = { auto_show = true },
-        accept = {
-            -- experimental auto-brackets support
-            auto_brackets = {
-                enabled = true,
-            },
-        },
-        menu = {
-            draw = {
-                treesitter = { "lsp" },
-            },
-        },
-        list = { selection = { preselect = false, auto_insert = true } },
-    },
-
-    -- Default list of enabled providers defined so that you can extend it
-    -- elsewhere in your config, without redefining it, due to `opts_extend`
-    sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
-        providers = {
-            path = {
-                name = "Path",
-                module = "blink.cmp.sources.path",
-                score_offset = 3,
-                opts = {
-                    trailing_slash = false,
-                    label_trailing_slash = true,
-                    get_cwd = function(context)
-                        return vim.fn.expand(("#%d:p:h"):format(context.bufnr))
-                    end,
-                    show_hidden_files_by_default = false,
-                },
-            },
-        },
-    },
-
-    -- significantly
-    signature = { enabled = true },
-
-    -- cmd line setting
-    cmdline = {
-        enabled = true,
-        keymap = {
-            preset = "cmdline",
-            ["<Right>"] = false,
-            ["<Left>"] = false,
-        },
-        completion = {
-            list = { selection = { preselect = false } },
-            menu = {
-                auto_show = function(ctx)
-                    return vim.fn.getcmdtype() == ":"
-                end,
-            },
-            ghost_text = { enabled = true },
-        },
-    },
-
-    -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-    -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
-    -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
-    --
-    -- See the fuzzy documentation for more information
-    fuzzy = { implementation = "prefer_rust_with_warning" },
-})
-require("conform").setup({
-    -- Define your formatters
-    formatters_by_ft = {
-        lua = { "stylua" },
-        perl = { "perltidy" },
-        python = { "isort", "black" },
-    },
-    -- Set default options
-    default_format_opts = {
-        lsp_format = "never",
-    },
-    -- Set up format-on-save
-    -- format_on_save = { timeout_ms = 500 },
-    -- Customize formatters
-    formatters = {
-        shfmt = {
-            append_args = { "-i", "2" },
-        },
-        stylua = {
-            append_args = { "--indent-type", "Spaces" },
-        },
-    },
-})
-require("indent").setup()
-require("noice").setup({
-    cmdline = {
-        enabled = true, -- enables the Noice cmdline UI
-        view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
-        opts = {}, -- global options for the cmdline. See section on views
-        ---@type table<string, CmdlineFormat>
-        format = {
-            -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
-            -- view: (default is cmdline view)
-            -- opts: any options passed to the view
-            -- icon_hl_group: optional hl_group for the icon
-            -- title: set to anything or empty string to hide
-            cmdline = { pattern = "^:", icon = "", lang = "vim" },
-            search_down = { kind = "search", pattern = "^/", icon = "", lang = "regex" },
-            search_up = { kind = "search", pattern = "^%?", icon = "", lang = "regex" },
-            -- filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
-            -- lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
-            -- help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
-            input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
-            lua = false, -- to disable a format, set to `false`
-            filter = false,
-            help = false,
-        },
-    },
-    routes = {
-        {
-            filter = {
-                event = "msg_show",
-                any = {
-                    { find = "%d+L, %d+B" },
-                    { find = "; after #%d+" },
-                    { find = "; before #%d+" },
-                },
-            },
-            view = "mini",
-        },
-    },
-    presets = { command_palette = true, long_message_to_split = true },
-    -- messages = { enabled = false },
-    -- popupmenu = { enabled = false },
-    -- redirect = { filter = {} },
-    -- notify = { enabled = false },
-    health = { checker = false },
-    lsp = { progress = { enabled = false }, hover = { enabled = false }, signature = { enabled = false } },
-    documentation = { opts = { replace = false } },
-})
-
-------------------------------------------------------------------------
 -- neovide config
 ------------------------------------------------------------------------
 if vim.g.neovide then
@@ -518,13 +251,13 @@ if vim.g.neovide then
     vim.g.neovide_opacity_point = 1
     vim.g.neovide_show_border = true
 
-    -- disable some animial
+    -- disable some animal
     vim.g.neovide_scroll_animation_length = 0
     vim.g.neovide_cursor_animate_command_line = flase
     vim.g.neovide_cursor_animation_length = 0
     vim.g.neovide_cursor_short_animation_length = 0
 
-    -- new feaature
+    -- new feature
     vim.g.neovide_progress_bar_enabled = true
     vim.g.neovide_progress_bar_height = 5.0
     vim.g.neovide_progress_bar_animation_speed = 200.0
@@ -537,3 +270,10 @@ if vim.g.neovide then
     -- 输入法
     vim.g.neovide_input_ime = true
 end
+
+------------------------------------------------------------------------
+-- lazy load plugin
+------------------------------------------------------------------------
+vim.defer_fn(function()
+    require("lazy_load")
+end, 500) -- 单位：ms
