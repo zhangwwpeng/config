@@ -350,4 +350,38 @@ require("flash").setup({
 require("edit")
 require("grug-far").setup()
 require("trouble").setup()
-require("incline").setup()
+require("incline").setup({
+    render = function(props)
+        local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
+        local function get_diagnostic_label()
+            local label = {}
+            local n = #vim.diagnostic.get(props.buf, { error = vim.diagnostic.severity.ERROR })
+            table.insert(label, { "E" .. n .. " ", group = "DiagnosticSignError" })
+            n = #vim.diagnostic.get(props.buf, { error = vim.diagnostic.severity.WARN })
+            table.insert(label, { "W" .. n .. " ", group = "DiagnosticSignWarn" })
+            n = #vim.diagnostic.get(props.buf, { error = vim.diagnostic.severity.INFO })
+            table.insert(label, { "I" .. n .. " ", group = "DiagnosticSignInfo" })
+            n = #vim.diagnostic.get(props.buf, { error = vim.diagnostic.severity.HINT })
+            table.insert(label, { "H" .. n .. " ", group = "DiagnosticSignHint" })
+            return label
+        end
+
+        local buffer = {
+            { get_diagnostic_label(), guibg = "#000000" },
+            { filename, guibg = "#000000" },
+        }
+        return buffer
+    end,
+})
+require("incline").setup({
+    window = {
+        margin = { horizontal = 0, vertical = 0 },
+        placement = { horizontal = "center", vertical = "bottom" },
+        overlap = {
+            tabline = false,
+            winbar = true,
+            borders = true,
+            statusline = true,
+        },
+    },
+})
