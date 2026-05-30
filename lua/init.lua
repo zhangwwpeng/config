@@ -34,9 +34,9 @@ vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system 
 vim.opt.number = true -- 显示行号
 vim.opt.wrap = false -- 行内不折叠
 vim.opt.list = true -- 显示tab字符
-vim.opt.cmdheight = 0 -- 设置cmd height高度
-vim.opt.laststatus = 3 -- 设置stat line永远一行
-vim.opt.showcmdloc = "statusline" -- cmdloc的位置
+vim.opt.cmdheight = 1 -- 设置cmd height高度
+-- vim.opt.laststatus = 2 -- 设置stat line永远一行
+vim.opt.showcmdloc = "last" -- cmdloc的位置
 vim.opt.showtabline = 0 -- tab栏
 vim.opt.cursorline = true -- 当前行高亮
 vim.opt.splitbelow = true -- 窗口打开位置
@@ -62,26 +62,11 @@ vim.t.name = "Editor"
 function _G.current_tab_name()
     return vim.t[vim.fn.tabpagenr()].name or ("Tab " .. vim.fn.tabpagenr())
 end
-function _G.current_macro_status()
-    local reg = vim.fn.reg_recording()
-    if reg ~= "" then
-        return "recording @" .. reg
-    else
-        return ""
-    end
-end
 local statusline = {
-    "▊ ",
-    "%<", -- 截断
     "%-.80F", -- 文件路径
     "%m%r", -- 文件buf属性
     "%=", -- 分割
-    "%.S", -- cmd显示
-    "  %{v:lua.current_macro_status()}", -- 展示宏录制
-    "  %.(%l  ALL:%L%)", -- 行数
-    "  %{v:lua.current_tab_name()}", -- 展示tab的名字
-    "  %3.p%%", -- 百分比
-    " ▊",
+    "%y %l,%c", -- 百分比
 }
 vim.o.statusline = table.concat(statusline, "")
 -- 设置折叠方法和折叠符号
@@ -253,7 +238,7 @@ if vim.g.neovide then
 
     -- disable some animal
     vim.g.neovide_scroll_animation_length = 0
-    vim.g.neovide_cursor_animate_command_line = flase
+    vim.g.neovide_cursor_animate_command_line = false
     vim.g.neovide_cursor_animation_length = 0
     vim.g.neovide_cursor_short_animation_length = 0
 
@@ -262,7 +247,7 @@ if vim.g.neovide then
     vim.g.neovide_progress_bar_height = 5.0
     vim.g.neovide_progress_bar_animation_speed = 200.0
     vim.g.neovide_progress_bar_hide_delay = 0.2
-    vim.g.neovide_cursor_hack = flase
+    vim.g.neovide_cursor_hack = false
 
     -- alt
     vim.g.neovide_input_macos_option_key_is_meta = "only_left"
@@ -274,6 +259,21 @@ end
 ------------------------------------------------------------------------
 -- lazy load plugin
 ------------------------------------------------------------------------
+
+vim.pack.add({
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+    { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+    { src = "https://github.com/stevearc/conform.nvim" },
+    { src = "https://github.com/folke/snacks.nvim" },
+    { src = "https://github.com/folke/flash.nvim" },
+    { src = "https://github.com/MunifTanjim/nui.nvim" },
+    { src = "https://github.com/MagicDuck/grug-far.nvim" },
+    { src = "https://github.com/mfussenegger/nvim-lint" },
+    { src = "https://github.com/stevearc/oil.nvim" },
+    -- { src = "https://github.com/brianhuster/unnest.nvim" },
+})
+
+-- require("unnest")
 vim.defer_fn(function()
-    require("lazy_load")
+    require("config")
 end, 500) -- 单位：ms
