@@ -24,6 +24,8 @@ alias gd='git diff'
 alias gc='git commit'
 alias gp='git push'
 
+alias lz='lazygit'
+
 alias c='clear'
 
 export EDITOR="nvim_wrapper"
