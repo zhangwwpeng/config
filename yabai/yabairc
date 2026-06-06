@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+# 全局配置
+yabai -m config                                 \
+    external_bar                 off:40:0       \
+    menubar_opacity              1.0            \
+    mouse_follows_focus          off            \
+    focus_follows_mouse          off            \
+    display_arrangement_order    default        \
+    window_origin_display        default        \
+    window_zoom_persist          on             \
+    window_shadow                on             \
+    skip_window_focus_animation  off            \
+    window_animation_duration    0.0            \
+    window_opacity               off            \
+    layout                       float
+
+# 所有窗口不受 yabai 管理
+yabai -m rule --add app=".*" manage=off
+
+echo "yabai focus-only mode loaded.."
