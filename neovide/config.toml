@@ -1,0 +1,45 @@
+# title-hidden
+frame = "buttonless"
+
+# animal
+no-multigrid = false
+
+# Detach from the terminal instead of waiting for the Neovide process to terminate
+fork = true
+
+# when change to render
+idle = true
+
+# max windows
+maximized = false
+
+# mouse cursor
+mouse-cursor-icon = "arrow"
+
+# macos only hiden title
+title-hidden = true
+
+# srgb
+srgb = true
+
+# tabs
+tabs = true
+
+# theme
+theme = "auto"
+
+# sync to monitor
+vsync = true
+
+# close wsl
+wsl = false
+
+
+# font set
+[font]
+normal = ["Maple Mono Normal NF CN"]
+size = 18
+
+[box-drawing]
+# "font-glyph", "native" or "selected-native"
+mode = "font-glyph"

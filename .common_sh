@@ -1,0 +1,65 @@
+# === Path ===
+export PATH=$PATH:$TOOLS_BIN
+export PATH="/opt/homebrew/bin:$PATH"
+
+# === Proxy ===
+export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_proxy=socks5://127.0.0.1:7897
+
+# === Aliases ===
+# alias ff='cd $(fd --type d --hidden --exclude .git --exclude node_module --exclude .cache --exclude .npm --exclude .mozilla --exclude .meteor --exclude .nv | fzf)'
+alias nd='neovide'
+
+alias nvim="nvim_wrapper"
+alias vim="nvim_wrapper"
+alias vi="nvim_wrapper"
+alias nv='nvim_wrapper'
+
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias g='git'
+alias gs='git status'
+alias gd='git diff'
+alias gc='git commit'
+alias gp='git push'
+
+alias c='clear'
+
+export EDITOR="nvim_wrapper"
+export VISUAL="nvim_wrapper"
+
+# === nvim wrapper (remote trigger when NVIM_PIP_FATHER is set) ===
+nvim_wrapper() {
+    if [ -n "$NVIM_PIP_FATHER" ]; then
+        ~/.config/nvim/nvim_term_remote.py "$NVIM_PIP_FATHER" "$@"
+    else
+        command nvim "$@"
+    fi
+}
+
+# === fzf ===
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border=sharp --border="rounded" --color=gutter:#252623 --color=fg:-1,fg+:#f1e9d2,bg:-1,bg+:#5b5e5a'
+
+# fzf history helper — used by shell-specific Ctrl-R bindings in bashrc/zshrc
+if command -v fzf >/dev/null 2>&1; then
+    __fzf_history_select() {
+        fc -rl 1 2>/dev/null | awk '{$1=""; print substr($0,2)}' | fzf --tac --no-sort --query="${1:-}"
+    }
+fi
+
+# === Secrets ===
+[ -f ~/.secrets_sh ] && source ~/.secrets_sh
+
+# === Claude Code ===
+export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+export ANTHROPIC_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
+export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
+export CLAUDE_CODE_EFFORT_LEVEL=max
+
+# === ls color ===
+export CLICOLOR=1
+export LSCOLORS=gxfxcxdxbxegedabagacad
