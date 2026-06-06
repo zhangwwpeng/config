@@ -1,0 +1,164 @@
+------------------------------------------------------------------------
+-- vim option set
+------------------------------------------------------------------------
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_gzip = 1
+vim.g.loaded_tar = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_zip = 1
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_getscript = 1
+vim.g.loaded_getscriptPlugin = 1
+vim.g.loaded_vimball = 1
+vim.g.loaded_vimballPlugin = 1
+vim.g.loaded_2html_plugin = 1
+vim.g.loaded_logiPat = 1
+vim.g.loaded_rrhelper = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.mapleader = " " -- set to leader key
+vim.g.maplocalleader = "\\" -- disable maplocalleader
+vim.g.bigfile_size = 1024 * 1024 * 1.5 -- 1.5 MB
+-- vim.opt.inccommand = "split" -- Preview substitutions live, as you type!
+vim.opt.scrolloff = 10
+vim.opt.confirm = true
+vim.opt.jumpoptions = "stack" -- better CTRL-O CTRL-I
+vim.opt.autowrite = true -- auto write when "make" "last" "first" etc..
+vim.opt.autoread = true -- auto read when file change
+vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
+vim.opt.number = true -- 显示行号
+vim.opt.wrap = false -- 行内不折叠
+vim.opt.list = true -- 显示tab字符
+vim.opt.cmdheight = 1 -- 设置cmd height高度
+vim.opt.showcmdloc = "last" -- cmdloc的位置
+vim.opt.showtabline = 0 -- tab栏
+vim.opt.cursorline = true -- 当前行高亮
+vim.opt.splitbelow = true -- 窗口打开位置
+vim.opt.splitright = true -- 窗口打开位置
+vim.opt.tabstop = 4 -- 一个 tab 显示为 4 个空格
+vim.opt.shiftwidth = 0 -- 首行缩进时用 4 个空格
+vim.opt.softtabstop = 4 -- 插入模式按 Tab = 4 个空格
+vim.opt.expandtab = true -- Tab 转换为空格
+vim.opt.incsearch = true -- search as characters are entered
+vim.opt.ignorecase = true -- ignore case in searches by default
+vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entered
+vim.opt.mouse = "a" -- mouse on
+vim.opt.undofile = true -- undo file
+vim.opt.wildmenu = false --  disable self cmp
+vim.opt.wildmode = "" --disable self cmp
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.signcolumn = "number" -- lsp signal
+
+------------------------------------------------------------------------
+-- neovide config
+------------------------------------------------------------------------
+if vim.g.neovide then
+    -- for macos keybind
+    -- Allow clipboard copy paste in neovim
+    vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
+    vim.keymap.set("v", "<D-c>", '"+y') -- Copy
+    vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
+    vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
+    vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+    vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+    vim.keymap.set("t", "<D-v>", function()
+        vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
+    end, { noremap = true, silent = true })
+
+    -- 控制缩放
+    vim.g.neovide_scale_factor = 1.0
+    local change_scale_factor = function(delta)
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+    end
+    vim.keymap.set("n", "<C-+>", function()
+        change_scale_factor(1.25)
+    end)
+    vim.keymap.set("n", "<C-_>", function()
+        change_scale_factor(1 / 1.25)
+    end)
+
+    -- blur & opacity
+    vim.g.neovide_window_blurred = true
+    vim.g.neovide_floating_blur_amount_x = 2.0
+    vim.g.neovide_floating_blur_amount_y = 2.0
+
+    -- float showdown
+    vim.g.neovide_floating_shadow = true
+    vim.g.neovide_floating_z_height = 10
+    vim.g.neovide_light_angle_degrees = 45
+    vim.g.neovide_light_radius = 5
+    vim.g.neovide_floating_corner_radius = 0.5
+
+    -- background not opacity , windows opacity
+    vim.g.neovide_opacity = 0.8
+    vim.g.neovide_opacity_point = 1
+    vim.g.neovide_show_border = true
+
+    -- disable some animal
+    vim.g.neovide_scroll_animation_length = 0
+    vim.g.neovide_cursor_animate_command_line = false
+    vim.g.neovide_cursor_animation_length = 0
+    vim.g.neovide_cursor_short_animation_length = 0
+
+    -- new feature
+    vim.g.neovide_progress_bar_enabled = true
+    vim.g.neovide_progress_bar_height = 5.0
+    vim.g.neovide_progress_bar_animation_speed = 200.0
+    vim.g.neovide_progress_bar_hide_delay = 0.2
+    vim.g.neovide_cursor_hack = false
+
+    -- alt
+    vim.g.neovide_input_macos_option_key_is_meta = "only_left"
+
+    -- 输入法
+    vim.g.neovide_input_ime = true
+end
+
+------------------------------------------------------------------------
+-- RPC init (lazy: child nvim processes spawn on first <C-t> / <C-,>)
+------------------------------------------------------------------------
+vim.api.nvim_create_autocmd("UIEnter", {
+    once = true,
+    callback = function()
+        Flt_term_chan = -1
+        Sub_term_chan = -1
+        Remote_flt_term_buf = vim.api.nvim_create_buf(false, true)
+        Remote_sub_term_buf = vim.api.nvim_create_buf(false, true)
+        vim.g.flt_term_servrename = vim.v.servername .. "_flt"
+        vim.g.sub_term_servrename = vim.v.servername .. "_sub"
+    end,
+})
+
+------------------------------------------------------------------------
+-- Lsp config
+------------------------------------------------------------------------
+
+vim.lsp.enable({
+    "lua_ls", -- lua
+    "perlnavigator", -- perl
+})
+
+------------------------------------------------------------------------
+-- lazy load plugin
+------------------------------------------------------------------------
+
+vim.pack.add({
+    { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+    { src = "https://github.com/stevearc/conform.nvim" },
+    { src = "https://github.com/folke/snacks.nvim" },
+    { src = "https://github.com/folke/flash.nvim" },
+    { src = "https://github.com/mfussenegger/nvim-lint" },
+    { src = "https://github.com/stevearc/oil.nvim" },
+    { src = "https://github.com/esmuellert/codediff.nvim" },
+    { src = "https://github.com/kokusenz/deltaview.nvim" },
+    { src = "https://github.com/kokusenz/delta.lua" },
+    { src = "https://github.com/folke/lazydev.nvim" },
+})
+
+require("theme").load()
+require("ui").setup()
+require("config")
+require("keymaps")
+require("autocmds")
