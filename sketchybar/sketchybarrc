@@ -47,7 +47,7 @@ do
     icon="${SPACE_ICONS[i]}"
     icon.padding_left=7
     icon.padding_right=7
-    background.color=0x00ffffff
+    background.color=0x44ffffff
     background.corner_radius=5
     background.height=25
     label.drawing=off
@@ -56,6 +56,8 @@ do
   )
   sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}"
 done
+
+sketchybar --subscribe space space_change
 
 ##### Adding Left Items #####
 # We add some regular items to the left side of the bar, where
