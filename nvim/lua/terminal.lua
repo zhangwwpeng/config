@@ -127,6 +127,7 @@ local recoard_terminal = function()
     term_height = vim.api.nvim_win_get_height(sub_win)
 end
 
+
 local toggle_float_terminal = function()
     spawn_flt()
     if not vim.api.nvim_win_is_valid(flt_win) then
@@ -148,7 +149,7 @@ local toggle_sub_terminal = function(opts)
     local cur_buf = vim.api.nvim_win_get_buf(cur_win)
     if not vim.api.nvim_win_is_valid(sub_win) then
         sub_win = create_sub_term_window({ buf = Remote_sub_term_buf, layout = layout_status })
-        vim.api.nvim_set_option_value("buflisted", false, { buf = Remote_flt_term_buf })
+        vim.api.nvim_set_option_value("buflisted", false, { buf = Remote_sub_term_buf })
         vim.cmd("startinsert")
     elseif cur_buf ~= Remote_sub_term_buf then
         vim.api.nvim_set_current_win(sub_win)

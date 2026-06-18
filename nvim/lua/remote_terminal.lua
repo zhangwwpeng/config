@@ -43,6 +43,7 @@ map({ "i", "t" }, "<C-w>l", "<C-\\><C-n><C-w>l")
 map({ "i", "t" }, "<C-w>w", "<C-\\><C-n><C-w>w")
 map({ "i", "t" }, "<C-w>q", "<C-\\><C-n><C-w>q")
 map({ "i", "t" }, "<C-w>r", "<C-\\><C-n><C-w>r")
+map({ "i", "t" }, "<C-o>", "<C-\\><C-n>")
 map({ "i", "t" }, "<C-0>", function()
     vim.rpcnotify(Father_chan, "nvim_command", "CycleTerm")
 end)
@@ -132,7 +133,6 @@ function _G.send_to_tab_terminal(tabname, text)
     end
     vim.notify("no terminal found in tab: " .. tabname, vim.log.levels.WARN)
 end
-
 ------------------------------------------------------------------------
 -- autocmd
 ------------------------------------------------------------------------

@@ -6,7 +6,7 @@ local unmap = vim.keymap.del
 
 -- save file
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
-map({ "i", "x", "n", "s" }, "<C-q>", "<cmd>q<cr><esc>", { desc = "Save File and Quit nvim" })
+map({ "i", "x", "n", "s" }, "<C-q>", "<cmd>q<cr><esc>", { desc = "Quit nvim" })
 
 -- ui move
 map("n", "<Up>", "<cmd>resize -2<CR>", { desc = "Remove windows up" })

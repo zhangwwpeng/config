@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd("UIEnter", {
         vim.rpcnotify(
             Father_chan,
             "nvim_exec_lua",
-            [[Flt_term_chan = vim.fn.sockconnect("pipe", vim.g.sub_term_servrename, { rpc = true })]],
+            [[Flt_term_chan = vim.fn.sockconnect("pipe", vim.g.flt_term_servrename, { rpc = true })]],
             {}
         )
     end,

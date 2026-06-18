@@ -108,7 +108,6 @@ local function make_snapshot(lnum)
   if not is_empty and not context.mixup and (indent % context.step) ~= 0 then
     local col = api.nvim_win_get_cursor(0)[2]
     if col > 0 and not api.nvim_get_current_line():sub(1, col):find('%w') then
-      indent = indent
       local n = math.floor((indent - context.step) / context.step)
       indent = context.step + n * context.step
     end
