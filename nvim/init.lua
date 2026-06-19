@@ -51,6 +51,20 @@ vim.opt.undofile = true -- undo file
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.signcolumn = "number" -- lsp signal
 
+-- 设置折叠方法为表达式 (expr)
+vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.wo[0][0].foldmethod = "expr"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.treesitter.language.register("bash", { "sh" })
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "c", "verilog", "python", "rust", "sh", "markdown" },
+    callback = function()
+        vim.treesitter.start()
+    end,
+})
+
 ------------------------------------------------------------------------
 -- neovide config
 ------------------------------------------------------------------------

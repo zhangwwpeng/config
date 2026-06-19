@@ -1,4 +1,11 @@
 source ~/.common_sh
+
+# Force emacs keybindings everywhere (including vim terminals)
+bindkey -e
+# bindkey '^P' up-line-or-history
+# bindkey '^N' down-line-or-history
+# bindkey '^A' beginning-of-line
+# bindkey '^E' end-of-line
 PROMPT="%F{cyan}%1~ > %f"
 
 # Ctrl-R: fzf history search (falls back to default if fzf not found)
