@@ -31,7 +31,7 @@ vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system 
 vim.opt.number = true -- 显示行号
 vim.opt.wrap = false -- 行内不折叠
 vim.opt.list = true -- 显示tab字符
-vim.opt.cmdheight = 1 -- 设置cmd height高度
+vim.opt.cmdheight = 0 -- 设置cmd height高度
 vim.opt.showcmdloc = "last" -- cmdloc的位置
 vim.opt.showtabline = 0 -- tab栏
 vim.opt.cursorline = true -- 当前行高亮
@@ -46,8 +46,8 @@ vim.opt.ignorecase = true -- ignore case in searches by default
 vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entered
 vim.opt.mouse = "a" -- mouse on
 vim.opt.undofile = true -- undo file
-vim.opt.wildmenu = false --  disable self cmp
-vim.opt.wildmode = "" --disable self cmp
+-- vim.opt.wildmenu = false --  disable self cmp mini
+-- vim.opt.wildmode = "" --disable self cmp mini
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.signcolumn = "number" -- lsp signal
 
@@ -92,7 +92,7 @@ if vim.g.neovide then
     vim.g.neovide_floating_corner_radius = 0.5
 
     -- background not opacity , windows opacity
-    vim.g.neovide_opacity = 1
+    vim.g.neovide_opacity = 0.8
     vim.g.neovide_opacity_point = 1
     vim.g.neovide_show_border = true
 
@@ -114,6 +114,10 @@ if vim.g.neovide then
 
     -- 输入法
     vim.g.neovide_input_ime = true
+
+    vim.g.neovide_hide_mouse_when_typing = true
+
+    vim.g.neovide_cursor_smooth_blink = true
 end
 
 ------------------------------------------------------------------------
@@ -143,12 +147,16 @@ vim.lsp.enable({
 ------------------------------------------------------------------------
 -- lazy load plugin
 ------------------------------------------------------------------------
+vim.schedule(function()
+    vim.pack.add({
+        "https://github.com/nvim-mini/mini.cmdline",
+        "https://github.com/nvim-mini/mini.completion",
+    })
+    require("session").setup()
+end)
 
 vim.pack.add({
-    { src = "https://github.com/nvim-mini/mini.completion" },
-    { src = "https://github.com/nvim-mini/mini.pick", version = "stable" },
-    { src = "https://github.com/nvim-mini/mini.icons" },
-    { src = "https://github.com/nvim-mini/mini.nvim" },
+    { src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
     { src = "https://github.com/stevearc/conform.nvim" },
     { src = "https://github.com/folke/snacks.nvim" },
     { src = "https://github.com/folke/flash.nvim" },
@@ -159,8 +167,15 @@ vim.pack.add({
     { src = "https://github.com/kokusenz/delta.lua" },
     { src = "https://github.com/folke/lazydev.nvim" },
     { src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
+    { src = "https://github.com/tjgao/quickbuf.nvim" },
+    { src = "https://github.com/rachartier/tiny-cmdline.nvim" },
 })
 
+vim.loader.enable()
+
+require("cmd_panel").setup()
+require("vim._core.ui2").enable({})
+require("ui2")
 require("theme").load()
 require("ui").setup()
 require("config")

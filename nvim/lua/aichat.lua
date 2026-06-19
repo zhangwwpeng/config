@@ -1,9 +1,12 @@
+local HOST = "127.0.0.1"
+local PORT = 6666
+
 local aichat_chan = nil
 local function get_chan()
     if aichat_chan and aichat_chan > 0 then
         return aichat_chan
     end
-    local ok, chan = pcall(vim.fn.sockconnect, "tcp", "127.0.0.1:6666", { rpc = true })
+    local ok, chan = pcall(vim.fn.sockconnect, "tcp", HOST .. ":" .. PORT, { rpc = true })
     if ok and chan > 0 then
         aichat_chan = chan
         return chan

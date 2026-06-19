@@ -25,6 +25,10 @@
       "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
       "src": "https://github.com/folke/flash.nvim"
     },
+    "fyler.nvim": {
+      "rev": "d7a343424daf4ee866acfd01307f30231dd9e5e9",
+      "src": "https://github.com/FylerOrg/fyler.nvim"
+    },
     "grug-far.nvim": {
       "rev": "b58b2d65863f4ebad88b10a1ddd519e5380466e0",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
@@ -37,6 +41,10 @@
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
     },
+    "mini.cmdline": {
+      "rev": "79b6d8a2d4cf3163fa30a91d8fc8454cc056bf0d",
+      "src": "https://github.com/nvim-mini/mini.cmdline"
+    },
     "mini.completion": {
       "rev": "04abe6fc7860858785ba63c435d76bf5b8b64b5f",
       "src": "https://github.com/nvim-mini/mini.completion"
@@ -47,12 +55,12 @@
     },
     "mini.nvim": {
       "rev": "a59a9b7fb0a42cbcf022938ee5f0724320b66f63",
-      "src": "https://github.com/nvim-mini/mini.nvim"
+      "src": "https://github.com/nvim-mini/mini.nvim",
+      "version": "'stable'"
     },
     "mini.pick": {
       "rev": "6b7974543b17cf2e294993fc3d8545a342258232",
-      "src": "https://github.com/nvim-mini/mini.pick",
-      "version": "'stable'"
+      "src": "https://github.com/nvim-mini/mini.pick"
     },
     "noice.nvim": {
       "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
@@ -87,6 +95,10 @@
       "rev": "b91ee5a77a6a9605d9c1aaf4fda74b66082c8297",
       "src": "https://github.com/stevearc/oil.nvim"
     },
+    "quickbuf.nvim": {
+      "rev": "125a1a770abd3994ef47f9f1d8b3a5d5d681888d",
+      "src": "https://github.com/tjgao/quickbuf.nvim"
+    },
     "render-markdown.nvim": {
       "rev": "5adf0895310c1904e5abfaad40a2baad7fe44a07",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
@@ -94,6 +106,10 @@
     "snacks.nvim": {
       "rev": "fe7cfe9800a182274d0f868a74b7263b8c0c020b",
       "src": "https://github.com/folke/snacks.nvim"
+    },
+    "tiny-cmdline.nvim": {
+      "rev": "b1db8607a78f0c23b3bae08e079b1b7f147619d7",
+      "src": "https://github.com/rachartier/tiny-cmdline.nvim"
     },
     "tiny-inline-diagnostic.nvim": {
       "rev": "680762989e8b05a72e90769959d0fb9a557e6917",

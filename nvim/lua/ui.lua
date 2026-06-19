@@ -13,7 +13,7 @@ function M.setup(opts)
                 [vim.diagnostic.severity.ERROR] = "\u{EA87}",
                 [vim.diagnostic.severity.WARN] = "\u{EA6C}",
                 [vim.diagnostic.severity.INFO] = "\u{EA74}",
-                [vim.diagnostic.severity.HINT] = "\u{F0B16} ",
+                [vim.diagnostic.severity.HINT] = "\u{EC10} ",
             },
         },
     })
@@ -27,7 +27,7 @@ function M.setup(opts)
             return ""
         end
         return string.format(
-            " \u{EA87} %d \u{EA6C} %d \u{EA74} %d \u{F0B16} %d ",
+            " \u{EA87} %d \u{EA6C} %d \u{EA74} %d \u{EC10} %d ",
             counts[1],
             counts[2],
             counts[3],
@@ -39,9 +39,28 @@ function M.setup(opts)
         "%-.80F",
         "%m%r",
         "%=",
+        "%{v:lua.current_macro_status()}", -- 展示宏录制
         "%{v:lua.lsp_diagnostics()}",
         "%y %l,%c",
     }, "")
+
+    local reg_status = false
+    function _G.current_macro_status()
+        local reg = vim.fn.reg_recording()
+        if reg ~= "" then
+            if reg_status == false then
+                vim.notify("recoarding " .. reg)
+            end
+            reg_status = true
+            return "recording @" .. reg .. " "
+        else
+            if reg_status == true then
+                vim.notify("end recoarding")
+            end
+            reg_status = false
+            return ""
+        end
+    end
 
     -- Foldtext
     _G.fold_text = function()

@@ -1,0 +1,15 @@
+[project]
+name = "aichat-nvim"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "backports-ssl-match-hostname>=3.7.0.1",
+    "google-genai>=2.8.0",
+    "httpx[socks]>=0.28.1",
+    "msgpack-rpc-python>=0.4",
+    "openai>=2.0",
+    "pip>=26.1.2",
+    "pynvim>=0.6",
+]
