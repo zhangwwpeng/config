@@ -1,7 +1,7 @@
 # This is a demo config to showcase some of the most important commands.
 # It is meant to be changed and configured, as it is intentionally kept sparse.
 # For a (much) more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
+# https://github.com/FelixKratz/dotiles
 
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
@@ -12,7 +12,7 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # If you are looking for other colors, see the color picker:
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
-sketchybar --bar position=top height=36 blur_radius=0 color=0xff282828
+sketchybar --bar position=top height=36 blur_radius=0 color=0xff232922
 
 ##### Changing Defaults #####
 # We now change some default values, which are applied to all further items.
@@ -23,9 +23,9 @@ default=(
   padding_left=5
   padding_right=5
   icon.font="Hack Nerd Font:Bold:17.0"
-  label.font="Hack Nerd Font:Bold:14.0"
-  icon.color=0xffffffff
-  label.color=0xffffffff
+  label.font="Hack Nerd Font:Bold:17.0"
+  icon.color=0xffddcaa6
+  label.color=0xffddcaa6
   icon.padding_left=4
   icon.padding_right=4
   label.padding_left=4
@@ -47,7 +47,7 @@ do
     icon="${SPACE_ICONS[i]}"
     icon.padding_left=7
     icon.padding_right=7
-    background.color=0x44ffffff
+    background.color=0x44bdaa86
     background.corner_radius=5
     background.height=25
     label.drawing=off

@@ -170,15 +170,13 @@ vim.schedule(function()
 end)
 
 vim.pack.add({
+    { src = "https://github.com/nvim-mini/mini.input" },
     { src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
     { src = "https://github.com/stevearc/conform.nvim" },
     { src = "https://github.com/folke/snacks.nvim" },
     { src = "https://github.com/folke/flash.nvim" },
-    { src = "https://github.com/mfussenegger/nvim-lint" },
     { src = "https://github.com/stevearc/oil.nvim" },
     { src = "https://github.com/esmuellert/codediff.nvim" },
-    { src = "https://github.com/kokusenz/deltaview.nvim" },
-    { src = "https://github.com/kokusenz/delta.lua" },
     { src = "https://github.com/folke/lazydev.nvim" },
     { src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
     { src = "https://github.com/tjgao/quickbuf.nvim" },
