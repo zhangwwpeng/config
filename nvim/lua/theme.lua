@@ -22,6 +22,11 @@ local palette = {
     yellow = "#e2c792",
     gray = "#838781",
     gray_light1 = "#928374",
+
+    diff_added_line = "#003300",
+    diff_removed_line = "#110000",
+    diff_added_word = "#00b000",
+    diff_removed_word = "#b00000",
 }
 
 local function base(pal)
@@ -88,6 +93,11 @@ local function plugin(pal)
         -- indnet
         IndentLine = { fg = pal.bg_light2, bold = true },
         IndentLineCurrent = { link = "IndentLine" },
+
+        DeltaDiffAddedLine = { bg = pal.diff_added_line },
+        DeltaDiffRemovedLine = { bg = pal.diff_removed_line },
+        DeltaDiffAddedWord = { bg = pal.diff_added_word },
+        DeltaDiffRemovedWord = { bg = pal.diff_removed_word, strikethrough = true },
     }
 end
 

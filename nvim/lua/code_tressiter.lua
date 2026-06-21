@@ -5,7 +5,21 @@ function M.setup()
 
     --  treesitter
     vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "c", "verilog", "python", "rust", "sh", "markdown", "json", "yaml", "toml", "just", "make", "tcl" },
+        pattern = {
+            "c",
+            "verilog",
+            "python",
+            "rust",
+            "sh",
+            "markdown",
+            "json",
+            "yaml",
+            "toml",
+            "just",
+            "make",
+            "tcl",
+            "bash",
+        },
         callback = function()
             vim.treesitter.start()
         end,

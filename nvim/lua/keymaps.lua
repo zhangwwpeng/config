@@ -49,9 +49,3 @@ map("i", "<C-e>", "<C-o>$", { noremap = true })
 map("i", "<C-f>", "<Right>", { noremap = true })
 map("i", "<C-b>", "<left>", { noremap = true })
 
--- focus_windows tab
-local focus_tab = require("focus_tab")
-focus_tab.setup()
-map({ "n", "v" }, "<C-f>", function()
-    focus_tab.toggle()
-end, { desc = "Toggle focus_windows tab" })

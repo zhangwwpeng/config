@@ -105,7 +105,7 @@
 
 (special_variable_name) @constant
 
-(comment) @comment @spell
+(comment) @spell @comment
 
 (test_operator) @operator
 
@@ -231,8 +231,8 @@
 
 (variable_name) @variable
 
-((variable_name) @constant
-  (#lua-match? @constant "^[A-Z][A-Z_0-9]*$"))
+; ((variable_name) @constant
+;   (#lua-match? @constant "^[A-Z][A-Z_0-9]*$"))
 
 ((variable_name) @variable.builtin
   (#any-of? @variable.builtin
@@ -272,7 +272,7 @@
   (extglob_pattern)
 ] @string.regexp
 
-((program
-  .
-  (comment) @keyword.directive @nospell)
-  (#lua-match? @keyword.directive "^#![ \t]*/"))
+; ((program
+;   .
+;   (comment) @keyword.directive @nospell)
+;   (#lua-match? @keyword.directive "^#![ \t]*/"))
