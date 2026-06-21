@@ -1,6 +1,5 @@
 require("remote_terminal")
-require("theme").load()
-vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+require("theme").setup()
 
 ------------------------------------------------------------------------
 -- RPC

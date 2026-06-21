@@ -65,7 +65,7 @@
 
 (float) @number.float
 
-(comment) @comment @spell
+(comment) @spell @comment 
 
 ((module
   .

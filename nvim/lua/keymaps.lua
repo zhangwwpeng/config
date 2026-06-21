@@ -14,7 +14,6 @@ map("n", "<Down>", "<cmd>resize +2<CR>", { desc = "Remove windows down" })
 map("n", "<Left>", "<cmd>vertical resize -2<CR>", { desc = "Remove windows left" })
 map("n", "<Right>", "<cmd>vertical resize +2<CR>", { desc = "Remove windows right" })
 
-
 -- yazi
 -- map({ "n", "v" }, "<leader>y", "<cmd>Yazi toggle<cr>", { desc = "Open yazi at the current file" })
 
@@ -25,17 +24,6 @@ map("x", "<C-/>", "gc", comment_opts)
 map("i", "<C-/>", function()
     vim.cmd.normal("gcc")
 end, comment_opts)
-
--- code format
-map({ "i", "n", "v" }, "<C-l>", function()
-    require("conform").format({ async = true }, function(err, did_edit)
-        if err then
-            vim.notify("format error", vim.log.levels.ERROR)
-        else
-            vim.notify("format successfully", vim.log.levels.INFO)
-        end
-    end)
-end, { desc = "Formate Code" })
 
 -- picker
 map({ "n" }, "<leader><leader>", function()
@@ -61,17 +49,9 @@ map("i", "<C-e>", "<C-o>$", { noremap = true })
 map("i", "<C-f>", "<Right>", { noremap = true })
 map("i", "<C-b>", "<left>", { noremap = true })
 
--- theme saturation
-map("n", "<leader>=", function()
-  local t = require("theme")
-  local s = math.min(1, t.saturation + 0.1)
-  t.saturate(s)
-  vim.notify("saturation: " .. string.format("%.1f", s), vim.log.levels.INFO)
-end, { desc = "Increase text saturation" })
-
-map("n", "<leader>-", function()
-  local t = require("theme")
-  local s = math.max(0, t.saturation - 0.1)
-  t.saturate(s)
-  vim.notify("saturation: " .. string.format("%.1f", s), vim.log.levels.INFO)
-end, { desc = "Decrease text saturation" })
+-- focus_windows tab
+local focus_tab = require("focus_tab")
+focus_tab.setup()
+map({ "n", "v" }, "<C-f>", function()
+    focus_tab.toggle()
+end, { desc = "Toggle focus_windows tab" })

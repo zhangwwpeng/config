@@ -252,6 +252,30 @@ end
 
 -- ── LSP progress ─────────────────────────────────────────────────────
 
+local function should_quiet_lsp_progress(client, title, message)
+    -- Drop empty progress events (e.g. pyright #11408).
+    if title == "" and message == "" then
+        return true
+    end
+
+    -- basedpyright/pyright: openFilesOnly re-analyzes the current buffer (1 file) frequently.
+    if client.name == "basedpyright" or client.name == "pyright" then
+        local text = title .. message
+        return text:match("1%s*个%s*文件") ~= nil
+            or text:lower():match("analyzing%s+1%s+") ~= nil
+            or text:lower():match("%f[%d]1%s+files?%f[%A]") ~= nil
+    end
+
+    -- pyrefly: some versions report useless "rechecking ... 0/0" progress on save.
+    if client.name == "pyrefly" then
+        local text = (title .. " " .. message):lower()
+        return text:match("recheck") ~= nil and text:match("0%s*/%s*0") ~= nil
+            or text:match("recheck") ~= nil and text:match("1%s*/%s*1") ~= nil
+    end
+
+    return false
+end
+
 local id = { LspProgressMessages = vim.api.nvim_create_augroup("LspProgressMessages", { clear = true }) }
 
 vim.api.nvim_create_autocmd("LspProgress", {
@@ -262,14 +286,21 @@ vim.api.nvim_create_autocmd("LspProgress", {
         if not client then
             return
         end
+
+        -- basedpyright/pyright spam empty $/progress on every keystroke (pyright #11408)
+        local title = value.title or ""
+        local message = value.message or ""
+        if should_quiet_lsp_progress(client, title, message) then
+            return
+        end
+
         local is_end = value.kind == "end"
-        local msg = value.message and (client.name .. ": " .. value.message)
-            or (client.name .. (is_end and ": done" or ""))
+        local msg = message ~= "" and (client.name .. ": " .. message) or (client.name .. (is_end and ": done" or ""))
         vim.api.nvim_echo({ { msg } }, false, {
             id = "lsp." .. ev.data.client_id,
             kind = "progress",
             source = "vim.lsp",
-            title = value.title,
+            title = title,
             status = is_end and "success" or "running",
             percent = value.percentage,
         })

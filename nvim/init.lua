@@ -56,14 +56,6 @@ vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.wo[0][0].foldmethod = "expr"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
-vim.treesitter.language.register("bash", { "sh" })
-
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "c", "verilog", "python", "rust", "sh", "markdown" },
-    callback = function()
-        vim.treesitter.start()
-    end,
-})
 
 ------------------------------------------------------------------------
 -- neovide config
@@ -95,8 +87,8 @@ if vim.g.neovide then
 
     -- blur & opacity
     vim.g.neovide_window_blurred = true
-    vim.g.neovide_floating_blur_amount_x = 2.0
-    vim.g.neovide_floating_blur_amount_y = 2.0
+    vim.g.neovide_floating_blur_amount_x = 5.0
+    vim.g.neovide_floating_blur_amount_y = 5.0
 
     -- float showdown
     vim.g.neovide_floating_shadow = true
@@ -107,7 +99,6 @@ if vim.g.neovide then
 
     -- background not opacity , windows opacity
     vim.g.neovide_opacity = 0.8
-    vim.g.neovide_opacity_point = 1
     vim.g.neovide_show_border = true
 
     -- disable some animal
@@ -137,6 +128,7 @@ end
 ------------------------------------------------------------------------
 -- RPC init (lazy: child nvim processes spawn on first <C-t> / <C-,>)
 ------------------------------------------------------------------------
+
 vim.api.nvim_create_autocmd("UIEnter", {
     once = true,
     callback = function()
@@ -150,29 +142,31 @@ vim.api.nvim_create_autocmd("UIEnter", {
 })
 
 ------------------------------------------------------------------------
--- Lsp config
-------------------------------------------------------------------------
-
-vim.lsp.enable({
-    "lua_ls", -- lua
-    "perlnavigator", -- perl
-})
-
-------------------------------------------------------------------------
 -- lazy load plugin
 ------------------------------------------------------------------------
 vim.schedule(function()
     vim.pack.add({
         "https://github.com/nvim-mini/mini.cmdline",
         "https://github.com/nvim-mini/mini.completion",
+        "https://github.com/mfussenegger/nvim-lint",
+        "https://github.com/stevearc/conform.nvim",
     })
     require("session").setup()
+    require("code_lint").setup()
+    require("code_format").setup()
+    require("code_lsp").setup()
+    require("code_edit").setup()
+    require("code_tressiter").setup()
+    require("focus_tab").setup()
 end)
+
+------------------------------------------------------------------------
+-- load plugin
+------------------------------------------------------------------------
 
 vim.pack.add({
     { src = "https://github.com/nvim-mini/mini.input" },
     { src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
-    { src = "https://github.com/stevearc/conform.nvim" },
     { src = "https://github.com/folke/snacks.nvim" },
     { src = "https://github.com/folke/flash.nvim" },
     { src = "https://github.com/stevearc/oil.nvim" },
@@ -188,11 +182,10 @@ vim.loader.enable()
 require("cmd_panel").setup()
 require("vim._core.ui2").enable({})
 require("ui2")
-require("theme").load()
+require("theme").setup()
 require("ui").setup()
 require("config")
 require("keymaps")
-require("autocmds")
 require("aichat")
 require("mini.pick").setup()
 require("render-markdown").setup({

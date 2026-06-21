@@ -65,3 +65,7 @@ export CLAUDE_CODE_EFFORT_LEVEL=max
 # === ls color ===
 export CLICOLOR=1
 export LSCOLORS=gxfxcxdxbxegedabagacad
+
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
