@@ -9,6 +9,8 @@ function M.current()
     return dir .. name .. ".vim"
 end
 
+local session_file = vim.fs.joinpath(vim.fn.stdpath("cache") --[[@as string]], "restart.vim")
+
 function M.setup()
     M.start()
     require("cmd_panel").registry_cmd({
@@ -18,6 +20,8 @@ function M.setup()
             M.save()
         end,
     })
+
+    -- load session
     require("cmd_panel").registry_cmd({
         cmd_name = "session load",
         desc = "load session from state ls",
@@ -37,6 +41,15 @@ function M.setup()
         desc = "open session dir",
         cmd = function()
             require("oil").open(dir)
+        end,
+    })
+    require("cmd_panel").registry_cmd({
+        cmd_name = "restart",
+        desc = "restart session",
+        cmd = function()
+            local session = vim.fn.stdpath("state") .. "/restart_session.vim"
+            vim.cmd("mksession! " .. vim.fn.fnameescape(session))
+            vim.cmd("restart source " .. vim.fn.fnameescape(session))
         end,
     })
 end
