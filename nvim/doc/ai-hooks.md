@@ -64,6 +64,7 @@ Stop hook
 
 | 脚本 | 作用 |
 |------|------|
+| `nvim_term_remote.py` | 子终端内 `vim` / `vimdiff` → 子 Neovim（`vimdiff` 支持文件与目录） |
 | `ai_diff_lib.py` | 公共逻辑 |
 | `ai-diff-session-start.py` | SessionStart |
 | `ai-diff-hook.py` | PreToolUse（Write/Edit/MultiEdit/Delete/apply_patch） |
@@ -191,8 +192,9 @@ rm -rf "$TEST_DIR" ~/.cache/nvim/ai-diff/sessions/manual
 ## 前置条件
 
 - Python 3
-- Neovim + codediff.nvim
+- Neovim + codediff.nvim（或子终端内用 `vimdiff old/ new/` 手动比较）
 - AI 从 remote terminal 启动（设置 `NVIM_PIP_FATHER`）
+- `~/.common_sh` 中 `nvim_wrapper` / `vimdiff_wrapper` 指向 `scripts/nvim_term_remote.py`（见 [README.md](../README.md)）
 
 ## 常见问题
 

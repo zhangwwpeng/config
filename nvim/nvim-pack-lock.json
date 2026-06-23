@@ -17,24 +17,24 @@
       "src": "https://github.com/folke/lazydev.nvim"
     },
     "mini.cmdline": {
-      "rev": "79b6d8a2d4cf3163fa30a91d8fc8454cc056bf0d",
+      "rev": "8e3fe6ee41a960226bc0dc663120363a40bc18bd",
       "src": "https://github.com/nvim-mini/mini.cmdline"
     },
     "mini.completion": {
-      "rev": "e152473392ab943dad9842ed5a02934f51953fe9",
+      "rev": "0aeee1231b90d70563e24facc238ab4359b8d5fc",
       "src": "https://github.com/nvim-mini/mini.completion"
     },
     "mini.input": {
-      "rev": "82eb633fbaaf0dccebfe8bf3faa4ddeab8dc76f9",
+      "rev": "a8ab01372890c4ebf9f59893f42ad7c6bcd02c16",
       "src": "https://github.com/nvim-mini/mini.input"
     },
     "mini.nvim": {
-      "rev": "a995fe9cd4193fb492b5df69175a351a74b3d36b",
+      "rev": "1345d191bb3da9c7b0e977f4387c5761f9bff68d",
       "src": "https://github.com/nvim-mini/mini.nvim",
       "version": "'stable'"
     },
     "nvim-lint": {
-      "rev": "4b7957daf4b81eb578114bd6fcf20b6f5a2b59e8",
+      "rev": "01c9842c089069ab497430159312b2c8868a4590",
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
     "oil.nvim": {
@@ -42,7 +42,7 @@
       "src": "https://github.com/stevearc/oil.nvim"
     },
     "quickbuf.nvim": {
-      "rev": "ec348c872e88c5670e3136613227c6e04ca84963",
+      "rev": "75b49dfd836a95cd0c80b04c1f5ac7e689e35421",
       "src": "https://github.com/tjgao/quickbuf.nvim"
     },
     "render-markdown.nvim": {

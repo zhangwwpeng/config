@@ -1,39 +1,27 @@
 #!/usr/bin/env python3
-"""
-子终端 -> 父 Neovim 的 RPC 桥接。
-
-用法: nvim_term_remote.py <nvim_server> [path]
-  nvim_server  父实例的 pipe/socket（如 $NVIM）
-  path         可选，转为绝对路径后传给 :RemoteTrigger；省略则传 "null"
-"""
+# 子终端 / 浮动终端里的 vim / vimdiff → 主 Neovim
+#
+#   nvim_term_remote.py <father> file.lua      → :e file
+#   nvim_term_remote.py <father> -d f1 f2      → CodeDiff file
+#   nvim_term_remote.py <father> -d dir1 dir2  → CodeDiff dir
 
 import os
 import sys
-import subprocess
 
+if len(sys.argv) < 2:
+    sys.exit("[info] must have nvim pip")
 
-def main():
-    if len(sys.argv) < 2 or not sys.argv[1]:
-        print("[info] must have nvim pip")
-        return
-    nvim_server = sys.argv[1]
+father = sys.argv[1]
+args = sys.argv[2:]
+diff = "-d" in args or "--diff" in args
+paths = [a for a in args if a not in ("-d", "--diff") and not a.startswith("-")]
 
-    if len(sys.argv) <= 2:
-        abs_path = "null"
+if diff and len(paths) >= 2:
+    p1, p2 = os.path.abspath(paths[0]), os.path.abspath(paths[1])
+    if os.path.isdir(p1) and os.path.isdir(p2):
+        os.system(f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff dir {p1} {p2}<CR>"')
     else:
-        abs_path = os.path.abspath(sys.argv[2])
-
-    remote_send_payload = f"<Cmd>RemoteTrigger {abs_path}<CR>"
-    cmd = [
-        "nvim",
-        "--server", nvim_server,
-        "--remote-send", remote_send_payload,
-    ]
-
-    try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"执行控制命令失败: {e}")
-
-if __name__ == "__main__":
-    main()
+        os.system(f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff file {p1} {p2}<CR>"')
+elif paths:
+    for path in paths:
+        os.system(f'nvim --server "{father}" --remote-send "<Cmd>e {os.path.abspath(path)}<CR>"')
