@@ -19,9 +19,15 @@ paths = [a for a in args if a not in ("-d", "--diff") and not a.startswith("-")]
 if diff and len(paths) >= 2:
     p1, p2 = os.path.abspath(paths[0]), os.path.abspath(paths[1])
     if os.path.isdir(p1) and os.path.isdir(p2):
-        os.system(f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff dir {p1} {p2}<CR>"')
+        os.system(
+            f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff dir {p1} {p2}<CR>"'
+        )
     else:
-        os.system(f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff file {p1} {p2}<CR>"')
+        os.system(
+            f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff file {p1} {p2}<CR>"'
+        )
 elif paths:
     for path in paths:
-        os.system(f'nvim --server "{father}" --remote-send "<Cmd>e {os.path.abspath(path)}<CR>"')
+        os.system(
+            f'nvim --server "{father}" --remote-send "<Esc><C-w>q<Cmd>drop {os.path.abspath(path)}<CR>"'
+        )
