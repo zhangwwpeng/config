@@ -3,6 +3,18 @@ local M = {}
 local focus_tab_name = "focus_windows"
 local origin_tab
 local origin_buf
+local origin_cursor
+local origin_view
+
+local function restore_origin_buffer()
+    vim.api.nvim_set_current_buf(origin_buf)
+    if origin_cursor then
+        vim.api.nvim_win_set_cursor(0, origin_cursor)
+    end
+    if origin_view then
+        vim.fn.winrestview(origin_view)
+    end
+end
 
 local RESTRICTED_KEYS = {
     "<leader><leader>",
@@ -23,13 +35,14 @@ function M.goto_focus_tab()
     for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
         if vim.t[tab].tab_name == focus_tab_name then
             vim.api.nvim_set_current_tabpage(tab)
+            restore_origin_buffer()
             return tab
         end
     end
 
     vim.cmd("tabnew")
     vim.t.tab_name = focus_tab_name
-    vim.api.nvim_set_current_buf(origin_buf)
+    restore_origin_buffer()
 end
 
 function M.is_focus_tab()
@@ -68,16 +81,20 @@ function M.enable_restrictions()
 end
 
 function M.toggle()
-    local cur_tab = vim.api.nvim_get_current_tabpage()
-    origin_buf = vim.api.nvim_get_current_buf()
-
     if M.is_focus_tab() then
         M.disable_restrictions()
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        local view = vim.fn.winsaveview()
         vim.api.nvim_set_current_tabpage(origin_tab)
+        vim.api.nvim_win_set_cursor(0, cursor)
+        vim.fn.winrestview(view)
         return
     end
 
-    origin_tab = cur_tab
+    origin_tab = vim.api.nvim_get_current_tabpage()
+    origin_buf = vim.api.nvim_get_current_buf()
+    origin_cursor = vim.api.nvim_win_get_cursor(0)
+    origin_view = vim.fn.winsaveview()
 
     M.goto_focus_tab()
     M.enable_restrictions()

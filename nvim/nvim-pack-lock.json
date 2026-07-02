@@ -8,6 +8,10 @@
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "deltaview.nvim": {
+      "rev": "fc05322417beb847d729ce606918a6facd8721f9",
+      "src": "https://github.com/kokusenz/deltaview.nvim"
+    },
     "flash.nvim": {
       "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
       "src": "https://github.com/folke/flash.nvim"

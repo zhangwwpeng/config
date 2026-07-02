@@ -150,6 +150,10 @@ vim.schedule(function()
         "https://github.com/nvim-mini/mini.completion",
         "https://github.com/mfussenegger/nvim-lint",
         "https://github.com/stevearc/conform.nvim",
+        "https://github.com/folke/snacks.nvim",
+        "https://github.com/folke/flash.nvim",
+        "https://github.com/stevearc/oil.nvim",
+        "https://github.com/esmuellert/codediff.nvim",
     })
     require("session").setup()
     require("code_lint").setup()
@@ -158,6 +162,11 @@ vim.schedule(function()
     require("code_edit").setup()
     require("code_tressiter").setup()
     require("focus_tab").setup()
+    require("cmd_panel").setup()
+    require("vim._core.ui2").enable({})
+
+    -- TODO
+    require("config")
 end)
 
 ------------------------------------------------------------------------
@@ -167,10 +176,6 @@ end)
 vim.pack.add({
     { src = "https://github.com/nvim-mini/mini.input" },
     { src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
-    { src = "https://github.com/folke/snacks.nvim" },
-    { src = "https://github.com/folke/flash.nvim" },
-    { src = "https://github.com/stevearc/oil.nvim" },
-    { src = "https://github.com/esmuellert/codediff.nvim" },
     { src = "https://github.com/folke/lazydev.nvim" },
     { src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
     { src = "https://github.com/tjgao/quickbuf.nvim" },
@@ -179,12 +184,9 @@ vim.pack.add({
 
 vim.loader.enable()
 
-require("cmd_panel").setup()
-require("vim._core.ui2").enable({})
 require("ui2")
 require("theme").setup()
 require("ui").setup()
-require("config")
 require("keymaps")
 require("aichat")
 require("mini.pick").setup()
