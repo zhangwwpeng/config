@@ -7,7 +7,7 @@ function M.setup()
     vim.api.nvim_create_autocmd("FileType", {
         pattern = {
             "c",
-            "verilog",
+            -- "verilog",
             "python",
             "rust",
             "sh",

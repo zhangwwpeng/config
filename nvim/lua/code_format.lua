@@ -47,6 +47,7 @@ function M.setup()
 
     -- code format + close floating windows
     vim.keymap.set({ "i", "n", "v" }, "<C-l>", function()
+        vim.cmd("edit")
         close_all_float_wins()
         format.format({ async = true }, function(err, did_edit)
             if err then

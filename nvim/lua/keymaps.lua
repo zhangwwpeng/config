@@ -40,6 +40,15 @@ end, { desc = "Flash Tressiter" })
 
 -- oil
 map("n", "<leader>e", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+map("n", "<leader>0", function()
+    require("code_preview").preview_at(12, {
+        error = { "undefined symbol: foo" },
+        warn = { "unused variable: bar" },
+        info = { "type inferred as any" },
+        msm = { "custom note" }, -- 或 msg
+        suggestion = { "consider renaming variable" },
+    })
+end, { desc = "Line diagnostic panel" })
 
 -- emcal style
 map({ "c", "n" }, "<C-a>", "<Home>", { noremap = true })
@@ -48,4 +57,3 @@ map("i", "<C-a>", "<C-o>^", { noremap = true })
 map("i", "<C-e>", "<C-o>$", { noremap = true })
 map("i", "<C-f>", "<Right>", { noremap = true })
 map("i", "<C-b>", "<left>", { noremap = true })
-

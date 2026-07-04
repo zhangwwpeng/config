@@ -7,6 +7,7 @@ local palette = {
     bg_light2 = "#565656",
     bg_light3 = "#484848",
     bg_light4 = "#aaaaaa",
+    bg_light5 = "#999999",
     fg = "#bdaa86",
     fg_dim = "#928374",
     fg_light1 = "#eb8f3b",
@@ -94,10 +95,14 @@ local function plugin(pal)
         IndentLine = { fg = pal.bg_light2, bold = true },
         IndentLineCurrent = { link = "IndentLine" },
 
+        -- Deleta
         DeltaDiffAddedLine = { bg = pal.diff_added_line },
         DeltaDiffRemovedLine = { bg = pal.diff_removed_line },
         DeltaDiffAddedWord = { bg = pal.diff_added_word },
         DeltaDiffRemovedWord = { bg = pal.diff_removed_word, strikethrough = true },
+
+        -- cmp
+        BlinkCmpMenu = { fg = pal.bg_light5 },
     }
 end
 

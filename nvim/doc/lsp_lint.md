@@ -95,6 +95,16 @@ vim.lsp.enable({
 })
 ```
 
+### 诊断显示策略
+
+在 `lua/code_lsp.lua` 中额外配置了 Insert 模式诊断切换：
+
+- `InsertEnter`：`vim.diagnostic.hide(nil, args.buf)`，隐藏当前 buffer 的诊断展示
+- `InsertLeave`：`vim.diagnostic.show(nil, args.buf)`，恢复当前 buffer 的诊断展示
+- `<leader>0`：在当前窗口内展开当前行诊断面板（一条诊断一行；移动光标/进入 Insert 后自动关闭）
+
+这样可以避免输入时视觉噪音，同时保持离开 Insert 后诊断状态一致。
+
 # Lint
 
 ## lint插件

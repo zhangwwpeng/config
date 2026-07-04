@@ -43,26 +43,21 @@ function M.setup()
     -- 1. 创建一个独立的自动命令组，防止重复注册
     local diag_insert_group = vim.api.nvim_create_augroup("LspDiagInsertToggle", { clear = true })
 
-    -- 2. 进入 Insert 模式时：立刻隐藏（关闭）所有诊断视觉
+    -- 2. 进入 Insert 模式时：隐藏当前 buffer 的诊断展示
     vim.api.nvim_create_autocmd("InsertEnter", {
         group = diag_insert_group,
         pattern = "*",
-        callback = function()
-            vim.diagnostic.show(
-                nil,
-                0,
-                nil,
-                { virtual_text = false, virtual_lines = false, underline = false, signs = false }
-            )
+        callback = function(args)
+            vim.diagnostic.hide(nil, args.buf)
         end,
     })
 
-    -- 3. 离开 Insert 模式（回到 Normal 模式）时：重新完整显示诊断
+    -- 3. 离开 Insert 模式（回到 Normal 模式）时：恢复当前 buffer 的诊断展示
     vim.api.nvim_create_autocmd("InsertLeave", {
         group = diag_insert_group,
         pattern = "*",
-        callback = function()
-            vim.diagnostic.show(nil, 0, nil, nil) -- 恢复你在 vim.diagnostic.config 里的默认全局配置
+        callback = function(args)
+            vim.diagnostic.show(nil, args.buf)
         end,
     })
 end

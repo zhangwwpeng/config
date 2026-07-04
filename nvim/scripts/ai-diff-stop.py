@@ -2,8 +2,7 @@
 """
 Stop hook：
 1. 把 M/A 的当前文件复制到 new/
-2. 通知 Neovim 用 CodeDiff 比较 old/ 与 new/
-3. 等待用户完成比较后，Neovim 会把 new/ 同步回工作区
+2. 通知 Neovim 执行 :AiDiff <session_id>（由 Neovim 侧完成逐文件对比）
 """
 
 import json

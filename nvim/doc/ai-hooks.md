@@ -21,14 +21,10 @@ AI 执行写/删
     ▼
 Stop hook
     │  把 M/A 的当前工作区文件复制到 new/
-    │  通知 Neovim: CodeDiff dir old/ new/
+    │  通知 Neovim: :AiDiff <session_id> <cwd>
     ▼
-用户在 Neovim 中比较 old vs new
-    │
-    ▼
-关闭 diff 视图后
-    │  把 new/ 全部同步到工作区
-    │  并按 change.json 处理 D（删除工作区同名文件）
+用户在 Neovim 中逐文件比较快照 vs 当前工作区
+    │  （old/new 目录下的文件映射为同相对路径目标文件）
     ▼
 通知 shell 继续（/tmp/aidiff_<session_id>）
 ```
@@ -69,7 +65,7 @@ Stop hook
 | `ai-diff-session-start.py` | SessionStart |
 | `ai-diff-hook.py` | PreToolUse（Write/Edit/MultiEdit/Delete/apply_patch） |
 | `ai-diff-stop.py` | Stop：填充 new/、通知 Neovim、等待同步完成 |
-| `lua/aidiff.lua` | Neovim `:AiDiff`：目录对比 + 关闭后同步 |
+| `init.lua`（`:AiDiff` 用户命令） | Neovim `:AiDiff`：逐文件 `CodeDiff file` 比较 + 完成后回写通知 |
 
 ---
 
@@ -179,13 +175,11 @@ rm -rf "$TEST_DIR" ~/.cache/nvim/ai-diff/sessions/manual
 
 ---
 
-## Neovim 同步逻辑（`lua/aidiff.lua`）
+## Neovim 同步逻辑（`init.lua` 的 `:AiDiff`）
 
-1. `:AiDiff <session_id> <cwd>` 打开 `CodeDiff dir old/ new/`
-2. 用户关闭 diff 标签页后触发同步：
-   - 递归复制 `new/` → 工作区
-   - 对 `change.json` 中 `D` 的条目删除工作区对应文件
-3. 创建 `/tmp/aidiff_<session_id>` 通知 Stop hook 继续
+1. `:AiDiff <session_id> <cwd>` 扫描 session 根目录（快照文件）并映射到工作区同相对路径文件
+2. 对每一对可比文件执行 `CodeDiff file <snapshot> <workspace_file>`
+3. 完成后创建 `/tmp/aidiff_<session_id>` 通知 Stop hook 继续
 
 ---
 

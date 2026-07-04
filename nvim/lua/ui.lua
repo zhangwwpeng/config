@@ -5,7 +5,7 @@ function M.setup(opts)
     opts = opts or {}
     vim.diagnostic.config({
         virtual_text = true,
-        virtual_lines = opts.virtual_lines or { current_line = true },
+        virtual_lines = { current_line = true },
         underline = false,
         update_in_insert = false,
         signs = opts.signs or {

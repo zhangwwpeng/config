@@ -8,59 +8,59 @@ local flt_spawned = false
 local sub_spawned = false
 
 local function spawn_flt()
-  if flt_spawned then
-    return
-  end
-  flt_spawned = true
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = vim.api.nvim_open_win(buf, false, {
-    relative = "editor",
-    row = 0,
-    col = 0,
-    width = 100,
-    height = 100,
-    style = "minimal",
-    focusable = false,
-  })
-  vim.api.nvim_set_current_win(win)
-  vim.cmd.terminal(
-    "nvim -u ~/.config/nvim/init_flt_term.lua --listen "
-      .. vim.g.flt_term_servrename
-      .. " --cmd \"lua vim.g.pip_father = '"
-      .. vim.v.servername
-      .. "'\""
-  )
-  Remote_flt_term_buf = vim.api.nvim_get_current_buf()
-  vim.bo[Remote_flt_term_buf].bufhidden = "hide"
-  vim.api.nvim_win_hide(win)
+    if flt_spawned then
+        return
+    end
+    flt_spawned = true
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win = vim.api.nvim_open_win(buf, false, {
+        relative = "editor",
+        row = 0,
+        col = 0,
+        width = 100,
+        height = 100,
+        style = "minimal",
+        focusable = false,
+    })
+    vim.api.nvim_set_current_win(win)
+    vim.cmd.terminal(
+        "nvim -u ~/.config/nvim/init_flt_term.lua --listen "
+            .. vim.g.flt_term_servrename
+            .. " --cmd \"lua vim.g.pip_father = '"
+            .. vim.v.servername
+            .. "'\""
+    )
+    Remote_flt_term_buf = vim.api.nvim_get_current_buf()
+    vim.bo[Remote_flt_term_buf].bufhidden = "hide"
+    vim.api.nvim_win_hide(win)
 end
 
 local function spawn_sub()
-  if sub_spawned then
-    return
-  end
-  sub_spawned = true
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = vim.api.nvim_open_win(buf, false, {
-    relative = "editor",
-    row = 0,
-    col = 0,
-    width = 100,
-    height = 100,
-    style = "minimal",
-    focusable = false,
-  })
-  vim.api.nvim_set_current_win(win)
-  vim.cmd.terminal(
-    "nvim -u ~/.config/nvim/init_sub_term.lua --listen "
-      .. vim.g.sub_term_servrename
-      .. " --cmd \"lua vim.g.pip_father = '"
-      .. vim.v.servername
-      .. "'\""
-  )
-  Remote_sub_term_buf = vim.api.nvim_get_current_buf()
-  vim.bo[Remote_sub_term_buf].bufhidden = "hide"
-  vim.api.nvim_win_hide(win)
+    if sub_spawned then
+        return
+    end
+    sub_spawned = true
+    local buf = vim.api.nvim_create_buf(false, true)
+    local win = vim.api.nvim_open_win(buf, false, {
+        relative = "editor",
+        row = 0,
+        col = 0,
+        width = 100,
+        height = 100,
+        style = "minimal",
+        focusable = false,
+    })
+    vim.api.nvim_set_current_win(win)
+    vim.cmd.terminal(
+        "nvim -u ~/.config/nvim/init_sub_term.lua --listen "
+            .. vim.g.sub_term_servrename
+            .. " --cmd \"lua vim.g.pip_father = '"
+            .. vim.v.servername
+            .. "'\""
+    )
+    Remote_sub_term_buf = vim.api.nvim_get_current_buf()
+    vim.bo[Remote_sub_term_buf].bufhidden = "hide"
+    vim.api.nvim_win_hide(win)
 end
 
 local function create_flt_term_window(opts)
@@ -126,7 +126,6 @@ local recoard_terminal = function()
     term_width = vim.api.nvim_win_get_width(sub_win)
     term_height = vim.api.nvim_win_get_height(sub_win)
 end
-
 
 local toggle_float_terminal = function()
     spawn_flt()
@@ -207,7 +206,7 @@ end
 ------------------------------------------------------------------------
 -- Keypam
 ------------------------------------------------------------------------
-vim.keymap.set("n", "<leader>t", function()
+vim.keymap.set({ "n" }, "<leader>t", function()
     if vim.api.nvim_win_is_valid(sub_win) then
         recoard_terminal()
         vim.api.nvim_win_hide(sub_win)

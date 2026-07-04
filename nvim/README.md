@@ -15,6 +15,8 @@
 | 浮动终端 | `<C-t>` | 全屏浮层，多 tab shell |
 | 子终端 | `<C-,>` | 分屏（下/左/上/右），`<leader>t` 隐藏 |
 
+设计约束：两个子实例都是 **terminal-only** 工作台，进入窗口时会优先维持终端态（`remote_terminal.lua`），不在子实例内做常规文件编辑。
+
 子终端内 shell 会设置 `NVIM_PIP_FATHER`（父实例 servername）。`vim` / `nvim` / `vimdiff` 通过 wrapper 路由到子实例，而不是在终端里再开一个独立 Neovim。
 
 ```
@@ -60,9 +62,11 @@
 | `<C-t>` | 浮动终端 |
 | `<C-,>` | 子终端 / 切换分屏方向 |
 | `<leader>t` | 隐藏子终端窗口 |
+| `<leader><leader>` | 智能文件查找（Snacks picker） |
+| `<leader>0` | 当前行 LSP/诊断信息面板（在当前窗口内展开） |
 | `<leader>e` | Oil 文件树 |
-| `<leader><space>` | 智能文件查找 |
-| `<leader>g` | AI chat |
+| `<leader>aa` | 创建 AI chat 会话 |
+| `<leader>s` | 打开 AI chat 会话 |
 | `<leader>=` / `<leader>-` | 主题饱和度 |
 
 ## `scripts/` 目录
@@ -89,6 +93,6 @@ AI diff 流程与 hook 配置见 [doc/ai-hooks.md](doc/ai-hooks.md)。
 
 ## LSP / 格式化
 
-- LSP：`lua_ls`、`perlnavigator`（`lsp/`）
-- 格式化：Lua `stylua`，Perl `perltidy`，Python `isort` + `black`
+- LSP：`lua_ls`、`clangd`、`rust_analyzer`、`bashls`、`just`、`make_ls`、`tcl_lsp`、`ruff`、`basedpyright`、`pyrefly`
+- 格式化：Lua `stylua`，Python `ruff format`，`c/cpp/rust/just/make/tcl` 走 LSP fallback，`bash/sh` 用 `shfmt`，`json/jsonc` 用 `jq`，`yaml` 用 `yamlfmt`，`toml` 用 `taplo`
 - Lint：`nvim-lint`，保存时触发

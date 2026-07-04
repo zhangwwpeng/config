@@ -119,9 +119,7 @@ if vim.g.neovide then
 
     -- 输入法
     vim.g.neovide_input_ime = true
-
     vim.g.neovide_hide_mouse_when_typing = true
-
     vim.g.neovide_cursor_smooth_blink = true
 end
 
@@ -146,14 +144,17 @@ vim.api.nvim_create_autocmd("UIEnter", {
 ------------------------------------------------------------------------
 vim.schedule(function()
     vim.pack.add({
-        "https://github.com/nvim-mini/mini.cmdline",
-        "https://github.com/nvim-mini/mini.completion",
+        { src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("2.*") },
+        { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("*") },
+        -- "https://github.com/nvim-mini/mini.cmdline",
+        -- "https://github.com/nvim-mini/mini.completion",
         "https://github.com/mfussenegger/nvim-lint",
         "https://github.com/stevearc/conform.nvim",
         "https://github.com/folke/snacks.nvim",
         "https://github.com/folke/flash.nvim",
         "https://github.com/stevearc/oil.nvim",
         "https://github.com/esmuellert/codediff.nvim",
+        "https://github.com/kevinhwang91/nvim-bqf",
     })
     require("session").setup()
     require("code_lint").setup()
@@ -161,9 +162,12 @@ vim.schedule(function()
     require("code_lsp").setup()
     require("code_edit").setup()
     require("code_tressiter").setup()
+    require("code_snip").setup()
+    require("code_completion").setup()
     require("focus_tab").setup()
     require("cmd_panel").setup()
-    require("vim._core.ui2").enable({})
+    require("vim._core.ui2").enable()
+    require("bqf").setup()
 
     -- TODO
     require("config")
@@ -187,6 +191,7 @@ vim.loader.enable()
 require("ui2")
 require("theme").setup()
 require("ui").setup()
+require("code_preview").setup()
 require("keymaps")
 require("aichat")
 require("mini.pick").setup()
