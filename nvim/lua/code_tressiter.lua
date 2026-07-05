@@ -2,12 +2,17 @@ local M = {}
 
 function M.setup()
     vim.treesitter.language.register("bash", { "sh" })
+    vim.filetype.add({
+        extension = {
+            v = "systemverilog",
+        },
+    })
 
     --  treesitter
     vim.api.nvim_create_autocmd("FileType", {
         pattern = {
             "c",
-            -- "verilog",
+            "systemverilog",
             "python",
             "rust",
             "sh",

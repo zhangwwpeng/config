@@ -28,11 +28,13 @@ function M.setup()
         "ruff", -- python: lint / organize imports
         "basedpyright", -- python: type checking
         "pyrefly", -- python: completion / navigation
+        "systemverilog", -- verilog,systemverilog
     })
 
     -- lsp close lsp highlight
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
+            vim.lsp.inlay_hint.enable(true)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client and client.server_capabilities.semanticTokensProvider then
                 client.server_capabilities.semanticTokensProvider = nil
