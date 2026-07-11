@@ -1,4 +1,4 @@
-#/bin/zsh
+#!/bin/zsh
 target=~/.local/share/nvim/site/parser/
 mkdir -p $target
 

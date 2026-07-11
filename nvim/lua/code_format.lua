@@ -1,6 +1,7 @@
 M = {}
 
 local format = require("conform")
+local sv_format = require("sv_format")
 
 local function close_all_float_wins()
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -12,6 +13,31 @@ local function close_all_float_wins()
     end
 end
 
+local function run_all_formatters(done)
+    format.format({ async = true }, function(err, did_edit)
+        if err then
+            vim.notify("format error: " .. err, vim.log.levels.ERROR)
+            return
+        elseif did_edit then
+            vim.notify("format successfully", vim.log.levels.INFO)
+        else
+            vim.notify("already formatted", vim.log.levels.INFO)
+            return
+        end
+
+        -- SystemVerilog tree-sitter format is supplemental, so it runs after conform.
+        sv_format.format({ bufnr = 0 }, function(ts_err)
+            if ts_err then
+                vim.notify("treesitter format error: " .. ts_err, vim.log.levels.ERROR)
+            end
+
+            if done then
+                done(err, did_edit)
+            end
+        end)
+    end)
+end
+
 function M.setup()
     format.setup({
         -- Define your formatters
@@ -20,6 +46,8 @@ function M.setup()
             python = { "ruff_format" },
             c = { lsp_format = "fallback" },
             cpp = { lsp_format = "fallback" },
+            verilog = { "verible" },
+            systemverilog = { "verible" },
             rust = { lsp_format = "fallback" },
             just = { lsp_format = "fallback" },
             make = { lsp_format = "fallback" },
@@ -42,22 +70,41 @@ function M.setup()
             stylua = {
                 append_args = { "--indent-type", "Spaces" },
             },
+            verible = {
+                command = vim.fn.expand("~/.config/nvim/scripts/verible-format-wrapper.sh"),
+                append_args = {
+                    "--column_limit",
+                    "120",
+                    "-indentation_spaces",
+                    "4",
+                    "--alignment_group_boundary",
+                    "blank-lines-and-separator-comments",
+                    "--assignment_statement_alignment=align",
+                    "--case_items_alignment=align",
+                    "--class_member_variable_alignment=align",
+                    "--distribution_items_alignment=align",
+                    "--enum_assignment_statement_alignment=align",
+                    "--formal_parameters_alignment=align",
+                    "--module_net_variable_alignment=align",
+                    "--named_parameter_alignment=align",
+                    "--named_port_alignment=align",
+                    "--port_declarations_alignment=align",
+                    "--struct_union_members_alignment=align",
+                    "--formal_parameters_indentation=indent",
+                    "--named_parameter_indentation=indent",
+                    "--named_port_indentation=indent",
+                    "--port_declarations_indentation=indent",
+                    "--port_declarations_right_align_packed_dimensions=true",
+                    "--port_declarations_right_align_unpacked_dimensions=true",
+                },
+            },
         },
     })
 
     -- code format + close floating windows
     vim.keymap.set({ "i", "n", "v" }, "<C-l>", function()
-        vim.cmd("edit")
         close_all_float_wins()
-        format.format({ async = true }, function(err, did_edit)
-            if err then
-                vim.notify("format error: " .. err, vim.log.levels.ERROR)
-            elseif did_edit then
-                vim.notify("format successfully", vim.log.levels.INFO)
-            else
-                vim.notify("already formatted", vim.log.levels.INFO)
-            end
-        end)
+        run_all_formatters()
     end, { desc = "Close float windows and format code" })
 end
 

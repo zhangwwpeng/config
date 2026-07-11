@@ -57,3 +57,12 @@ map("i", "<C-a>", "<C-o>^", { noremap = true })
 map("i", "<C-e>", "<C-o>$", { noremap = true })
 map("i", "<C-f>", "<Right>", { noremap = true })
 map("i", "<C-b>", "<left>", { noremap = true })
+
+-- increaml selection
+vim.keymap.set("x", "<Tab>", function()
+    require("vim.treesitter._select").select_parent(vim.v.count1)
+end, { desc = "Expand selection" })
+
+vim.keymap.set("x", "<S-Tab>", function()
+    require("vim.treesitter._select").select_child(vim.v.count1)
+end, { desc = "Shrink selection" })

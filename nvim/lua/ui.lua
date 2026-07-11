@@ -4,8 +4,9 @@ local M = {}
 function M.setup(opts)
     opts = opts or {}
     vim.diagnostic.config({
-        virtual_text = true,
+        virtual_text = { source = "if_many" },
         virtual_lines = { current_line = true },
+        float = { source = "if_many" },
         underline = false,
         update_in_insert = false,
         signs = opts.signs or {

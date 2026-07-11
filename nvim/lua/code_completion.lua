@@ -27,7 +27,7 @@ local function setup_blink()
             ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
             ["<C-n>"] = { "select_next", "fallback_to_mappings" },
 
-            ["<C-f>"] = { "select_and_accept", "fallback" },
+            ["<Enter>"] = { "select_and_accept", "fallback" },
             ["<C-e>"] = { "hide", "fallback" },
 
             ["<C-u>"] = { "scroll_documentation_up", "fallback" },

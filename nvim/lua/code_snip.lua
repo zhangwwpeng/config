@@ -1,6 +1,7 @@
 local M = {}
 
 local SNIPPETS_PATH = vim.fn.stdpath("config") .. "/snippets"
+local types = require("luasnip.util.types")
 
 local function setup_config()
     local ls = require("luasnip")
@@ -8,6 +9,15 @@ local function setup_config()
         history = true,
         updateevents = "TextChanged,TextChangedI",
         delete_check_events = "TextChanged",
+        ext_opts = {
+            [types.choiceNode] = {
+                active = { virt_text = { { "●", "NotifyWarnTitle" } } },
+            },
+            [types.insertNode] = {
+                active = { virt_text = { { "●", "NotifyInfoTitle" } } },
+                passive = { virt_text = { { "●", "NotifyHintTitle" } } },
+            },
+        },
     })
 end
 
@@ -30,7 +40,7 @@ end
 
 local function setup_snippets()
     require("luasnip.loaders.from_lua").lazy_load({
-        paths = SNIPPETS_PATH,
+        paths = { SNIPPETS_PATH },
     })
 end
 

@@ -4,7 +4,7 @@
 
 未使用任何第三方 LSP 插件，使用 Neovim 0.11+ 内置 `vim.lsp.enable()`。
 
-配置文件目录：`lsp/*.lua`  
+配置文件目录：`lsp/*.lua`
 启用入口：`lua/code_lsp.lua`
 
 ## 配置
@@ -21,6 +21,8 @@
 | python | ruff | `lsp/ruff.lua` | lint 诊断、organize imports | `brew install ruff` |
 | python | basedpyright | `lsp/basedpyright.lua` | 类型检查诊断 | `brew install basedpyright` |
 | python | pyrefly | `lsp/pyrefly.lua` | 补全 / 跳转 | `brew install pyrefly` |
+| systemverilog | slang_server | lsp/slang_server.lua | 补全 / 诊断 / 跳转 | Manual install（见下）|
+
 
 ### clangd
 
@@ -105,6 +107,23 @@ vim.lsp.enable({
 
 这样可以避免输入时视觉噪音，同时保持离开 Insert 后诊断状态一致。
 
+### slang_server
+
+安装方式
+
+``` shell
+# Clone the repository
+git clone https://github.com/hudson-trading/slang-server.git
+cd slang-server
+
+# Pull dependencies (slang and reflect-cpp)
+git submodule update --init --recursive
+
+# Build with cmake using a C++20 compliant compiler
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j --target slang_server
+```
+
 # Lint
 
 ## lint插件
@@ -125,6 +144,9 @@ vim.lsp.enable({
 | json / jsonc | jsonlint | 语法检查 | `brew install jsonlint` |
 | yaml | yamllint | lint | `brew install yamllint` |
 | toml | taplo | 语法检查 | `brew install taplo` |
+| systemverilog | svlint | lint | brew install svlint |
+| systemverilog | verilator | lint | brew install verilator |
+| systemverilog | verible | lint | github下bin文件 |
 
 Python 的 lint 由 **ruff LSP** 负责，不再通过 nvim-lint 重复跑 ruff。
 
@@ -141,6 +163,8 @@ Python 的 lint 由 **ruff LSP** 负责，不再通过 nvim-lint 重复跑 ruff�
 | lua | stylua | 外部 formatter | `brew install stylua` |
 | python | ruff_format | `ruff format` | `brew install ruff` |
 | c / c++ | clangd (LSP) | `lsp_format = "fallback"`，走 clangd 内置 format | `brew install llvm` |
+| verilog | verible | `verible-verilog-format` | github下bin文件 |
+| systemverilog | verible | `verible-verilog-format` | github下bin文件 |
 | rust | rust_analyzer | lsp_format  = "fallback" | `rustup component add rust-analyzer` |
 | just | just-lsp (LSP) | `lsp_format = "fallback"` | `cargo install just-lsp` |
 | make | make-ls (LSP) | `lsp_format = "fallback"` | `go install github.com/owenrumney/make-ls/cmd/make-ls@latest` |
@@ -155,9 +179,9 @@ Python 的 lint 由 **ruff LSP** 负责，不再通过 nvim-lint 重复跑 ruff�
 
 # Treesitter
 
-配置入口：`lua/code_tressiter.lua`  
-安装脚本：`scripts/tressiter_install.sh`  
-Parser 安装路径：`~/.local/share/nvim/site/parser/`  
+配置入口：`lua/code_tressiter.lua`
+安装脚本：`scripts/tressiter_install.sh`
+Parser 安装路径：`~/.local/share/nvim/site/parser/`
 Queries 目录：`queries/<lang>/`
 
 ## 自动启用 filetype
