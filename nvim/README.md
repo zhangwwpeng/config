@@ -1,10 +1,10 @@
 # Neovim 配置
 
-个人 Neovim 配置，面向 Neovim 0.11+。插件通过内置 `vim.pack.add()` 管理（非 lazy.nvim）。
+个人 Neovim 配置，面向 Neovim 0.12+。插件通过内置 `vim.pack.add()` 管理（非 lazy.nvim）。
 
 ## 要求
 
-- Neovim 0.11+
+- Neovim 0.12+（`vim.pack.add()` 在 0.11 不可用）
 
 ## 多进程终端
 
@@ -79,6 +79,7 @@
 | `ai-diff-hook.py` | PreToolUse hook（记录变更到 old/） |
 | `ai-diff-stop.py` | Stop hook（填充 new/、通知 Neovim） |
 | `test_ai_diff_hook.py` | hook 单元测试 |
+| `treesitter_install.sh` | 安装 Tree-sitter parser |
 
 AI diff 流程与 hook 配置见 [doc/ai-hooks.md](doc/ai-hooks.md)。
 
@@ -87,9 +88,9 @@ AI diff 流程与 hook 配置见 [doc/ai-hooks.md](doc/ai-hooks.md)。
 | 文件 | 内容 |
 |------|------|
 | [doc/ai-hooks.md](doc/ai-hooks.md) | Claude/Codex ai-diff hook |
-| [doc/lsp_lint.md](doc/lsp_lint.md) | LSP / lint |
-| [SHADOW.md](SHADOW.md) | shadow 目录镜像追踪 |
-| [CLAUDE.md](CLAUDE.md) | 给 AI 助手的仓库说明 |
+| [doc/lsp_lint.md](doc/lsp_lint.md) | LSP / lint / format / Tree-sitter |
+| [doc/code_preview.md](doc/code_preview.md) | 当前行诊断预览 |
+| [aichat_nvim/README.md](aichat_nvim/README.md) | AI chat RPC 服务 |
 
 ## LSP / 格式化
 

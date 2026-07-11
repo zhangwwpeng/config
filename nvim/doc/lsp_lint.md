@@ -2,7 +2,7 @@
 
 ## lsp插件
 
-未使用任何第三方 LSP 插件，使用 Neovim 0.11+ 内置 `vim.lsp.enable()`。
+未使用任何第三方 LSP 插件，使用 Neovim 0.12+ 内置 `vim.lsp.enable()`。
 
 配置文件目录：`lsp/*.lua`
 启用入口：`lua/code_lsp.lua`
@@ -41,13 +41,13 @@ ln -sf build/compile_commands.json .
 
 ### bashls
 
-- 支持 `bash`、`sh` filetype（`.sh` 通过 `code_tressiter.lua` 注册为 bash 高亮）
+- 支持 `bash`、`sh` filetype（`.sh` 通过 `code_treesitter.lua` 注册为 bash 高亮）
 - 项目根识别：`.git`；单文件脚本也可 attach
 - 诊断依赖 **shellcheck**（可选但推荐）：`brew install shellcheck`
 
 ### just
 
-- 支持 `just` filetype（Neovim 0.11+ 内置 justfile 识别）
+- 支持 `just` filetype（Neovim 0.12+ 内置 justfile 识别）
 - 项目根识别：`justfile`、`Justfile`、`.justfile`、`.git`
 - format 由 LSP 提供（`just-lsp` 内置）
 
@@ -179,8 +179,8 @@ Python 的 lint 由 **ruff LSP** 负责，不再通过 nvim-lint 重复跑 ruff�
 
 # Treesitter
 
-配置入口：`lua/code_tressiter.lua`
-安装脚本：`scripts/tressiter_install.sh`
+配置入口：`lua/code_treesitter.lua`
+安装脚本：`scripts/treesitter_install.sh`
 Parser 安装路径：`~/.local/share/nvim/site/parser/`
 Queries 目录：`queries/<lang>/`
 
@@ -206,5 +206,5 @@ Queries 目录：`queries/<lang>/`
 安装：
 
 ```bash
-bash ~/.config/nvim/scripts/tressiter_install.sh
+bash ~/.config/nvim/scripts/treesitter_install.sh
 ```

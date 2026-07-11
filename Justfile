@@ -44,6 +44,10 @@ doctor:
     fi
     exit "$missing"
 
+# Run repository static checks without installing or touching HOME.
+check:
+    bash "{{justfile_directory()}}/scripts/repo_check.sh"
+
 _backup_and_copy_config name dest backup_dir:
     #!/usr/bin/env bash
     set -euo pipefail
