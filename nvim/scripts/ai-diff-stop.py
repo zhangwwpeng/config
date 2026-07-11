@@ -15,23 +15,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from ai_diff_lib import (
-    SESSION_ROOT,
     get_cwd_from_session,
     get_payload_cwd,
+    get_session_dir,
     get_session_id,
     load_change_json,
     populate_new_dir,
 )
-
-# Neovim 侧完成 diff 同步后可 touch 此文件；预留供后续轮询等待逻辑使用
-SIGNAL_DIR = Path("/tmp")
-WAIT_TIMEOUT_SEC = 3600
-POLL_INTERVAL_SEC = 0.5
-
-
-def signal_path(session_id: str) -> Path:
-    """/tmp/aidiff_<session_id>，Stop 前清除以免读到上一轮残留信号。"""
-    return SIGNAL_DIR / f"aidiff_{session_id}"
 
 
 def get_nvim_server() -> str | None:
@@ -50,7 +40,7 @@ def main() -> None:
     if not session_id:
         return
 
-    session_dir = SESSION_ROOT / session_id
+    session_dir = get_session_dir(session_id)
     if not session_dir.is_dir():
         return
 
@@ -76,16 +66,22 @@ def main() -> None:
     if not nvim_server:
         return
 
-    signal_path(session_id).unlink(missing_ok=True)
+    nvim = shutil.which("nvim")
+    if not nvim:
+        return
 
-    # 通过 RPC 触发 :AiDiff，Neovim 用 CodeDiff 比较 old/ 与 new/
-    remote_cmd = f"<Cmd>AiDiff {session_id} <CR>"
-    subprocess.run(
-        ["nvim", "--server", nvim_server, "--remote-send", remote_cmd],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    )
+    # session_id 已经过严格白名单验证；参数数组也不会经过 shell。
+    remote_cmd = f"<Cmd>AiDiff {session_id}<CR>"
+    try:
+        subprocess.run(
+            [nvim, "--server", nvim_server, "--remote-send", remote_cmd],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    except OSError:
+        # Neovim 在 which 与执行之间消失时，Stop 仍应正常结束。
+        return
 
 
 if __name__ == "__main__":

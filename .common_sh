@@ -1,5 +1,7 @@
 # === Path ===
-export PATH=$PATH:$TOOLS_BIN
+if [ -n "${TOOLS_BIN:-}" ]; then
+    export PATH="$PATH:$TOOLS_BIN"
+fi
 export PATH="/opt/homebrew/bin:$PATH"
 
 # === Proxy ===
@@ -13,6 +15,7 @@ alias nvim="nvim_wrapper"
 alias vim="nvim_wrapper"
 alias vi="nvim_wrapper"
 alias nv='nvim_wrapper'
+alias vimdiff="vimdiff_wrapper"
 
 alias ll='ls -lah'
 alias la='ls -A'
@@ -28,15 +31,23 @@ alias lz='lazygit'
 
 alias c='clear'
 
-export EDITOR="nvim_wrapper"
-export VISUAL="nvim_wrapper"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
 # === nvim wrapper (remote trigger when NVIM_PIP_FATHER is set) ===
 nvim_wrapper() {
-    if [ -n "$NVIM_PIP_FATHER" ]; then
-        ~/.config/nvim/nvim_term_remote.py "$NVIM_PIP_FATHER" "$@"
+    if [ -n "${NVIM_PIP_FATHER:-}" ]; then
+        ~/.config/nvim/scripts/nvim_term_remote.py "$NVIM_PIP_FATHER" "$@"
     else
         command nvim "$@"
+    fi
+}
+
+vimdiff_wrapper() {
+    if [ -n "${NVIM_PIP_FATHER:-}" ]; then
+        ~/.config/nvim/scripts/nvim_term_remote.py "$NVIM_PIP_FATHER" --diff "$@"
+    else
+        command nvim -d "$@"
     fi
 }
 
@@ -51,13 +62,14 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 # === Secrets ===
+# shellcheck source=/dev/null
 [ -f ~/.secrets_sh ] && source ~/.secrets_sh
 
 # === Claude Code ===
 export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
-export ANTHROPIC_MODEL=deepseek-v4-pro[1m]
-export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]
-export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]
+export ANTHROPIC_MODEL='deepseek-v4-pro[1m]'
+export ANTHROPIC_DEFAULT_OPUS_MODEL='deepseek-v4-pro[1m]'
+export ANTHROPIC_DEFAULT_SONNET_MODEL='deepseek-v4-pro[1m]'
 export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
 export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
 export CLAUDE_CODE_EFFORT_LEVEL=max

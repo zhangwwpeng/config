@@ -16,11 +16,12 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-import ai_diff_lib as lib
+import ai_diff_lib as lib  # noqa: E402
 
 
 def load_script_module(name: str):
@@ -123,7 +124,7 @@ class AiDiffHookTest(unittest.TestCase):
         self.assertEqual(changes, {"foo.txt": "M"})
         self.assertEqual((session_dir / "old" / "foo.txt").read_text(), "before\n")
 
-    def test_add_records_a_without_old_copy(self) -> None:
+    def test_add_records_a_with_empty_old_copy(self) -> None:
         target = self.cwd / "new.txt"
 
         self.run_with_payload(
@@ -143,7 +144,75 @@ class AiDiffHookTest(unittest.TestCase):
         session_dir = self.session_dir()
         changes = json.loads((session_dir / "change.json").read_text())
         self.assertEqual(changes, {"new.txt": "A"})
-        self.assertFalse((session_dir / "old" / "new.txt").exists())
+        self.assertEqual((session_dir / "old" / "new.txt").read_bytes(), b"")
+
+    def test_session_and_path_traversal_are_rejected(self) -> None:
+        for session_id in (".", "..", "../escape", "bad/session", "bad session", "x<CR>quit"):
+            with self.subTest(session_id=session_id):
+                self.assertIsNone(lib.get_session_id({"session_id": session_id}))
+                with self.assertRaises(ValueError):
+                    lib.get_session_dir(session_id)
+
+        outside = self.temp_root / "outside.txt"
+        outside.write_text("outside\n")
+        self.run_with_payload(
+            ai_diff_session_start,
+            {"session_id": self.session_id, "cwd": str(self.cwd)},
+        )
+        self.run_with_payload(
+            ai_diff_hook,
+            {
+                "tool_name": "Write",
+                "session_id": self.session_id,
+                "cwd": str(self.cwd),
+                "tool_input": {"path": "../outside.txt"},
+            },
+        )
+        self.assertFalse((self.session_dir() / "change.json").exists())
+
+    def test_change_json_filters_traversal_entries(self) -> None:
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+        (session_dir / "change.json").write_text(
+            json.dumps(
+                {
+                    "../outside.txt": "M",
+                    "/tmp/absolute.txt": "D",
+                    "nested/../../escape.txt": "A",
+                    "safe file.txt": "A",
+                }
+            )
+        )
+
+        self.assertEqual(lib.load_change_json(session_dir), {"safe file.txt": "A"})
+
+    def test_paths_with_spaces_round_trip_through_stop(self) -> None:
+        target = self.cwd / "dir with space" / "file name.txt"
+        target.parent.mkdir()
+        target.write_text("before\n")
+
+        self.run_with_payload(
+            ai_diff_session_start,
+            {"session_id": self.session_id, "cwd": str(self.cwd)},
+        )
+        self.run_with_payload(
+            ai_diff_hook,
+            {
+                "tool_name": "Write",
+                "session_id": self.session_id,
+                "cwd": str(self.cwd),
+                "tool_input": {"path": "dir with space/file name.txt"},
+            },
+        )
+        target.write_text("after\n")
+
+        with mock.patch.object(ai_diff_stop, "get_nvim_server", return_value=None):
+            self.run_with_payload(ai_diff_stop, {"session_id": self.session_id})
+
+        session_dir = self.session_dir()
+        rel = Path("dir with space/file name.txt")
+        self.assertEqual((session_dir / "old" / rel).read_text(), "before\n")
+        self.assertEqual((session_dir / "new" / rel).read_text(), "after\n")
 
     def test_delete_records_d_and_copies_old(self) -> None:
         target = self.cwd / "remove.txt"
@@ -190,6 +259,80 @@ class AiDiffHookTest(unittest.TestCase):
         changes = json.loads((session_dir / "change.json").read_text())
         self.assertEqual(changes, {"foo.txt": "M"})
         self.assertEqual((session_dir / "old" / "foo.txt").read_text(), "before\n")
+
+    def test_a_to_m_stays_a_with_empty_old(self) -> None:
+        target = self.cwd / "created.txt"
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+
+        lib.track_file_change(self.cwd, session_dir, target)
+        target.write_text("first\n")
+        lib.track_file_change(self.cwd, session_dir, target)
+
+        self.assertEqual(lib.load_change_json(session_dir), {"created.txt": "A"})
+        self.assertEqual((session_dir / "old" / "created.txt").read_bytes(), b"")
+
+    def test_a_to_d_removes_net_change(self) -> None:
+        target = self.cwd / "temporary.txt"
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+
+        lib.track_file_change(self.cwd, session_dir, target)
+        target.write_text("temporary\n")
+        lib.track_file_delete(self.cwd, session_dir, target)
+
+        self.assertEqual(lib.load_change_json(session_dir), {})
+        self.assertFalse((session_dir / "old" / "temporary.txt").exists())
+
+    def test_m_to_d_becomes_d_and_preserves_original_old(self) -> None:
+        target = self.cwd / "modified-then-deleted.txt"
+        target.write_text("original\n")
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+
+        lib.track_file_change(self.cwd, session_dir, target)
+        target.write_text("modified\n")
+        lib.track_file_delete(self.cwd, session_dir, target)
+
+        self.assertEqual(
+            lib.load_change_json(session_dir),
+            {"modified-then-deleted.txt": "D"},
+        )
+        self.assertEqual(
+            (session_dir / "old" / "modified-then-deleted.txt").read_text(),
+            "original\n",
+        )
+
+    def test_d_to_m_becomes_m_and_preserves_original_old(self) -> None:
+        target = self.cwd / "deleted-then-recreated.txt"
+        target.write_text("original\n")
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+
+        lib.track_file_delete(self.cwd, session_dir, target)
+        target.unlink()
+        lib.track_file_change(self.cwd, session_dir, target)
+
+        self.assertEqual(
+            lib.load_change_json(session_dir),
+            {"deleted-then-recreated.txt": "M"},
+        )
+        self.assertEqual(
+            (session_dir / "old" / "deleted-then-recreated.txt").read_text(),
+            "original\n",
+        )
+
+    def test_change_json_write_is_atomic(self) -> None:
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+
+        real_replace = os.replace
+        with mock.patch.object(lib.os, "replace", wraps=real_replace) as replace:
+            lib.save_change_json(session_dir, {"file.txt": "M"})
+
+        replace.assert_called_once()
+        self.assertEqual(lib.load_change_json(session_dir), {"file.txt": "M"})
+        self.assertEqual(list(session_dir.glob(".change.json.*.tmp")), [])
 
     def test_apply_patch_modify(self) -> None:
         target = self.cwd / "src" / "main.py"
@@ -306,18 +449,61 @@ class AiDiffHookTest(unittest.TestCase):
         (session_dir / "old" / "foo.txt").write_text("before\n")
         (session_dir / "old" / "gone.txt").write_text("deleted\n")
 
-        lib.populate_new_dir(self.cwd, session_dir, lib.load_change_json(session_dir))
+        # 无 Neovim server 时 Stop 仍填充 new/，且不会尝试启动客户端。
+        with (
+            mock.patch.object(ai_diff_stop, "get_nvim_server", return_value=None),
+            mock.patch.object(ai_diff_stop.subprocess, "run") as run,
+        ):
+            self.run_with_payload(ai_diff_stop, {"session_id": self.session_id})
 
+        run.assert_not_called()
         self.assertEqual((session_dir / "new" / "foo.txt").read_text(), "after\n")
         self.assertEqual((session_dir / "new" / "bar.txt").read_text(), "new content\n")
         self.assertFalse((session_dir / "new" / "gone.txt").exists())
-
-        # Stop hook 在无 NVIM_PIP_FATHER 时只做 populate，不会阻塞
-        self.run_with_payload(
-            ai_diff_stop,
-            {"session_id": self.session_id},
-        )
         self.assertTrue((session_dir / "new" / "foo.txt").exists())
+
+    def test_stop_without_nvim_executable_does_not_raise(self) -> None:
+        target = self.cwd / "added.txt"
+        target.write_text("new\n")
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+        lib.save_change_json(session_dir, {"added.txt": "A"})
+
+        with (
+            mock.patch.object(ai_diff_stop, "get_nvim_server", return_value="/tmp/nvim"),
+            mock.patch.object(ai_diff_stop.shutil, "which", return_value=None),
+            mock.patch.object(ai_diff_stop.subprocess, "run") as run,
+        ):
+            self.run_with_payload(ai_diff_stop, {"session_id": self.session_id})
+
+        run.assert_not_called()
+        self.assertEqual((session_dir / "new" / "added.txt").read_text(), "new\n")
+
+    def test_stop_remote_send_contains_only_valid_session(self) -> None:
+        target = self.cwd / "added.txt"
+        target.write_text("new\n")
+        session_dir = self.session_dir()
+        lib.init_session_dir(session_dir, self.cwd)
+        lib.save_change_json(session_dir, {"added.txt": "A"})
+
+        with (
+            mock.patch.object(ai_diff_stop, "get_nvim_server", return_value="/tmp/nvim socket"),
+            mock.patch.object(ai_diff_stop.shutil, "which", return_value="/usr/bin/nvim"),
+            mock.patch.object(ai_diff_stop.subprocess, "run") as run,
+        ):
+            self.run_with_payload(ai_diff_stop, {"session_id": self.session_id})
+
+        command = run.call_args.args[0]
+        self.assertEqual(
+            command,
+            [
+                "/usr/bin/nvim",
+                "--server",
+                "/tmp/nvim socket",
+                "--remote-send",
+                "<Cmd>AiDiff test-session<CR>",
+            ],
+        )
 
 
 if __name__ == "__main__":

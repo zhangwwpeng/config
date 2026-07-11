@@ -156,12 +156,13 @@ vim.schedule(function()
         "https://github.com/esmuellert/codediff.nvim",
         "https://github.com/kevinhwang91/nvim-bqf",
     })
+    require("aidiff").setup()
     require("session").setup()
     require("code_lint").setup()
     require("code_format").setup()
     require("code_lsp").setup()
     require("code_edit").setup()
-    require("code_tressiter").setup()
+    require("code_treesitter").setup()
     require("code_snip").setup()
     require("code_completion").setup()
     require("focus_tab").setup()
@@ -212,55 +213,3 @@ require("render-markdown").setup({
 
 require("mini.input").setup({})
 vim.ui.input = MiniInput.ui_input
-
-------------------------------------------------------------------------
--- AI Diff command
-------------------------------------------------------------------------
-vim.api.nvim_create_user_command("AiDiff", function(opts)
-    local session_name, cwd_path = unpack(opts.fargs)
-    local root_path = vim.fn.expand("~/.cache/nvim/ai-diff/sessions") .. "/" .. session_name
-
-    -- Scan root_path for snapshot files only
-    local files = vim.fn.glob(root_path .. "/**/*", false, true)
-    local pairs = {}
-    for _, f in ipairs(files) do
-        if vim.fn.isdirectory(f) == 0 then
-            local rel = f:sub(#root_path + 2)
-            local target = cwd_path .. "/" .. rel
-            if vim.fn.filereadable(target) == 1 then
-                pairs[#pairs + 1] = { f, target }
-            end
-        end
-    end
-
-    if #pairs == 0 then
-        vim.notify("No snapshot files found in " .. root_path, vim.log.levels.WARN)
-        vim.fn.system("touch /tmp/aidiff_" .. session_name)
-        return
-    end
-
-    local lifecycle = require("codediff.ui.lifecycle")
-    local original_tab = vim.api.nvim_get_current_tabpage()
-
-    for _, pair in ipairs(pairs) do
-        -- Switch away from diff tab to avoid toggle-close
-        local cur = vim.api.nvim_get_current_tabpage()
-        if lifecycle.get_session(cur) then
-            vim.api.nvim_set_current_tabpage(original_tab)
-        end
-
-        vim.cmd("CodeDiff file " .. pair[1] .. " " .. pair[2])
-
-        -- Block until diff view is loaded
-        vim.wait(10000, function()
-            local t = vim.api.nvim_get_current_tabpage()
-            return lifecycle.get_session(t) ~= nil
-        end, 10)
-    end
-
-    -- Signal shell that all diffs are ready
-    vim.fn.system("touch /tmp/aidiff_" .. session_name)
-end, {
-    nargs = "+",
-    desc = "AI Diff: review, accept, rollback, or list AI modification sessions",
-})

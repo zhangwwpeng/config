@@ -1,219 +1,127 @@
-# Keyboard Shortcuts 快捷键整理
+# macOS 开发环境配置
 
-> `Leader` = `<Space>` | kitty_mod = `Alt`
+这是一套面向 macOS（主要是 Apple Silicon）的个人配置，覆盖 Shell、Neovim、终端、键盘重映射、状态栏和窗口管理。仓库使用 `just` 统一部署；安装前会备份现有配置，且不会自动安装 Homebrew 软件或修改系统权限。
 
----
+## 配置组成
 
-## 1. Karabiner (macOS 全局快捷键)
+| 路径 | 部署位置 | 用途 |
+|---|---|---|
+| `.common_sh`、`.zshrc`、`.bashrc` | `~/` | 公共环境变量、alias、fzf 历史和 Neovim 远程 wrapper |
+| `nvim/` | `~/.config/nvim` | Neovim 0.12、LSP、lint、format、RPC 子终端、AI diff/chat |
+| `kitty/` | `~/.config/kitty` | Kitty、主题、tab bar、quick-access terminal |
+| `neovide/` | `~/.config/neovide` | Neovide 窗口和字体 |
+| `karabiner/` | `~/.config/karabiner` | 全局按键重映射和应用快捷键 |
+| `sketchybar/` | `~/.config/sketchybar` | Space、前台应用、时间、电池和消息角标 |
+| `yabai/` | `~/.config/yabai` | 仅负责 Space 聚焦，不管理窗口布局 |
+| `glide/` | `~/.config/glide` | 可按 Space 启用的窗口平铺 |
 
-### 按键重映射
+`karabiner/automatic_backups/` 是历史备份，不参与日常配置审计。`nvim/queries/` 是随 Tree-sitter parser 配套的 query，原则上按上游版本整体更新。
 
-| 原始按键 | 映射为 |
-|----------|--------|
-| `§` (international3) | `` ` `` / `~` (grave_accent_and_tilde) |
-| `英数` (japanese_eisuu) | `Space` |
-| `かな` (japanese_kana) | `Space` |
-| `Caps Lock` | `Shift + Option` (left) |
-| `Ctrl + K` | `Enter` |
-| `Ctrl + H` | `Backspace` |
-| `Option (left)` | `Option (left)` (保持原样) |
+## 快速开始
 
-### 复合修改 (Shift + Option 组合键)
+先安装基础工具：
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Shift + Opt + O` | 打开 quick-access 终端 |
-| `Shift + Opt + Q` | 打开普通 kitty 窗口 |
-| `Shift + Opt + M` | yabai: 切换到最近使用的 space |
-| `Shift + Opt + P` | yabai: 切换到上一个 space |
-| `Shift + Opt + N` | yabai: 切换到下一个 space |
-| `Shift + Opt + D` | 等价于 `Cmd + Q` (退出应用) |
-| `Shift + Opt + 1` ~ `9` | yabai: 切换到 space 1~9 |
+```bash
+brew install just rsync neovim
+```
 
----
+检查当前主机依赖：
 
-## 2. Kitty 终端
+```bash
+just doctor
+```
 
-### 窗口管理
+预览安装命令，不写入 HOME：
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Alt + ;` | 新建窗口 |
-| `Alt + f` | 可视化选择并聚焦窗口 |
+```bash
+just --dry-run install
+```
 
-### 标签页管理
+确认后部署：
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Alt + t` | 新建标签 |
-| `Alt + q` | 关闭标签 |
-| `Alt + n` | 下一个标签 |
-| `Alt + p` | 上一个标签 |
-| `Alt + 1` ~ `9` | 跳转到标签 1~9 |
-| `Alt + Alt + r` | 设置标签标题 |
+```bash
+just install
+```
 
-### 布局管理
+安装过程会：
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Alt + v` | 切换到下一个布局 |
-| `Alt + o` | 切换 stack 布局 (临时放大活跃窗口) |
+1. 在 `tmp/backups/<时间戳>/` 备份已有配置；
+2. 排除 `.git`、`.venv`、缓存、字节码和测试日志；
+3. 先写入同文件系统的 staging 路径，再替换目标，避免复制一半的配置生效。
 
-### 文本选择 / 杂项
+`install` 是“复制部署”，不是符号链接。修改仓库后需要再次运行 `just install` 才会更新 `~/.config`。
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Alt + w` | 选择可见单词并插入终端 (hints) |
-| `Alt + m` | 打开命令面板 |
+完整安装和权限设置见 [docs/installation.md](docs/installation.md)，快捷键见 [docs/shortcuts.md](docs/shortcuts.md)。
 
----
+## 关键依赖
 
-## 3. Neovim (主实例)
+- macOS + Homebrew；配置中的 `/opt/homebrew` 明确面向 Apple Silicon。
+- Neovim 0.12+。配置使用 `vim.pack.add()`，不能在 0.11 上启动。
+- 字体：`Maple Mono Normal NF CN`（Kitty/Neovide）和 `Hack Nerd Font`（SketchyBar）。
+- GUI：Kitty、Neovide、Karabiner-Elements、SketchyBar；yabai 与 Glide 按需启用。
+- Neovim 外部工具：`git`、`im-select`、LSP、formatter、linter 和 Tree-sitter CLI，详见 [nvim/doc/lsp_lint.md](nvim/doc/lsp_lint.md)。
+- AI chat：Python 3.13、`uv`、对应 API key；AI diff hooks 仅需要 Python 3。
 
-### 文件操作
+## 本机专属设置
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Ctrl + s` | i / x / n / s | 保存文件 |
-| `Ctrl + q` | i / x / n / s | 关闭 nvim |
-| `Cmd + s` | n | 保存 (Neovide) |
+以下值是有意保留的个人配置，迁移到其他机器时应检查：
 
-### 窗口调整
+- `.common_sh` 固定代理 `127.0.0.1:7897`，代理未运行时网络命令会失败。
+- Claude/DeepSeek 模型和 endpoint 是个人服务约定。
+- 英文输入法为 `com.apple.keylayout.Australian`，中文输入法为 Squirrel/Rime。
+- Karabiner shell command 使用 `/opt/homebrew/bin`。
+- AI hook 文档示例包含当前用户名路径；复制时应替换为自己的 `$HOME` 绝对路径。
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `↑` | n | 增大窗口高度 (+2) |
-| `↓` | n | 减小窗口高度 (-2) |
-| `←` | n | 减小窗口宽度 (-2) |
-| `→` | n | 增大窗口宽度 (+2) |
+## Secrets
 
-### 代码编辑
+仓库不保存密钥。`.common_sh` 会在文件存在时加载：
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Ctrl + /` | n / x / i | 注释/取消注释 |
-| `Ctrl + l` | n / v / i | 格式化代码 (conform.nvim) |
+```bash
+~/.secrets_sh
+```
 
-### 文件查找 & 导航
+建议权限：
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Leader Leader` | n | 智能查找文件 (Snacks.picker) |
-| `Leader e` | n | 打开父目录 (oil.nvim) |
-| `s` | n / x / o | Flash 跳转 |
-| `S` | n / x / o | Flash Treesitter 跳转 |
+```bash
+chmod 600 ~/.secrets_sh
+```
 
-### Emacs 风格光标移动
+常用变量包括 `DEEPSEEK_API_KEY`、`GEMINI_API_KEY`/Google GenAI 默认变量，以及本地 OpenAI 兼容代理需要的变量。不要把 `.secrets_sh`、`.env` 或真实 token 加入 Git。
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Ctrl + a` | c / n | 跳到行首 (Home) |
-| `Ctrl + a` | i | 跳到行首 |
-| `Ctrl + e` | c / n | 跳到行尾 (End) |
-| `Ctrl + e` | i | 跳到行尾 |
-| `Ctrl + f` | i | 光标右移 |
-| `Ctrl + b` | i | 光标左移 |
+## 常用维护
 
-### 终端切换
+```bash
+# 查看配置依赖
+just doctor
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Ctrl + t` | n / t / i | 切换浮动终端 |
-| `Ctrl + ,` | n / t / i | 切换底部子终端 |
-| `Leader t` | n | 隐藏/显示子终端 |
+# 运行仓库静态检查
+just check
 
-### 主题
+# AI diff hook 单元测试
+python3 nvim/scripts/test_ai_diff_hook.py -v
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Leader =` | n | 增加文字饱和度 (+0.1) |
-| `Leader -` | n | 减少文字饱和度 (-0.1) |
+# AI chat 离线测试
+cd nvim/aichat_nvim && uv run python -m unittest discover -s tests -v
+```
 
-### Neovide GUI 专属
+Neovim 插件由内置 `vim.pack` 管理，锁文件是 `nvim/nvim-pack-lock.json`。Tree-sitter parser 使用 `nvim/scripts/treesitter_install.sh` 安装。
 
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Ctrl + =` | n | 放大界面 (×1.25) |
-| `Ctrl + -` | n | 缩小界面 (÷1.25) |
-| `Cmd + c` | v | 复制到系统剪贴板 |
-| `Cmd + v` | n / v / c / i / t | 从系统剪贴板粘贴 |
+## 文档索引
 
----
+- [安装、依赖与 macOS 权限](docs/installation.md)
+- [完整快捷键](docs/shortcuts.md)
+- [本次配置审计](docs/config-audit.md)
+- [Neovim 架构](nvim/README.md)
+- [LSP、lint、format 与 Tree-sitter](nvim/doc/lsp_lint.md)
+- [AI diff hooks](nvim/doc/ai-hooks.md)
+- [AI chat 服务](nvim/aichat_nvim/README.md)
 
-## 4. Neovim 子实例 (远程终端)
+## 恢复与排障
 
-> 子实例用于浮动终端和子终端，由主 nvim 通过 RPC 控制。
+若新配置无法启动，先从 `tmp/backups/<时间戳>/` 找到对应文件，将其复制回 HOME。常见检查顺序：
 
-### 窗口操作 (在 Insert / Terminal 模式下)
-
-| 快捷键 | 功能 |
-|--------|------|
-| `Ctrl + w s` | 水平分割窗口 |
-| `Ctrl + w v` | 垂直分割窗口 |
-| `Ctrl + w h` | 移动到左侧窗口 |
-| `Ctrl + w j` | 移动到下方窗口 |
-| `Ctrl + w k` | 移动到上方窗口 |
-| `Ctrl + w l` | 移动到右侧窗口 |
-| `Ctrl + w w` | 切换到下一个窗口 |
-| `Ctrl + w q` | 关闭窗口 |
-| `Ctrl + w r` | 旋转窗口布局 |
-| `Ctrl + 0` | 循环切换终端位置 (下→左→上→右) |
-
-### 标签页管理 (Normal 模式)
-
-| 快捷键 | 功能 |
-|--------|------|
-| `t` | 新建标签 |
-| `d` | 关闭标签 |
-| `p` | 上一个标签 |
-| `n` | 下一个标签 |
-| `r` | 重命名标签 |
-
----
-
-## 5. 补全 (blink.cmp)
-
-| 快捷键 | 功能 |
-|--------|------|
-| `Ctrl + p` | 选择上一个候选项 |
-| `Ctrl + n` | 选择下一个候选项 |
-| `Ctrl + y` | 选中并接受候选项 |
-| `Ctrl + u` | 向上滚动文档 |
-| `Ctrl + d` | 向下滚动文档 |
-| `Ctrl + Space` | 打开补全菜单或文档 |
-| `Ctrl + e` | 隐藏补全菜单 |
-| `Ctrl + k` | 切换签名帮助 |
-
----
-
-## 6. 输入法管理 (imselect)
-
-| 快捷键 | 模式 | 功能 |
-|--------|------|------|
-| `Ctrl + [` | i | 切换到英文输入法 + 退出 insert 模式 |
-| `Ctrl + [` | t | 切换到英文输入法 + 退出终端模式 |
-
-> 重新进入 insert 模式时，如果之前是中文输入法，会自动恢复。
-
----
-
-## 7. 自动配对 (edit.lua)
-
-| 输入字符 | 模式 | 效果 |
-|----------|------|------|
-| `(` | i / c | 自动补全 → `()` |
-| `[` | i / c | 自动补全 → `[]` |
-| `{` | i / c | 自动补全 → `{}` |
-| `"` | i / c | 自动补全 → `""` |
-| `'` | i / c | 自动补全 → `''` |
-| `` ` `` | i / c | 自动补全 → ``` `` ``` |
-
-### 配对内的特殊操作
-
-| 快捷键 | 场景 | 效果 |
-|--------|------|------|
-| `<CR>` | 光标在一对括号/引号中间 | 自动换行缩进 |
-| `<Space>` | 光标在一对括号/引号中间 | 插入空格并跳过右括号 |
-| `<BS>` | 光标在一对空括号/引号中间 | 同时删除两个字符 |
-
-> Verilog / SystemVerilog 文件中，`'` 和 `` ` `` 不自动配对，直接插入原字符。
+1. `just doctor` 确认命令和路径；
+2. `just check` 确认仓库语法；
+3. `nvim --clean` 区分 Neovim 本体与配置问题；
+4. `sketchybar --reload`、`yabai --restart-service` 分别重载 GUI 服务；
+5. 查看 [docs/config-audit.md](docs/config-audit.md) 中无法自动验证的 GUI/API 项目。

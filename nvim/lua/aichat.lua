@@ -4,13 +4,21 @@ local PORT = 6666
 local aichat_chan = nil
 local function get_chan()
     if aichat_chan and aichat_chan > 0 then
-        return aichat_chan
+        local alive = pcall(vim.api.nvim_get_chan_info, aichat_chan)
+        if alive then
+            return aichat_chan
+        end
+        aichat_chan = nil
     end
     local ok, chan = pcall(vim.fn.sockconnect, "tcp", HOST .. ":" .. PORT, { rpc = true })
     if ok and chan > 0 then
         aichat_chan = chan
         return chan
     end
+    vim.notify(
+        ("AI chat server is unavailable at %s:%d; start nvim/aichat_nvim/main.py first"):format(HOST, PORT),
+        vim.log.levels.WARN
+    )
 end
 local pick = require("mini.pick")
 
@@ -30,7 +38,16 @@ local function get_session()
     if not chan then
         return
     end
-    local response = vim.fn.rpcrequest(chan, "nvim_request", payload)
+    local ok, response = pcall(vim.fn.rpcrequest, chan, "nvim_request", payload)
+    if not ok then
+        aichat_chan = nil
+        vim.notify("AI chat request failed: " .. tostring(response), vim.log.levels.ERROR)
+        return
+    end
+    if type(response) ~= "table" then
+        vim.notify("AI chat returned an invalid session list: " .. tostring(response), vim.log.levels.ERROR)
+        return
+    end
     pick.start({
         source = {
             items = response,
@@ -67,7 +84,12 @@ local function sub_ai()
     if not chan then
         return
     end
-    vim.fn.rpcnotify(chan, "nvim_request", payload)
+    local ok, err = pcall(vim.fn.rpcnotify, chan, "nvim_request", payload)
+    if not ok then
+        aichat_chan = nil
+        vim.notify("AI chat send failed: " .. tostring(err), vim.log.levels.ERROR)
+        return
+    end
     vim.notify("Send to server", vim.log.levels.INFO)
 end
 
@@ -81,8 +103,14 @@ local function create_session()
             return
         end
         local payload = { op = "create_session", message = name }
-        vim.fn.rpcnotify(chan, "nvim_request", payload)
-        vim.notify("Create session: " .. payload.message, vim.log.levels.INFO)
+        local ok, response = pcall(vim.fn.rpcrequest, chan, "nvim_request", payload)
+        if not ok then
+            aichat_chan = nil
+            vim.notify("Create session failed: " .. tostring(response), vim.log.levels.ERROR)
+            return
+        end
+        local level = tostring(response):match("^ERROR:") and vim.log.levels.ERROR or vim.log.levels.INFO
+        vim.notify(tostring(response), level)
     end)
 end
 

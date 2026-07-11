@@ -1,3 +1,4 @@
+# shellcheck source=/dev/null
 source ~/.common_sh
 PS1='\[\e[36m\]\W > \[\e[0m\]'
 

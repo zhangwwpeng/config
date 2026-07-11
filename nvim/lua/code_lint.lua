@@ -6,8 +6,6 @@ function M.setup()
     -- lint config
     vim.api.nvim_create_autocmd({ "BufWritePost" }, {
         callback = function()
-            local name = vim.api.nvim_buf_get_name(0)
-            local readable = name ~= "" and vim.fn.filereadable(name) == 1
             -- try_lint without arguments runs the linters defined in `linters_by_ft`
             -- for the current filetype
             lint.try_lint()
@@ -15,13 +13,6 @@ function M.setup()
             -- You can call `try_lint` with a linter name or a list of names to always
             -- run specific linters, independent of the `linters_by_ft` configuration
             lint.try_lint("typos")
-            if vim.bo.filetype == "verilog" or vim.bo.filetype == "systemverilog" then
-                if readable then
-                    lint.try_lint("svlint")
-                else
-                    vim.notify("Skip svlint: buffer has no readable file path", vim.log.levels.WARN)
-                end
-            end
         end,
     })
 

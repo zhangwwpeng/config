@@ -36,18 +36,12 @@ map({ "n", "x", "o" }, "s", function()
 end, { desc = "Flash" })
 map({ "n", "x", "o" }, "S", function()
     require("flash").treesitter()
-end, { desc = "Flash Tressiter" })
+end, { desc = "Flash Treesitter" })
 
 -- oil
 map("n", "<leader>e", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 map("n", "<leader>0", function()
-    require("code_preview").preview_at(12, {
-        error = { "undefined symbol: foo" },
-        warn = { "unused variable: bar" },
-        info = { "type inferred as any" },
-        msm = { "custom note" }, -- 或 msg
-        suggestion = { "consider renaming variable" },
-    })
+    require("code_preview").preview_current_line()
 end, { desc = "Line diagnostic panel" })
 
 -- emcal style

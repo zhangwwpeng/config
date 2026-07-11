@@ -202,7 +202,7 @@
                         ]
                     },
                     {
-                        "description": "Caps Lock -> Ctrl+Shift+Option",
+                        "description": "Caps Lock -> Shift+Option",
                         "manipulators": [
                             {
                                 "from": {

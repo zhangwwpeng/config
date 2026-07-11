@@ -14,26 +14,50 @@ local function close_all_float_wins()
 end
 
 local function run_all_formatters(done)
-    format.format({ async = true }, function(err, did_edit)
-        if err then
-            vim.notify("format error: " .. err, vim.log.levels.ERROR)
+    local bufnr = vim.api.nvim_get_current_buf()
+    local filetype = vim.bo[bufnr].filetype
+    local needs_sv_format = filetype == "systemverilog" or filetype == "verilog"
+    local finished = false
+
+    local function finish(conform_err, conform_did_edit, sv_err, sv_did_edit)
+        if finished then
             return
+        end
+        finished = true
+
+        local errors = {}
+        if conform_err then
+            errors[#errors + 1] = "conform: " .. tostring(conform_err)
+        end
+        if sv_err then
+            errors[#errors + 1] = "sv_format: " .. tostring(sv_err)
+        end
+
+        local did_edit = conform_did_edit == true or sv_did_edit == true
+        local combined_err
+        if #errors > 0 then
+            combined_err = table.concat(errors, "; ")
+            vim.notify("format error: " .. combined_err, vim.log.levels.ERROR)
         elseif did_edit then
             vim.notify("format successfully", vim.log.levels.INFO)
         else
             vim.notify("already formatted", vim.log.levels.INFO)
+        end
+
+        if done then
+            done(combined_err, did_edit)
+        end
+    end
+
+    format.format({ async = true, bufnr = bufnr }, function(conform_err, conform_did_edit)
+        if not needs_sv_format then
+            finish(conform_err, conform_did_edit)
             return
         end
 
-        -- SystemVerilog tree-sitter format is supplemental, so it runs after conform.
-        sv_format.format({ bufnr = 0 }, function(ts_err)
-            if ts_err then
-                vim.notify("treesitter format error: " .. ts_err, vim.log.levels.ERROR)
-            end
-
-            if done then
-                done(err, did_edit)
-            end
+        -- This formatter supplements conform even when conform made no edits.
+        sv_format.format({ bufnr = bufnr }, function(sv_err, sv_did_edit)
+            finish(conform_err, conform_did_edit, sv_err, sv_did_edit)
         end)
     end)
 end

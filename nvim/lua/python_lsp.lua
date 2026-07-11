@@ -1,9 +1,10 @@
 local M = {}
 
---- Skip stdlib/site-packages; otherwise find project root or fall back to file dir.
+--- Skip installed packages; otherwise find project root or fall back to file dir.
 function M.root_dir(bufnr, on_dir)
     local bufname = vim.api.nvim_buf_get_name(bufnr)
-    if bufname:match("site%-packages") or bufname:match("[\\/][Ll]ib[\\/]") then
+    local normalized_name = bufname:gsub("\\", "/")
+    if normalized_name:find("/site-packages/", 1, true) or normalized_name:find("/dist-packages/", 1, true) then
         return
     end
 

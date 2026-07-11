@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # This is a demo config to showcase some of the most important commands.
 # It is meant to be changed and configured, as it is intentionally kept sparse.
 # For a (much) more advanced configuration example see my dotfiles:
@@ -41,7 +43,7 @@ sketchybar --default "${default[@]}"
 SPACE_ICONS=("一" "二" "三" "四" "五" "六" "七" "八" "九" "十")
 for i in "${!SPACE_ICONS[@]}"
 do
-  sid="$(($i+1))"
+  sid="$((i + 1))"
   space=(
     space="$sid"
     icon="${SPACE_ICONS[i]}"
@@ -55,9 +57,8 @@ do
     click_script="yabai -m space --focus $sid"
   )
   sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}"
+  sketchybar --subscribe space."$sid" space_change
 done
-
-sketchybar --subscribe space space_change
 
 ##### Adding Left Items #####
 # We add some regular items to the left side of the bar, where

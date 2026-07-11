@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/wpzhang/.config/nvim/scripts/test_ai_diff_hook.py", line 15, in <module>
-    import ai_diff_hook
-ModuleNotFoundError: No module named 'ai_diff_hook'

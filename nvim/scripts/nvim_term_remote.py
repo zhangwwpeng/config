@@ -5,7 +5,9 @@
 #   nvim_term_remote.py <father> -d f1 f2      → CodeDiff file
 #   nvim_term_remote.py <father> -d dir1 dir2  → CodeDiff dir
 
+import json
 import os
+import subprocess
 import sys
 
 if len(sys.argv) < 2:
@@ -14,20 +16,24 @@ if len(sys.argv) < 2:
 father = sys.argv[1]
 args = sys.argv[2:]
 diff = "-d" in args or "--diff" in args
-paths = [a for a in args if a not in ("-d", "--diff") and not a.startswith("-")]
+paths = [a for a in args if a not in ("-d", "--diff", "--")]
+paths = [os.path.abspath(path) for path in paths if not path.startswith("-")]
 
 if diff and len(paths) >= 2:
-    p1, p2 = os.path.abspath(paths[0]), os.path.abspath(paths[1])
-    if os.path.isdir(p1) and os.path.isdir(p2):
-        os.system(
-            f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff dir {p1} {p2}<CR>"'
-        )
-    else:
-        os.system(
-            f'nvim --server "{father}" --remote-send "<Cmd>CodeDiff file {p1} {p2}<CR>"'
-        )
+    p1, p2 = paths[0], paths[1]
+    subcommand = "dir" if os.path.isdir(p1) and os.path.isdir(p2) else "file"
+    expression = (
+        f'execute("CodeDiff {subcommand} " . fnameescape({json.dumps(p1)})'
+        f' . " " . fnameescape({json.dumps(p2)}))'
+    )
+    result = subprocess.run(
+        ["nvim", "--server", father, "--remote-expr", expression],
+        check=False,
+    )
+    raise SystemExit(result.returncode)
 elif paths:
-    for path in paths:
-        os.system(
-            f'nvim --server "{father}" --remote-send "<Esc><C-w>q<Cmd>drop {os.path.abspath(path)}<CR>"'
-        )
+    result = subprocess.run(
+        ["nvim", "--server", father, "--remote-tab-silent", "--", *paths],
+        check=False,
+    )
+    raise SystemExit(result.returncode)
