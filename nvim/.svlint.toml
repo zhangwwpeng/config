@@ -5,7 +5,7 @@ generate_if_with_label = "gen_"
 
 [textrules]
 header_copyright = false
-style_directives = true
+style_directives = false
 style_semicolon = false
 style_textwidth = false
 
@@ -27,7 +27,7 @@ function_with_automatic = true
 general_always_level_sensitive = true
 general_always_no_edge = false
 genvar_declaration_in_loop = false
-genvar_declaration_out_loop = true
+genvar_declaration_out_loop = fa
 implicit_case_default = true
 inout_with_tri = false
 input_with_var = false
@@ -61,7 +61,7 @@ parameter_type_twostate = true
 procedural_continuous_assignment = true
 generate_case_with_label = false
 
-generate_if_with_label = true
+generate_if_with_label = false
 prefix_instance = true
 prefix_interface = true
 re_forbidden_assert = true

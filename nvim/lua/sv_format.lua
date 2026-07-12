@@ -229,25 +229,27 @@ local function format_module(bufnr)
 
     local function build_inst_port_text(node)
         local lsr, lsc, ler, lec = node:range()
-        local line = api.nvim_buf_get_lines(bufnr, lsr, lsr + 1, false)[1] or ""
-        local open_idx = line:find("%(", lsc + 1)
-        local close_idx = open_idx and line:match(".*()%)") or nil
         if lsr ~= ler then
             return nil
         end
+
+        local node_text = ts.get_node_text(node, bufnr)
+        if type(node_text) ~= "string" or node_text == "" then
+            return nil
+        end
+
+        local open_idx = node_text:find("%(")
+        local close_idx = open_idx and node_text:match(".*()%)") or nil
         if not open_idx or not close_idx then
             return nil
         end
-        if open_idx > lec or close_idx > lec then
-            return nil
-        end
 
-        local inner_text = line:sub(open_idx + 1, close_idx - 1)
+        local inner_text = node_text:sub(open_idx + 1, close_idx - 1)
         inner_text = inner_text:gsub("^%s*", ""):gsub("%s*$", "")
 
-        local open_col = open_idx - 1
-        local close_col = close_idx - 1
-        local left_pad = math.max(0, lsc + 41 - open_idx)
+        local open_col = lsc + open_idx - 1
+        local close_col = lsc + close_idx - 1
+        local left_pad = math.max(0, 41 - open_idx)
         local right_pad = math.max(0, (79 + lsc) - (close_col + left_pad))
         return {
             sr = lsr,

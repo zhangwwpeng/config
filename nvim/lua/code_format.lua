@@ -111,7 +111,7 @@ function M.setup()
                     "--formal_parameters_alignment=align",
                     "--module_net_variable_alignment=align",
                     "--named_parameter_alignment=align",
-                    "--named_port_alignment=align",
+                    "--named_port_alignment=flush-left",
                     "--port_declarations_alignment=align",
                     "--struct_union_members_alignment=align",
                     "--formal_parameters_indentation=indent",

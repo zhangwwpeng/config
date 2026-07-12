@@ -90,37 +90,13 @@ function M.setup()
         end,
     }
 
-    -- lint.linters.verilator = {
-    --     name = "verilator",
-    --     cmd = "verilator",
-    --     stdin = false,
-    --     stream = "stderr",
-    --     args = {
-    --         "-sv",
-    --         "-Wall",
-    --         "-Wno-GENUNNAMED",
-    --         "--bbox-sys",
-    --         "--bbox-unsup",
-    --         "--lint-only",
-    --     },
-    --     ignore_exitcode = true,
-    --     parser = function(output, _)
-    --         local diags = {}
-    --         for line in output:gmatch("[^\r\n]+") do
-    --             local sev, file, lnum, col, msg = line:match("^%%(%a+)%-%u+:%s(.-):(%d+):(%d+):%s(.+)$")
-    --             if sev == "Warning" or sev == "Error" then
-    --                 diags[#diags + 1] = {
-    --                     lnum = tonumber(lnum) - 1,
-    --                     col = tonumber(col) - 1,
-    --                     message = msg,
-    --                     severity = sev == "Error" and vim.diagnostic.severity.ERROR or vim.diagnostic.severity.WARN,
-    --                     source = "verilator",
-    --                 }
-    --             end
-    --         end
-    --         return diags
-    --     end,
-    -- }
+    local verilator = require("lint.linters.verilator")
+    lint.linters.verilator = vim.tbl_deep_extend("force", verilator, {
+        args = vim.list_extend(vim.deepcopy(verilator.args), {
+            "-Wno-MODMISSING",
+            "-Wno-PROCASSINIT",
+        }),
+    })
 
     lint.linters.verible = {
         name = "verible",
