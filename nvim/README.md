@@ -62,7 +62,6 @@
 | `<C-t>` | 浮动终端 |
 | `<C-,>` | 子终端 / 切换分屏方向 |
 | `<leader>t` | 隐藏子终端窗口 |
-| `<leader><leader>` | 智能文件查找（Snacks picker） |
 | `<leader>0` | 当前行 LSP/诊断信息面板（在当前窗口内展开） |
 | `<leader>e` | Oil 文件树 |
 | `<leader>aa` | 创建 AI chat 会话 |

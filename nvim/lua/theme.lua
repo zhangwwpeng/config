@@ -70,6 +70,7 @@ local function syntax(pal)
         Special = { link = "Delimiter" },
         -- Title = { fg = pal.orange },
         Directory = { fg = pal.blue },
+        Title = {fg = pal.fg_dim}
     }
 end
 
@@ -127,24 +128,24 @@ local M = {}
 
 M.colors = palette
 
--- Catppuccin Mocha terminal palette
+-- kitty terminal palette: ~/.config/kitty/themes/bamboo.conf
 local terminal_colors = {
-    "#45475a", -- 0  black
-    "#f38ba8", -- 1  red
-    "#a6e3a1", -- 2  green
-    "#f9e2af", -- 3  yellow
-    "#89b4fa", -- 4  blue
-    "#f5c2e7", -- 5  purple
-    "#94e2d5", -- 6  cyan
-    "#bac2de", -- 7  white
-    "#585b70", -- 8  bright black
-    "#f38ba8", -- 9  bright red
-    "#a6e3a1", -- 10 bright green
-    "#f9e2af", -- 11 bright yellow
-    "#89b4fa", -- 12 bright blue
-    "#f5c2e7", -- 13 bright purple
-    "#bdaa86", -- 14 bright cyan
-    "#cdd6f4", -- 15 bright white
+    "#171f17", -- 0  black
+    "#dc4f62", -- 1  red
+    "#81af58", -- 2  green
+    "#ceba49", -- 3  yellow
+    "#409cdc", -- 4  blue
+    "#a09af8", -- 5  purple
+    "#68baae", -- 6  cyan
+    "#ece1c0", -- 7  white
+    "#5a5e5a", -- 8  bright black
+    "#dc4f62", -- 9  bright red
+    "#81af58", -- 10 bright green
+    "#ceba49", -- 11 bright yellow
+    "#409cdc", -- 12 bright blue
+    "#a09af8", -- 13 bright purple
+    "#68baae", -- 14 bright cyan
+    "#fff8f0", -- 15 bright white
 }
 
 function M.setup()

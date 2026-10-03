@@ -56,6 +56,7 @@ vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.wo[0][0].foldmethod = "expr"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
+vim.g.messagesopt = "hit-enter:2,history:500,maxheight:50,pager:<CR>,progress:empty,timeout:2000"
 
 ------------------------------------------------------------------------
 -- neovide config
@@ -124,40 +125,24 @@ if vim.g.neovide then
 end
 
 ------------------------------------------------------------------------
--- RPC init (lazy: child nvim processes spawn on first <C-t> / <C-,>)
-------------------------------------------------------------------------
-
-vim.api.nvim_create_autocmd("UIEnter", {
-    once = true,
-    callback = function()
-        Flt_term_chan = -1
-        Sub_term_chan = -1
-        Remote_flt_term_buf = vim.api.nvim_create_buf(false, true)
-        Remote_sub_term_buf = vim.api.nvim_create_buf(false, true)
-        vim.g.flt_term_servrename = vim.v.servername .. "_flt"
-        vim.g.sub_term_servrename = vim.v.servername .. "_sub"
-    end,
-})
-
-------------------------------------------------------------------------
 -- lazy load plugin
 ------------------------------------------------------------------------
 vim.schedule(function()
     vim.pack.add({
         { src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("2.*") },
         { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("*") },
-        -- "https://github.com/nvim-mini/mini.cmdline",
-        -- "https://github.com/nvim-mini/mini.completion",
         "https://github.com/mfussenegger/nvim-lint",
         "https://github.com/stevearc/conform.nvim",
-        "https://github.com/folke/snacks.nvim",
         "https://github.com/folke/flash.nvim",
-        "https://github.com/stevearc/oil.nvim",
         "https://github.com/esmuellert/codediff.nvim",
         "https://github.com/kevinhwang91/nvim-bqf",
+        "https://github.com/juniorsundar/refer.nvim",
+        "https://github.com/folke/lazydev.nvim",
+        "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+        "https://github.com/stevearc/overseer.nvim",
+        "https://github.com/zhangwwpeng/pi-agent.nvim"
     })
-    require("aidiff").setup()
-    require("session").setup()
+    -- require("aidiff").setup()
     require("code_lint").setup()
     require("code_format").setup()
     require("code_lsp").setup()
@@ -167,8 +152,16 @@ vim.schedule(function()
     require("code_completion").setup()
     require("focus_tab").setup()
     require("cmd_panel").setup()
-    require("vim._core.ui2").enable()
-    require("bqf").setup()
+    require("code_picker").setup()
+    require("indent").setup({ char = "┃" })
+    require("imselect").setup()
+    require("dir").setup()
+    require("terminal").setup()
+    require("pi-agent").setup()
+    require("pi_diff").setup()
+
+    -- keypam
+    require("keymaps")
 
     -- TODO
     require("config")
@@ -179,37 +172,24 @@ end)
 ------------------------------------------------------------------------
 
 vim.pack.add({
-    { src = "https://github.com/nvim-mini/mini.input" },
-    { src = "https://github.com/nvim-mini/mini.nvim", version = "stable" },
     { src = "https://github.com/folke/lazydev.nvim" },
-    { src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" },
-    { src = "https://github.com/tjgao/quickbuf.nvim" },
-    { src = "https://github.com/rachartier/tiny-cmdline.nvim" },
 })
 
-vim.loader.enable()
-
-require("ui2")
 require("theme").setup()
 require("ui").setup()
 require("code_preview").setup()
-require("keymaps")
-require("aichat")
-require("mini.pick").setup()
-require("render-markdown").setup({
-    render_modes = true,
-    anti_conceal = { enabled = false },
-    heading = {
-        icons = { "一、", "二、", "三、", "四、", "五、", "六、" },
-    },
-    pipe_table = {
-        -- border_enabled = false,
-        border_virtual = true,
-    },
-    code = {
-        border = "language",
-    },
-})
-
-require("mini.input").setup({})
-vim.ui.input = MiniInput.ui_input
+-- require("aichat")
+-- require("render-markdown").setup({
+--     render_modes = true,
+--     anti_conceal = { enabled = false },
+--     heading = {
+--         icons = { "一、", "二、", "三、", "四、", "五、", "六、" },
+--     },
+--     pipe_table = {
+--         -- border_enabled = false,
+--         border_virtual = true,
+--     },
+--     code = {
+--         border = "language",
+--     },
+-- })

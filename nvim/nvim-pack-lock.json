@@ -11,69 +11,44 @@
       "version": ">=0.0.0"
     },
     "codediff.nvim": {
-      "rev": "7608f3b436ce1f84a4888f75e53079caa981a2e9",
+      "rev": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e",
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "conform.nvim": {
-      "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
+      "rev": "016802de402556da54c36bd7359b441266b01cdd",
       "src": "https://github.com/stevearc/conform.nvim"
     },
-    "deltaview.nvim": {
-      "rev": "fc05322417beb847d729ce606918a6facd8721f9",
-      "src": "https://github.com/kokusenz/deltaview.nvim"
-    },
     "flash.nvim": {
-      "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
+      "rev": "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a",
       "src": "https://github.com/folke/flash.nvim"
     },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
     },
-    "mini.cmdline": {
-      "rev": "8e3fe6ee41a960226bc0dc663120363a40bc18bd",
-      "src": "https://github.com/nvim-mini/mini.cmdline"
-    },
-    "mini.completion": {
-      "rev": "0aeee1231b90d70563e24facc238ab4359b8d5fc",
-      "src": "https://github.com/nvim-mini/mini.completion"
-    },
-    "mini.input": {
-      "rev": "a8ab01372890c4ebf9f59893f42ad7c6bcd02c16",
-      "src": "https://github.com/nvim-mini/mini.input"
-    },
-    "mini.nvim": {
-      "rev": "1345d191bb3da9c7b0e977f4387c5761f9bff68d",
-      "src": "https://github.com/nvim-mini/mini.nvim",
-      "version": "'stable'"
-    },
     "nvim-bqf": {
       "rev": "c282a62bec6c0621a1ef5132aa3f4c9fc4dcc2c7",
       "src": "https://github.com/kevinhwang91/nvim-bqf"
     },
     "nvim-lint": {
-      "rev": "01c9842c089069ab497430159312b2c8868a4590",
+      "rev": "3d55c8f67c6ae5c15e1042571e107c7a3d5c5f4e",
       "src": "https://github.com/mfussenegger/nvim-lint"
     },
-    "oil.nvim": {
-      "rev": "b73018b75affd13fa38e2fc94ef753b465f770d7",
-      "src": "https://github.com/stevearc/oil.nvim"
+    "overseer.nvim": {
+      "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
+      "src": "https://github.com/stevearc/overseer.nvim"
     },
-    "quickbuf.nvim": {
-      "rev": "75b49dfd836a95cd0c80b04c1f5ac7e689e35421",
-      "src": "https://github.com/tjgao/quickbuf.nvim"
+    "pi-agent.nvim": {
+      "rev": "fa4209dd99dd55cacdc3e1395b9e1670358a12c9",
+      "src": "https://github.com/zhangwwpeng/pi-agent.nvim"
+    },
+    "refer.nvim": {
+      "rev": "fc042733153a61428eb062776a3c61c0df433524",
+      "src": "https://github.com/juniorsundar/refer.nvim"
     },
     "render-markdown.nvim": {
-      "rev": "f422cb5c6855f150e2ddcfaf44e7157b98b34f6a",
+      "rev": "640a3ec6d538bad17c328be373c7cad0293d9589",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
-    },
-    "snacks.nvim": {
-      "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
-      "src": "https://github.com/folke/snacks.nvim"
-    },
-    "tiny-cmdline.nvim": {
-      "rev": "b1db8607a78f0c23b3bae08e079b1b7f147619d7",
-      "src": "https://github.com/rachartier/tiny-cmdline.nvim"
     }
   }
 }

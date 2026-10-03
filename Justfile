@@ -5,13 +5,13 @@ install:
     #!/usr/bin/env bash
     set -euo pipefail
     command -v rsync >/dev/null
-    backup_dir="{{justfile_directory()}}/tmp/backups/$(date '+%Y%m%d-%H%M%S')"
+    backup_dir="{{ justfile_directory() }}/tmp/backups/$(date '+%Y%m%d-%H%M%S')"
     mkdir -p "$backup_dir"
     for entry in kitty nvim neovide karabiner yabai sketchybar glide; do
-        just --justfile "{{justfile_directory()}}/Justfile" _backup_and_copy_config "$entry" "$entry" "$backup_dir"
+        just --justfile "{{ justfile_directory() }}/Justfile" _backup_and_copy_config "$entry" "$entry" "$backup_dir"
     done
     for entry in .common_sh .zshrc .bashrc; do
-        just --justfile "{{justfile_directory()}}/Justfile" _backup_and_copy_dotfile "$entry" "$backup_dir"
+        just --justfile "{{ justfile_directory() }}/Justfile" _backup_and_copy_dotfile "$entry" "$backup_dir"
     done
     printf 'Configuration installed. Backup: %s\n' "$backup_dir"
 
@@ -46,15 +46,15 @@ doctor:
 
 # Run repository static checks without installing or touching HOME.
 check:
-    bash "{{justfile_directory()}}/scripts/repo_check.sh"
+    bash "{{ justfile_directory() }}/scripts/repo_check.sh"
 
 _backup_and_copy_config name dest backup_dir:
     #!/usr/bin/env bash
     set -euo pipefail
-    source_dir="{{justfile_directory()}}/{{name}}"
-    target_dir="${HOME}/.config/{{dest}}"
-    staging_dir="${HOME}/.config/.{{dest}}.staging.$$"
-    backup_target="{{backup_dir}}/.config/{{name}}"
+    source_dir="{{ justfile_directory() }}/{{ name }}"
+    target_dir="${HOME}/.config/{{ dest }}"
+    staging_dir="${HOME}/.config/.{{ dest }}.staging.$$"
+    backup_target="{{ backup_dir }}/.config/{{ name }}"
     [[ -d "$source_dir" ]] || { printf 'Missing source: %s\n' "$source_dir" >&2; exit 1; }
     mkdir -p "${HOME}/.config" "$(dirname "$backup_target")"
     if [[ -e "$target_dir" || -L "$target_dir" ]]; then
@@ -74,21 +74,21 @@ _backup_and_copy_config name dest backup_dir:
     rm -rf "$target_dir"
     mv "$staging_dir" "$target_dir"
     trap - EXIT
-    printf 'Installed %s -> %s\n' "{{name}}" "$target_dir"
+    printf 'Installed %s -> %s\n' "{{ name }}" "$target_dir"
 
 _backup_and_copy_dotfile name backup_dir:
     #!/usr/bin/env bash
     set -euo pipefail
-    source_file="{{justfile_directory()}}/{{name}}"
-    target_file="${HOME}/{{name}}"
-    staging_file="${HOME}/.{{name}}.staging.$$"
+    source_file="{{ justfile_directory() }}/{{ name }}"
+    target_file="${HOME}/{{ name }}"
+    staging_file="${HOME}/.{{ name }}.staging.$$"
     [[ -f "$source_file" ]] || { printf 'Missing source: %s\n' "$source_file" >&2; exit 1; }
     if [[ -e "$target_file" || -L "$target_file" ]]; then
-        mkdir -p "{{backup_dir}}"
-        cp -a "$target_file" "{{backup_dir}}/{{name}}"
+        mkdir -p "{{ backup_dir }}"
+        cp -a "$target_file" "{{ backup_dir }}/{{ name }}"
     fi
     trap 'rm -f "$staging_file"' EXIT
     install -m 0644 "$source_file" "$staging_file"
     mv -f "$staging_file" "$target_file"
     trap - EXIT
-    printf 'Installed %s -> %s\n' "{{name}}" "$target_file"
+    printf 'Installed %s -> %s\n' "{{ name }}" "$target_file"

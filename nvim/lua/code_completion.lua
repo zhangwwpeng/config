@@ -89,9 +89,9 @@ local function setup_blink()
             },
         },
     })
-    require("tiny-cmdline").setup(vim.tbl_extend("force", tiny_cmdline, {
-        on_reposition = require("tiny-cmdline").adapters.blink,
-    }))
+    -- require("tiny-cmdline").setup(vim.tbl_extend("force", tiny_cmdline, {
+    --    on_reposition = require("tiny-cmdline").adapters.blink,
+    -- }))
 end
 
 local backends = {

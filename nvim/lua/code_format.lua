@@ -1,19 +1,9 @@
-M = {}
+local M = {}
 
 local format = require("conform")
 local sv_format = require("sv_format")
 
-local function close_all_float_wins()
-    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-        local config = vim.api.nvim_win_get_config(win)
-        -- Close all floating windows (including ui2's hidden msg/pager/dialog).
-        if config.relative ~= "" then
-            pcall(vim.api.nvim_win_close, win, true)
-        end
-    end
-end
-
-local function run_all_formatters(done)
+function M.run_all_formatters(done)
     local bufnr = vim.api.nvim_get_current_buf()
     local filetype = vim.bo[bufnr].filetype
     local needs_sv_format = filetype == "systemverilog" or filetype == "verilog"
@@ -125,11 +115,6 @@ function M.setup()
         },
     })
 
-    -- code format + close floating windows
-    vim.keymap.set({ "i", "n", "v" }, "<C-l>", function()
-        close_all_float_wins()
-        run_all_formatters()
-    end, { desc = "Close float windows and format code" })
 end
 
 return M

@@ -1,4 +1,4 @@
-M = {}
+local M = {}
 
 local lint = require("lint")
 
