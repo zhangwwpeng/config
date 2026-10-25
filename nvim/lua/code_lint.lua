@@ -141,7 +141,6 @@ function M.setup()
         -- python lint is handled by ruff LSP (see lsp/ruff.lua)
         c = { "clangtidy" },
         cpp = { "clangtidy" },
-        rust = { "clippy" },
         json = { "jsonlint" },
         jsonc = { "jsonlint" },
         yaml = { "yamllint" },

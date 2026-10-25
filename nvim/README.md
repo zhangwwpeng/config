@@ -93,6 +93,6 @@ AI diff 流程与 hook 配置见 [doc/ai-hooks.md](doc/ai-hooks.md)。
 
 ## LSP / 格式化
 
-- LSP：`lua_ls`、`clangd`、`rust_analyzer`、`bashls`、`just`、`make_ls`、`tcl_lsp`、`ruff`、`basedpyright`、`pyrefly`
-- 格式化：Lua `stylua`，Python `ruff format`，`c/cpp/rust/just/make/tcl` 走 LSP fallback，`bash/sh` 用 `shfmt`，`json/jsonc` 用 `jq`，`yaml` 用 `yamlfmt`，`toml` 用 `taplo`
+- LSP：`lua_ls`、`clangd`、`bashls`、`make_ls`、`ruff`、`basedpyright`、`pyrefly`
+- 格式化：Lua `stylua`，Python `ruff format`，`c/cpp/make` 走 LSP fallback，`bash/sh` 用 `shfmt`，`json/jsonc` 用 `jq`，`yaml` 用 `yamlfmt`，`toml` 用 `taplo`
 - Lint：`nvim-lint`，保存时触发

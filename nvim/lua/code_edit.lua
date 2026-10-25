@@ -77,7 +77,12 @@ end
 
 function M.setup()
     for key, val in pairs(keys) do
-        vim.keymap.set({ "i", "c" }, key, function()
+        -- <cr>/<space>/<bs> must NOT be mapped in command-line mode: those keys
+        -- are what trigger `cnoreabbrev` expansion (e.g. `:grep` -> `:Grep`).
+        -- Mapping them in `c` mode swallows the keypress and the abbreviation
+        -- never fires. Pair characters are still mapped in cmdline mode.
+        local modes = (key == "<cr>" or key == "<space>" or key == "<bs>") and { "i" } or { "i", "c" }
+        vim.keymap.set(modes, key, function()
             vim.schedule(function()
                 vim.cmd("redraw")
             end)

@@ -7,7 +7,7 @@ install:
     command -v rsync >/dev/null
     backup_dir="{{ justfile_directory() }}/tmp/backups/$(date '+%Y%m%d-%H%M%S')"
     mkdir -p "$backup_dir"
-    for entry in kitty nvim neovide karabiner yabai sketchybar glide; do
+    for entry in kitty nvim neovide karabiner yabai sketchybar glide tree-sitter opencode; do
         just --justfile "{{ justfile_directory() }}/Justfile" _backup_and_copy_config "$entry" "$entry" "$backup_dir"
     done
     for entry in .common_sh .zshrc .bashrc; do

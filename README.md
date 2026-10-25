@@ -14,6 +14,8 @@
 | `sketchybar/` | `~/.config/sketchybar` | Space、前台应用、时间、电池和消息角标 |
 | `yabai/` | `~/.config/yabai` | 仅负责 Space 聚焦，不管理窗口布局 |
 | `glide/` | `~/.config/glide` | 可按 Space 启用的窗口平铺 |
+| `tree-sitter/` | `~/.config/tree-sitter` | Tree-sitter CLI 的 parser 搜索路径与配色 |
+| `opencode/` | `~/.config/opencode` | opencode 配置（`node_modules/` 不入库） |
 
 `karabiner/automatic_backups/` 是历史备份，不参与日常配置审计。`nvim/queries/` 是随 Tree-sitter parser 配套的 query，原则上按上游版本整体更新。
 

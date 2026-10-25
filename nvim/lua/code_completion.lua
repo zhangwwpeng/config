@@ -27,8 +27,9 @@ local function setup_blink()
             ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
             ["<C-n>"] = { "select_next", "fallback_to_mappings" },
 
-            ["<Enter>"] = { "select_and_accept", "fallback" },
-            ["<C-e>"] = { "hide", "fallback" },
+            -- 显式确认：有选中项时插入，否则退回普通回车（换行）
+            -- ["<Enter>"] = { "accept", "fallback" },
+            ["<C-l>"] = { "hide", "fallback" },
 
             ["<C-u>"] = { "scroll_documentation_up", "fallback" },
             ["<C-d>"] = { "scroll_documentation_down", "fallback" },
@@ -40,6 +41,13 @@ local function setup_blink()
         sources = {
             default = { "snippets", "lsp", "path", "buffer" },
             providers = {
+                -- blink 默认声明 lsp/path 的 fallbacks 是 buffer（sources/lib/tree.lua 会把它变成"依赖门控"）：
+                -- 只要 lsp 或 path 返回了候选，buffer 源整条都不会跑。清掉才会始终参与。
+                lsp = {
+                    fallbacks = function()
+                        return {}
+                    end,
+                },
                 path = {
                     name = "Path",
                     module = "blink.cmp.sources.path",
@@ -58,11 +66,19 @@ local function setup_blink()
         fuzzy = { implementation = "prefer_rust_with_warning" },
         snippets = { preset = "luasnip" },
         completion = {
+            accept = {
+                auto_brackets = {
+                    enabled = true,
+                },
+            },
+            -- trigger = {
+            --     prefetch_on_insert = false,
+            -- },
             ghost_text = { enabled = true },
             menu = {
                 -- border = "single",
                 draw = {
-                    columns = { { "label", "label_description", gap = 1 }, { "kind" } },
+                    columns = { { "label" }, { "kind" } },
                 },
             },
             documentation = {

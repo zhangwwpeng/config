@@ -62,10 +62,7 @@ function M.setup()
             cpp = { lsp_format = "fallback" },
             verilog = { "verible" },
             systemverilog = { "verible" },
-            rust = { lsp_format = "fallback" },
-            just = { lsp_format = "fallback" },
             make = { lsp_format = "fallback" },
-            tcl = { lsp_format = "fallback" },
             bash = { "shfmt" },
             sh = { "shfmt" },
             json = { "jq" },
@@ -114,7 +111,6 @@ function M.setup()
             },
         },
     })
-
 end
 
 return M

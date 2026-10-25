@@ -11,8 +11,11 @@ msgs.set_pos = function(tgt, focus)
         if not vim.api.nvim_win_get_config(ui2.wins.msg).hide then
             pcall(vim.api.nvim_win_set_config, ui2.wins.msg, {
                 relative = "editor",
-                anchor = "SW", -- 锚点是左下角
-                row = vim.o.lines - 1, -- 行坐标设为屏幕底部（减 2 是为了避开底部的状态栏和命令行）
+                -- anchor = "SW", -- 锚点是左下角
+                -- row = vim.o.lines - 1, -- 行坐标设为屏幕底部（减 2 是为了避开底部的状态栏和命令行）
+                -- col = 0,
+                anchor = "NW", -- 锚点是左下角
+                row = 0, -- 行坐标设为屏幕底部（减 2 是为了避开底部的状态栏和命令行）
                 col = 0,
                 border = "rounded",
             })
@@ -30,17 +33,24 @@ end
 function M.setup(opts)
     opts = opts or {}
     vim.diagnostic.config({
-        virtual_text = { source = "if_many" },
-        virtual_lines = { current_line = true },
+        virtual_text = {
+            current_line = true,
+            prefix = "",
+
+            format = function(d)
+                return "(" .. d.message .. ")"
+            end,
+        },
+        virtual_lines = false,
         float = { source = "if_many" },
         underline = false,
         update_in_insert = false,
         signs = opts.signs or {
             text = {
-                [vim.diagnostic.severity.ERROR] = "\u{EA87}",
-                [vim.diagnostic.severity.WARN] = "\u{EA6C}",
-                [vim.diagnostic.severity.INFO] = "\u{EA74}",
-                [vim.diagnostic.severity.HINT] = "\u{EC10} ",
+                [vim.diagnostic.severity.ERROR] = "x",
+                [vim.diagnostic.severity.WARN] = ">",
+                [vim.diagnostic.severity.INFO] = "?",
+                [vim.diagnostic.severity.HINT] = "?",
             },
         },
     })
@@ -50,44 +60,57 @@ function M.setup(opts)
         for _, d in ipairs(vim.diagnostic.get(0)) do
             counts[d.severity] = (counts[d.severity] or 0) + 1
         end
-        if counts[1] + counts[2] + counts[3] + counts[4] == 0 then
+        if counts[1] + counts[2] == 0 then
             return ""
         end
-        return string.format(
-            " \u{EA87} %d \u{EA6C} %d \u{EA74} %d \u{EC10} %d ",
-            counts[1],
-            counts[2],
-            counts[3],
-            counts[4]
-        )
+        return string.format("[x%d][>%d]", counts[1], counts[2])
     end
+
+    vim.keymap.set("n", "gK", function()
+        local vt = vim.diagnostic.config().virtual_text
+
+        vim.diagnostic.config({
+            virtual_text = type(vt) == "table" and vt.current_line and {
+                prefix = "",
+                format = function(d)
+                    return "(" .. d.message .. ")"
+                end,
+            } or {
+                prefix = "",
+                current_line = true,
+                format = function(d)
+                    return "(" .. d.message .. ")"
+                end,
+            },
+        })
+    end, { desc = "Toggle diagnostic virtual_text current_line" })
+
+    vim.opt.fillchars:append({
+        stl = "-",
+        stlnc = "-",
+    })
 
     vim.o.statusline = table.concat({
         "%-.80F",
         "%m%r",
-        "%=",
-        "%{v:lua.current_macro_status()}", -- 展示宏录制
         "%{v:lua.lsp_diagnostics()}",
-        "%y %l,%c",
+        "%=",
     }, "")
 
-    local reg_status = false
-    function _G.current_macro_status()
-        local reg = vim.fn.reg_recording()
-        if reg ~= "" then
-            if reg_status == false then
-                vim.notify("recoarding " .. reg)
-            end
-            reg_status = true
-            return "recording @" .. reg .. " "
-        else
-            if reg_status == true then
-                vim.notify("end recoarding")
-            end
-            reg_status = false
-            return ""
-        end
-    end
+    -- 录制状态通知：用 RecordingEnter / RecordingLeave（按 q 进入/离开录制时触发），
+    -- 不要在 statusline 里轮询 —— 那个函数只有 statusline 重绘时才跑，没重绘就永远不通知。
+    vim.api.nvim_create_autocmd("RecordingEnter", {
+        callback = function()
+            vim.notify("recording @" .. vim.fn.reg_recording(), vim.log.levels.INFO)
+        end,
+        desc = "notify when macro recording starts",
+    })
+    vim.api.nvim_create_autocmd("RecordingLeave", {
+        callback = function()
+            vim.notify("recording end @ " .. vim.fn.reg_recording(), vim.log.levels.INFO)
+        end,
+        desc = "notify when macro recording stops",
+    })
 
     -- Foldtext
     _G.fold_text = function()

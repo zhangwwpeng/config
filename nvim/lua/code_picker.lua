@@ -13,11 +13,11 @@ function M.setup()
             mark_hl = "String",
             input_position = "top", -- "top" or "bottom"
             reverse_result = false,
-            winhighlight = "Normal:Normal,FloatBorder:Normal,WinSeparator:Normal,StatusLine:Normal,StatusLineNC:Normal",
+            winhighlight = "Normal:NormalFloat,SignColumn:NormalFloat,FloatBorder:NormalFloat,WinSeparator:NormalFloat,StatusLine:NormalFloat,StatusLineNC:NormalFloat",
             highlights = {
                 prompt = "Title",
-                selection = "Visual",
-                header = "WarningMsg",
+                selection = "CursorLine",
+                header = "Type",
             },
         },
     })

@@ -36,9 +36,7 @@ build_parser bash https://github.com/tree-sitter/tree-sitter-bash
 build_parser json https://github.com/tree-sitter/tree-sitter-json
 build_parser yaml https://github.com/tree-sitter-grammars/tree-sitter-yaml
 build_parser toml https://github.com/tree-sitter-grammars/tree-sitter-toml
-build_parser rust https://github.com/tree-sitter/tree-sitter-rust
 build_parser tcl https://github.com/tree-sitter-grammars/tree-sitter-tcl
 build_parser systemverilog https://github.com/gmlarumbe/tree-sitter-systemverilog
-build_parser just https://github.com/casey/tree-sitter-just
 build_parser make https://github.com/tree-sitter-grammars/tree-sitter-make
 

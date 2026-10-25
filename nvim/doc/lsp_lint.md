@@ -13,11 +13,8 @@
 | - | - | - | - | - |
 | lua | lua_ls | `lsp/lua_ls.lua` | 补全 / 诊断 / 跳转 | `brew install lua-language-server` |
 | c / c++ | clangd | `lsp/clangd.lua` | 补全 / 诊断 / 跳转 | `brew install llvm` |
-| rust | rust_analyzer | `lsp/rust_analyzer.lua` | 补全 / 诊断 / 跳转 | `rustup component add rust-analyzer` |
 | bash / sh | bashls | `lsp/bashls.lua` | 补全 / 诊断 / 跳转 | `brew install bash-language-server` |
-| just | just | `lsp/just.lua` | 补全 / 诊断 / 跳转 / format | `cargo install just-lsp` |
 | make | make_ls | `lsp/make_ls.lua` | 补全 / 诊断 / 跳转 / format | `go install github.com/owenrumney/make-ls/cmd/make-ls@latest` |
-| tcl | tcl_lsp | `lsp/tcl_lsp.lua` | 补全 / 诊断 / 跳转 / format | Manual install（见下） |
 | python | ruff | `lsp/ruff.lua` | lint 诊断、organize imports | `brew install ruff` |
 | python | basedpyright | `lsp/basedpyright.lua` | 类型检查诊断 | `brew install basedpyright` |
 | python | pyrefly | `lsp/pyrefly.lua` | 补全 / 跳转 | `brew install pyrefly` |
@@ -34,43 +31,17 @@ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
 ln -sf build/compile_commands.json .
 ```
 
-### rust_analyzer
-
-- 项目根识别：`Cargo.toml`、`Cargo.lock`、`rust-project.json`、`.git`
-- 需在 Rust 项目目录（含 `Cargo.toml`）内打开文件
-
 ### bashls
 
 - 支持 `bash`、`sh` filetype（`.sh` 通过 `code_treesitter.lua` 注册为 bash 高亮）
 - 项目根识别：`.git`；单文件脚本也可 attach
 - 诊断依赖 **shellcheck**（可选但推荐）：`brew install shellcheck`
 
-### just
-
-- 支持 `just` filetype（Neovim 0.12+ 内置 justfile 识别）
-- 项目根识别：`justfile`、`Justfile`、`.justfile`、`.git`
-- format 由 LSP 提供（`just-lsp` 内置）
-
 ### make_ls
 
 - 支持 `make` filetype（Makefile / makefile / GNUmakefile）
 - 项目根识别：`Makefile`、`makefile`、`GNUmakefile`、`.git`
 - format 由 LSP 提供（`make-ls` 内置）
-
-### tcl_lsp
-
-- 支持 `tcl`、`tcl-apl` filetype（`.tcl`、`.tk`、`.irule` 等扩展名见 `code_lsp.lua`）
-- 项目根识别：`.git`；`single_file_support = true`
-- 仅需 Python 3.10+，zipapp 自带依赖，无需 pip/uv
-- Manual install（[INSTALL-cli.md](https://github.com/bitwisecook/tcl-lsp/blob/main/INSTALL-cli.md) 同款方式，只装 LSP server）：
-
-```bash
-version=1.11.3
-curl -fLO "https://github.com/bitwisecook/tcl-lsp/releases/download/v${version}/tcl-lsp-server-${version}.pyz"
-install -m 0755 "tcl-lsp-server-${version}.pyz" ~/.local/bin/tcl-lsp-server.pyz
-```
-
-- Neovim 配置：`lsp/tcl_lsp.lua` + `vim.lsp.enable("tcl_lsp")`
 
 ### Python 三分工
 
@@ -86,11 +57,8 @@ install -m 0755 "tcl-lsp-server-${version}.pyz" ~/.local/bin/tcl-lsp-server.pyz
 vim.lsp.enable({
     "lua_ls",
     "clangd",
-    "rust_analyzer",
     "bashls",
-    "just",
     "make_ls",
-    "tcl_lsp",
     "ruff",
     "basedpyright",
     "pyrefly",
@@ -140,7 +108,6 @@ cmake --build build -j --target slang_server
 | - | - | - | - |
 | all_file | typos | 拼写检查 | `brew install typos-cli` |
 | c/cpp | clangtidy | lint | `brew install llvm` |
-| rust | clippy | lint | `brew install rust` |
 | json / jsonc | jsonlint | 语法检查 | `brew install jsonlint` |
 | yaml | yamllint | lint | `brew install yamllint` |
 | toml | taplo | 语法检查 | `brew install taplo` |
@@ -165,10 +132,7 @@ Python 的 lint 由 **ruff LSP** 负责，不再通过 nvim-lint 重复跑 ruff�
 | c / c++ | clangd (LSP) | `lsp_format = "fallback"`，走 clangd 内置 format | `brew install llvm` |
 | verilog | verible | `verible-verilog-format` | github下bin文件 |
 | systemverilog | verible | `verible-verilog-format` | github下bin文件 |
-| rust | rust_analyzer | lsp_format  = "fallback" | `rustup component add rust-analyzer` |
-| just | just-lsp (LSP) | `lsp_format = "fallback"` | `cargo install just-lsp` |
 | make | make-ls (LSP) | `lsp_format = "fallback"` | `go install github.com/owenrumney/make-ls/cmd/make-ls@latest` |
-| tcl | tcl-lsp (LSP) | `lsp_format = "fallback"` | Manual install `tcl-lsp-server.pyz` |
 | bash / sh | shfmt | 外部 formatter | `brew install shfmt` |
 | json / jsonc | jq | 按 `shiftwidth` 缩进 | 系统自带 / `brew install jq` |
 | yaml | yamlfmt | 外部 formatter | `brew install yamlfmt` |
@@ -186,7 +150,7 @@ Queries 目录：`queries/<lang>/`
 
 ## 自动启用 filetype
 
-`c`、`verilog`、`python`、`rust`、`sh`、`markdown`、`json`、`yaml`、`toml`、`just`、`make`、`tcl`
+`c`、`verilog`、`python`、`sh`、`markdown`、`json`、`yaml`、`toml`、`make`、`tcl`
 
 ## 已安装 parser
 
@@ -197,8 +161,6 @@ Queries 目录：`queries/<lang>/`
 | json | `tree-sitter/tree-sitter-json` |
 | yaml | `tree-sitter-grammars/tree-sitter-yaml` |
 | toml | `tree-sitter-grammars/tree-sitter-toml` |
-| rust | `tree-sitter/tree-sitter-rust` |
-| just | `casey/tree-sitter-just` |
 | make | `tree-sitter-grammars/tree-sitter-make` |
 | tcl | `tree-sitter-grammars/tree-sitter-tcl` |
 | systemverilog | `gmlarumbe/tree-sitter-systemverilog` |

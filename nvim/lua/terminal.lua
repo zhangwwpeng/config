@@ -17,6 +17,8 @@ local function float_geometry(size)
     local width = math.floor(vim.o.columns * 0.9)
     local height = small and math.floor(vim.o.lines * 0.4) or math.floor(vim.o.lines * 0.9)
     return {
+        title = "terminal",
+        title_pos = "center",
         relative = "editor",
         width = width,
         height = height,
@@ -26,11 +28,27 @@ local function float_geometry(size)
 end
 
 ---打开终端窗口
+---确保有一个可用的终端 buffer：优先复用已有终端，其次复用当前窗口里的终端，
+---都没有时新建一个隐藏终端（不能直接把当前普通文件 buffer 当终端用）。
+local function ensure_term_buf()
+    if vim.api.nvim_buf_is_valid(term_buf) and vim.bo[term_buf].buftype == "terminal" then
+        return
+    end
+    local cur = vim.api.nvim_win_get_buf(0)
+    if vim.bo[cur].buftype == "terminal" then
+        term_buf = cur
+        return
+    end
+    local buf = vim.api.nvim_create_buf(false, false)
+    vim.api.nvim_buf_call(buf, function()
+        vim.fn.termopen(vim.o.shell)
+    end)
+    term_buf = buf
+end
+
 ---@param size "large"|"small" 浮动窗口的大小，仅 float 布局有效
 local function open_term_win(size)
-    if not vim.api.nvim_buf_is_valid(term_buf) then
-        term_buf = vim.api.nvim_win_get_buf(0)
-    end
+    ensure_term_buf()
     if layout_status == "float" then
         local config = float_geometry(size)
         config.style = "minimal"

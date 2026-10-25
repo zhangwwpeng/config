@@ -10,9 +10,6 @@ local M = {}
 ---@type CmdPanelItem[]
 local cmd_table = {}
 
----@type table<string, CmdPanelItem>
-local cmd_index = {}
-
 ---@param item CmdPanelItem
 local function exec(item)
     item.cmd()
@@ -149,7 +146,7 @@ function session.setup()
         cmd_name = "session open dir",
         desc = "open session dir",
         cmd = function()
-            require("oil").open(session_dir)
+            vim.cmd.edit(vim.fn.fnameescape(session_dir))
         end,
     })
     M.registry_cmd({
@@ -163,9 +160,30 @@ function session.setup()
         cmd_name = "piagent start",
         desc = "pi start",
         cmd = function()
-            if require("pi_diff").ask_enable() then
-                require("pi-agent").start()
-            end
+            require("pi_diff").ask_enable()
+            require("pi-agent").start()
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "markdown fmt",
+        desc = "toggle markdown fmt",
+        cmd = function()
+            vim.cmd("Mtm")
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "ai review code",
+        desc = "ai review code",
+        cmd = function()
+            vim.cmd("Mtm")
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "mini diff",
+        desc = "mini diff toggle overlay",
+        cmd = function()
+            -- vim.cmd("MiniDiff.toggle_overlay()")
+            require("mini.diff").toggle_overlay()
         end,
     })
 end
@@ -249,7 +267,6 @@ end
 ---@param cmd CmdPanelItem
 function M.registry_cmd(cmd)
     cmd_table[#cmd_table + 1] = cmd
-    cmd_index[cmd.cmd_name] = cmd
 end
 
 function M.panel_pick()

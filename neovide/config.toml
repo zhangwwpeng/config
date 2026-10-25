@@ -25,6 +25,16 @@ srgb = true
 # tabs
 tabs = true
 
+# keep macOS native tab bar visible (required, otherwise tab hotkeys do nothing)
+# system-native-tabs = true
+
+# macOS hotkeys -- must stay at top level (before any [table] header!)
+# valid modifiers: cmd / ctrl / alt (= Option) / shift. "opt" is NOT a valid token.
+system-new-window-hotkey = "ctrl+shift+n"
+system-switcher-hotkey = "ctrl+shift+p"
+# system-tab-prev-hotkey = "cmd+shift+["
+# system-tab-next-hotkey = "cmd+shift+]"
+
 # theme
 theme = "auto"
 
@@ -42,4 +52,6 @@ size = 18
 
 [box-drawing]
 # "font-glyph", "native" or "selected-native"
-mode = "font-glyph"
+mode = "native"
+
+

@@ -273,11 +273,16 @@ end
 
 --- 异步清理过期快照（后台 find + rm，不阻塞；>24h 未活动）
 local function cleanup_stale()
+    -- vim.async 是 Neovim 0.13+ API，旧版本直接跳过清理（不能阻塞启动）
+    if async == nil then
+        return
+    end
+
     if vim.fn.isdirectory(DEFAULT_SNAPSHOT_ROOT) ~= 1 then
         return
     end
 
-    vim.async.run(function()
+    async.run(function()
         run({
             "find",
             DEFAULT_SNAPSHOT_ROOT,

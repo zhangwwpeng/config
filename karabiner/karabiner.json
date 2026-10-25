@@ -44,7 +44,7 @@
                         ]
                     },
                     {
-                        "description": "Yabai map workspace ctrl",
+                        "description": "use cmd tab to switch windows",
                         "manipulators": [
                             {
                                 "from": {
@@ -54,7 +54,12 @@
                                         "optional": ["any"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/opt/homebrew/bin/yabai -m space --focus recent" }],
+                                "to": [
+                                    {
+                                        "key_code": "tab",
+                                        "modifiers": ["left_command"]
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
@@ -65,7 +70,12 @@
                                         "optional": ["any"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/opt/homebrew/bin/yabai -m space --focus prev" }],
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow",
+                                        "modifiers": ["left_control"]
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
@@ -76,7 +86,12 @@
                                         "optional": ["any"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/opt/homebrew/bin/yabai -m space --focus next" }],
+                                "to": [
+                                    {
+                                        "key_code": "right_arrow",
+                                        "modifiers": ["left_control"]
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
@@ -99,6 +114,7 @@
                     },
                     {
                         "description": "Yabai map hypr+num to switch workspace",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {
@@ -241,6 +257,58 @@
                                     "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [{ "key_code": "delete_or_backspace" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Map ctrl + [ to escape",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "open_bracket",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [{ "key_code": "escape" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Map ctrl + m to cmd + tab (window switch)",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "m",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "tab",
+                                        "modifiers": ["left_command"]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Map f to fn + control + f",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "f",
+                                    "modifiers": {
+                                        "mandatory": ["left_shift", "left_option"],
+                                        "optional": ["any"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "f",
+                                        "modifiers": ["fn", "left_control"]
+                                    }
+                                ],
                                 "type": "basic"
                             }
                         ]
