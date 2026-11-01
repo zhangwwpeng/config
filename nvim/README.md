@@ -40,7 +40,8 @@ doc/                     专题文档
 | `code_format.lua` | conform 格式化；verilog/systemverilog 额外跑 `sv_format.lua` |
 | `sv_format.lua` | 自写的 SystemVerilog 补充格式化 |
 | `code_lint.lua` | nvim-lint，保存时触发；自定义 taplo / svlint / verible / rumdl 解析 |
-| `code_treesitter.lua` | 对指定 filetype 启动 treesitter（parser 缺失时静默退回 regex） |
+| `code_treesitter.lua` | 对指定 filetype 启动 treesitter（parser 缺失时静默退回 regex）；有 `indents.scm` 的语言缩进改用 `ts_indent.lua` |
+| `ts_indent.lua` | 通用 treesitter 缩进（移植自 nvim-treesitter），执行 `queries/<lang>/indents.scm`；`queries/c/indents.scm` 取自 nvim-treesitter main 分支 |
 | `code_edit.lua` | 自写 autopair（insert + cmdline） |
 | `code_git.lua` | mini.diff 符号列 |
 | `code_picker.lua` | refer.nvim picker，并接管 `vim.ui.select` |

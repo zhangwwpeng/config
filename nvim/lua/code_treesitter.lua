@@ -24,12 +24,27 @@ function M.setup()
         "bash",
     }
 
+    local function has_indents(ft)
+        local lang = vim.treesitter.language.get_lang(ft) or ft
+        local ok, query = pcall(vim.treesitter.query.get, lang, "indents")
+        return ok and query ~= nil
+    end
+
     -- parser 没装时 start() 会直接报错，打开文件就弹异常；pcall 掉，退回 regex 高亮
     local function start(buf)
         if vim.b[buf].bigfile then
             return -- 大文件 / 特殊 filetype，见 bigfile.lua
         end
-        pcall(vim.treesitter.start, buf)
+        if not pcall(vim.treesitter.start, buf) then
+            return -- 没 parser：legacy syntax 还开着，内置缩进照常用
+        end
+        -- 有 indents.scm 就用 treesitter 缩进（ts_indent.lua）。treesitter.start 关掉了 legacy syntax，
+        -- 内置缩进里靠 syntax 判断字符串/注释的逻辑会失效，所以能换就换。
+        -- 没有 indents.scm 的（markdown / make / systemverilog）保留内置缩进，它们都不依赖 syntax。
+        if has_indents(vim.bo[buf].filetype) then
+            vim.bo[buf].cindent = false -- c/cpp 的 ftplugin 开了 cindent，避免 cinkeys 顶掉 indentkeys
+            vim.bo[buf].indentexpr = "v:lua.require'ts_indent'.indent(v:lnum)"
+        end
     end
 
     vim.api.nvim_create_autocmd("FileType", {
