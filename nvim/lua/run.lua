@@ -189,34 +189,51 @@ local function parse_err(text, save_item)
   return list
 end
 
+-- Own group names on purpose: highlight names are case-insensitive, so the
+-- old `QfFileName`/`QfError` *were* qf.vim's `qfFileName`/`qfError`. Running
+-- any command restyled every other quickfix list (grep, LSP, ...) globally.
+local qf_hl = {
+  CompileFileName = { fg = '#992c3d', ctermfg = 'Red', bold = true, underline = true },
+  CompileLineCol = { fg = '#c7c938', ctermfg = 'Yellow' },
+  CompileError = { fg = '#e06c75', ctermfg = 'Red', bold = true },
+  CompileWarning = { fg = '#e5c07b', ctermfg = 'Yellow', bold = true },
+  CompileNote = { fg = '#56b6c2', ctermfg = 'Cyan', bold = true },
+  CompileFinish = { fg = '#62c92a', ctermfg = 'Green' },
+  CompileExit = { fg = '#992c3d', ctermfg = 'Red', bold = true },
+  CompileCode = { fg = '#992c3d', ctermfg = 'Red', bold = true },
+  CompileDuration = { fg = '#c7c938', ctermfg = 'Yellow' },
+  CompileTime = { fg = '#c7c938', ctermfg = 'Yellow' },
+  CompileCaret = { fg = '#e5c07b', ctermfg = 'Yellow', bold = true },
+  CompileTilde = { fg = '#c7c938', ctermfg = 'Yellow' },
+}
+
+local function define_qf_hl()
+  for name, opts in pairs(qf_hl) do
+    api.nvim_set_hl(0, name, opts)
+  end
+end
+define_qf_hl()
+-- :colorscheme clears every highlight group.
+api.nvim_create_autocmd('ColorScheme', {
+  group = api.nvim_create_augroup('CompileQfHl', { clear = true }),
+  callback = define_qf_hl,
+})
+
 local function apply_qf_syntax()
   vim.cmd([[
     syntax clear
-    syntax match QfFileName /^[^ ]*\ze:\d\+:\d\+/
-    syntax match QfLineCol  /^[^ ]*:\zs\d\+:\d\+/
-    syntax match QfError    /error:/
-    syntax match QfWarning  /warning:/
-    syntax match QfNote     /note:/
-    syntax match QfFinish   /\<finished\>/
-    syntax match QfExit     /\<exited abnormally\>/
-    syntax match QfCode     /\vcode\s+\zs\d+/
-    syntax match QfDuration /duration\s\+\zs[0-9.]\+s/
-    syntax match QfTime     /\d\d:\d\d:\d\d/
-    syntax match QfCaret    /\s\+\^\~*/
-    syntax match QfTilde    /\~\+/
-
-    highlight QfFileName guifg=#992c3d ctermfg=Red    gui=bold,underline
-    highlight QfLineCol  guifg=#c7c938 ctermfg=Yellow
-    highlight QfError    guifg=#e06c75 ctermfg=Red    gui=bold
-    highlight QfWarning  guifg=#e5c07b ctermfg=Yellow gui=bold
-    highlight QfNote     guifg=#56b6c2 ctermfg=Cyan   gui=bold
-    highlight QfFinish   guifg=#62c92a ctermfg=Green
-    highlight QfExit     guifg=#992c3d ctermfg=Red    gui=bold
-    highlight QfCode     guifg=#992c3d ctermfg=Red    gui=bold
-    highlight QfDuration guifg=#c7c938 ctermfg=Yellow
-    highlight QfTime     guifg=#c7c938 ctermfg=Yellow
-    highlight QfCaret    guifg=#e5c07b ctermfg=Yellow gui=bold
-    highlight QfTilde    guifg=#c7c938 ctermfg=Yellow
+    syntax match CompileFileName /^[^ ]*\ze:\d\+:\d\+/
+    syntax match CompileLineCol  /^[^ ]*:\zs\d\+:\d\+/
+    syntax match CompileError    /error:/
+    syntax match CompileWarning  /warning:/
+    syntax match CompileNote     /note:/
+    syntax match CompileFinish   /\<finished\>/
+    syntax match CompileExit     /\<exited abnormally\>/
+    syntax match CompileCode     /\vcode\s+\zs\d+/
+    syntax match CompileDuration /duration\s\+\zs[0-9.]\+s/
+    syntax match CompileTime     /\d\d:\d\d:\d\d/
+    syntax match CompileCaret    /\s\+\^\~*/
+    syntax match CompileTilde    /\~\+/
   ]])
 end
 
@@ -402,13 +419,13 @@ local function make_qf_textfunc()
           start = 0,
           _end = #fname,
           color = nil,
-          hl = 'QfFileName',
+          hl = 'CompileFileName',
         })
         table.insert(line_colors, {
           lnum = i,
           start = #fname + 1,
           _end = #fname + 1 + #lnum_s + 1 + #col_s,
-          hl = 'QfLineCol',
+          hl = 'CompileLineCol',
         })
       else
         table.insert(lines, item.text or '')
