@@ -7,9 +7,9 @@ RSYNC := rsync -a --delete \
 	--exclude .venv/ --exclude .ruff_cache/ --exclude .rumdl_cache/ \
 	--exclude __pycache__/ --exclude '*.pyc' --exclude node_modules/
 
-.PHONY: install config dotfiles $(CONFIG_DIRS)
+.PHONY: install config dotfiles claude $(CONFIG_DIRS)
 
-install: config dotfiles
+install: config dotfiles claude
 
 config: $(CONFIG_DIRS)
 
@@ -19,3 +19,8 @@ $(CONFIG_DIRS):
 
 dotfiles:
 	@for f in $(DOTFILES); do install -m 0644 $$f $(HOME)/$$f && echo "$$f -> $(HOME)/$$f"; done
+
+# Claude Code 自定义主题 -> ~/.claude/themes（在 /theme 中选择）
+claude:
+	@mkdir -p $(HOME)/.claude/themes
+	$(RSYNC) claude/themes/ $(HOME)/.claude/themes/

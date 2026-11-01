@@ -640,3 +640,17 @@ end, { desc = "Pick a mark and jump" })
 map({ "n" }, "<leader>/", function()
     require("neogen").generate()
 end, { desc = "generate comment doc" })
+
+-- quickfix
+map({ "n" }, ">", "<cmd>cnext<CR>", { desc = "quickfix next" })
+map({ "n" }, "<", "<cmd>cprev<CR>", { desc = "quickfix next" })
+
+map("n", "?", function()
+    local winid = vim.fn.getqflist({ winid = 0 }).winid
+
+    if winid == 0 then
+        vim.cmd("copen")
+    else
+        vim.cmd("cclose")
+    end
+end, { desc = "Toggle quickfix window" })

@@ -1,0 +1,7 @@
+{
+  "name": "bamboo",
+  "base": "dark",
+  "overrides": {
+    "text": "rgb(189,170,134)"
+  }
+}

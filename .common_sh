@@ -98,7 +98,7 @@ fi
 [ -f ~/.secrets_sh ] && source ~/.secrets_sh
 
 # this for deepseek-v4-flash
-# === Claude Code === 
+# === Claude Code ===
 # export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
 # export ANTHROPIC_MODEL='deepseek-v4-flash[1m]'
 # export ANTHROPIC_DEFAULT_OPUS_MODEL='deepseek-v4-flash[1m]'
@@ -114,3 +114,19 @@ export LSCOLORS=gxfxcxdxbxegedabagacad
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
+
+rm() {
+  local opts=() files=() endopts=0
+  for arg in "$@"; do
+    if (( endopts )); then
+      files+=("$arg")          # -- 之后全部当文件
+    elif [[ "$arg" == "--" ]]; then
+      endopts=1
+    elif [[ "$arg" == -* && "$arg" != "-" ]]; then
+      opts+=("$arg")           # 以 - 开头的当选项
+    else
+      files+=("$arg")
+    fi
+  done
+  command rm "${opts[@]}" -- "${files[@]}"
+}

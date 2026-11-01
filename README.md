@@ -13,6 +13,7 @@
 | `karabiner/` | `~/.config/karabiner` | 全局按键重映射和应用快捷键 |
 | `sketchybar/` | `~/.config/sketchybar` | Space、前台应用、时间、电池和消息角标 |
 | `bettercmdtab/` | `~/.config/bettercmdtab` | Cmd+Tab 应用切换器 |
+| `claude/themes/` | `~/.claude/themes` | Claude Code 自定义主题（`bamboo`：正文色对齐 Kitty 前景色） |
 
 `karabiner/automatic_backups/` 是历史备份，不参与日常配置审计。`nvim/queries/` 是随 Tree-sitter parser 配套的 query，原则上按上游版本整体更新。
 
@@ -23,6 +24,7 @@ brew install rsync neovim
 make            # 等同 make install：同步所有配置目录和 dotfiles
 make nvim       # 只同步单个目录（bettercmdtab/karabiner/kitty/neovide/nvim/sketchybar）
 make dotfiles   # 只同步 .common_sh/.zshrc/.bashrc
+make claude     # 只同步 Claude Code 主题，然后在 /theme 中选 bamboo
 make -n install # 预览命令
 ```
 
