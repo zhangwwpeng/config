@@ -89,11 +89,22 @@ function provider.open(cmd_string, env_table, effective_config, focus)
         reset()
         return
     end
-    -- n 模式（terminal-normal）不会把按键转发给终端：<C-c> 手发一个 Esc 给 claude（中断当前回复），同 pi
+    -- n 模式（terminal-normal）不会把按键转发给终端，手动发终端序列，同 pi（keymaps.lua）
     local job = state.job
-    vim.keymap.set("n", "<C-c>", function()
-        pcall(vim.api.nvim_chan_send, job, "\27")
-    end, { buffer = state.buf, silent = true, desc = "claude: interrupt (send Esc)" })
+    local function passthrough(bytes)
+        return function()
+            pcall(vim.api.nvim_chan_send, job, bytes)
+        end
+    end
+    local opts = { buffer = state.buf, silent = true, desc = "claude: full page scroll" }
+    vim.keymap.set("n", "<C-d>", passthrough("\27[6~"), opts)
+    vim.keymap.set("n", "<C-u>", passthrough("\27[5~"), opts)
+    -- <C-c> 手发一个 Esc 给 claude（中断当前回复）
+    vim.keymap.set("n", "<C-c>", passthrough("\27"), {
+        buffer = state.buf,
+        silent = true,
+        desc = "claude: interrupt (send Esc)",
+    })
 end
 
 function provider.close()

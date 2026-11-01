@@ -213,15 +213,15 @@ vim.api.nvim_create_autocmd("FileType", {
             return function()
                 local job = vim.b[args.buf].terminal_job_id
                 if job then
-                    vim.api.nvim_chan_send(job, bytes)
+                    pcall(vim.api.nvim_chan_send, job, bytes) -- pi 退出后 buffer 还在，chan 已失效
                 end
             end
         end
 
         local opts = { buffer = args.buf, silent = true, desc = "pi: full page scroll" }
-        -- t 模式：nvim 会把特殊键翻译成终端序列发给 pi
-        vim.keymap.set("t", "<C-d>", "<PageDown>", opts)
-        vim.keymap.set("t", "<C-u>", "<PageUp>", opts)
+        -- -- t 模式：nvim 会把特殊键翻译成终端序列发给 pi
+        -- vim.keymap.set("t", "<C-d>", "<PageDown>", opts)
+        -- vim.keymap.set("t", "<C-u>", "<PageUp>", opts)
         -- n 模式（terminal-normal）不会转发按键，手动发 PageDown/PageUp 的终端序列
         vim.keymap.set("n", "<C-d>", passthrough("\27[6~"), opts)
         vim.keymap.set("n", "<C-u>", passthrough("\27[5~"), opts)
