@@ -31,8 +31,7 @@ local function setup_keymaps()
         end
     end
 
-    -- <C-l> 展开 snippet / 跳到下一个占位符
-    -- <C-h> 跳到上一个占位符
+    -- <C-;> 展开 snippet / 跳到下一个占位符（只有向前跳）
     vim.keymap.set({ "i", "s" }, "<C-;>", function()
         jump(1)
     end, { desc = "Snippet expand / forward" })

@@ -69,6 +69,7 @@ function M.setup()
             jsonc = { "jq" },
             yaml = { "yamlfmt" },
             toml = { "taplo" },
+            markdown = { "rumdl" },
             ["_"] = { "trim_whitespace" },
         },
         default_format_opts = {
@@ -80,6 +81,9 @@ function M.setup()
         formatters = {
             stylua = {
                 append_args = { "--indent-type", "Spaces" },
+            },
+            rumdl = {
+                append_args = { "--disable", "MD013" },
             },
             verible = {
                 command = vim.fn.expand("~/.config/nvim/scripts/verible-format-wrapper.sh"),

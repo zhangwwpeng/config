@@ -42,7 +42,7 @@ local pal = {
 
     diff_added_word = "#1A4905",
     diff_removed_word = "#131912",
-    diff_change_word = "#444444"
+    diff_change_word = "#444444",
 }
 
 local terminal_colors = {
@@ -72,6 +72,7 @@ local hl = vim.tbl_deep_extend("force", {
     Normal = { fg = pal.bg_light4, bg = pal.bg },
     NormalNC = { link = "Normal" },
     NormalFloat = { bg = pal.bg_drak1 },
+    FloatBorder = { fg = pal.green_light1, bg = pal.bg_drak1 },
     Terminal = { link = "Normal" },
     EndOfBuffer = { link = "Normal" },
     Folded = { bg = pal.gray_light1, fg = pal.black },
@@ -93,8 +94,10 @@ local hl = vim.tbl_deep_extend("force", {
     WinSeparator = { fg = pal.bg_light2, bg = "NONE", bold = true },
     Search = { fg = pal.yellow_light, reverse = true },
     CurSearch = { fg = pal.red_light, reverse = true },
+    Statement = { link = "Comment" },
+    QuickFixLine = { fg = pal.gray, reverse = true },
 }, {
-    Comment = { fg = pal.fg_dim },
+    Comment = { fg = pal.fg_dim, italic = true },
     Function = { fg = pal.blue },
     String = { fg = pal.green },
     PreProc = { fg = pal.purple },
@@ -112,7 +115,7 @@ local hl = vim.tbl_deep_extend("force", {
     ["@variable.parameter"] = { fg = pal.red },
     -- ["@variable.parameter.python"] = { link = "@variable" },
     ["@variable.builtin"] = { link = "@variable" },
-    ["@keyword"] = { fg = pal.gray },
+    ["@keyword"] = { fg = pal.gray, italic = true },
     ["@keyword.function"] = { link = "@keyword" },
     ["@keyword.return"] = { link = "@keyword" },
     ["@function.call"] = { link = "Function" },
@@ -132,7 +135,7 @@ local hl = vim.tbl_deep_extend("force", {
     IndentLine = { fg = pal.bg_light2 },
     IndentLineCurrent = { link = "IndentLine" },
     -- Tsconstructor
-    TreesitterContext = { bg = pal.bg_drak1, underline = true, sp = pal.gray },
+    TreesitterContext = { bg = pal.bg_drak1, sp = pal.gray },
     TreesitterContextLineNumber = { bg = pal.bg_drak1 },
     -- blink
     BlinkCmpLabel = { fg = pal.gray },
@@ -160,10 +163,22 @@ local hl = vim.tbl_deep_extend("force", {
     MiniDiffSignAdd = { fg = pal.gray },
     MiniDiffSignChange = { fg = pal.gray },
     MiniDiffSignDelete = { fg = pal.gray },
-    MiniDiffOverChange = { fg = pal.red_light,reverse = true },
+    MiniDiffOverChange = { fg = pal.red_light, reverse = true },
     MiniDiffOverContext = { link = "Normal" },
     MiniDiffOverDelete = { fg = pal.gray, bg = pal.diff_removed_word, strikethrough = true },
     MiniDiffOverAdd = { bg = pal.diff_added_word },
+
+    -- copilot
+    CopilotSuggestion = { fg = pal.fg_dim, bg = pal.diff_added_word },
+    MinuetVirtualText = { link = "CopilotSuggestion" },
+
+    -- glance：整体按浮窗来（底色 = NormalFloat，边框 = FloatBorder 同色，文字 = Normal 前景）
+    -- GlancePreviewNormal = { link = "NormalFloat" },
+    -- GlancePreviewCursorLine = { link = "CursorLine" },
+    -- GlancePreviewLineNr = { link = "LineNr" },
+    -- GlancePreviewBorderBottom = { link = "NormalFloat" },
+    -- GlanceListNormal = { link = "Normal" },
+    -- GlanceListEndOfBuffer = { link = "Normal" },
 }, {
     DiagnosticError = { fg = pal.gray },
     DiagnosticWarn = { fg = pal.gray },
@@ -173,7 +188,7 @@ local hl = vim.tbl_deep_extend("force", {
     DiagnosticSignWarn = { fg = pal.grey },
     DiagnosticSignInfo = { fg = pal.gray },
     DiagnosticSignHint = { fg = pal.gray },
-    LspInlayHint = { fg = pal.fg_dim2, italic = true },
+    LspInlayHint = { fg = pal.fg_dim2, italic = true, underdashed = true },
 })
 
 for group_name, group_settings in pairs(hl) do

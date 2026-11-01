@@ -71,6 +71,7 @@ local function is_excluded(bufnr)
   local bo = vim.bo[bufnr]
   return vim.list_contains(opt.exclude_filetype, bo.filetype)
     or vim.list_contains(opt.exclude_buftype, bo.buftype)
+    or vim.b[bufnr].bigfile ~= nil -- 大文件 / 特殊 filetype，见 bigfile.lua
 end
 
 local lcs_cache = {}

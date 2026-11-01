@@ -14,6 +14,8 @@ local keys = {
     ["<bs>"] = {},
 }
 
+local QUOTES = { ['"'] = true, ["'"] = true, ["`"] = true }
+
 ---get pair in cursor
 ---@param mode string
 ---@return string
@@ -68,6 +70,18 @@ local function update_pairs(key, val)
         return "<space><space><left>"
     elseif key == "<bs>" and is_pair(pair) then
         return "<bs><del>"
+    elseif QUOTES[key] then
+        local before, after = pair:sub(1, 1), pair:sub(2, 2)
+        -- 光标下就是同一个引号：跳过去，而不是再插一对（'abc|' 里敲 ' -> 'abc'|）
+        if after == key then
+            return "<Right>"
+        end
+        -- 紧跟在字母/数字后面（don't、it's、x'）：不配对
+        -- 注：cmdline 下 get_pair 会在行首补 "_"，所以这里只认 %w，不认 "_"
+        if before:match("%w") then
+            return key
+        end
+        return ft_pair_enable(key, val)
     elseif val.pair then
         return ft_pair_enable(key, val)
     end

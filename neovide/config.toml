@@ -46,9 +46,41 @@ wsl = false
 
 
 # font set
+# normal 是一组字体族（Neovide 的 fallback 列表，按顺序命中），逗号是列表分隔符，
+# 不能塞在一个字符串里（写成 "A,B" 会被当成一个族名，直接 No candidate fonts / abort）。
+# 下面都是本机 CoreText 里实测能解析的族名，只留一行 normal，其余注释掉：
+#   Maple Mono Normal NF CN  等宽编程字体，字重最全，CJK 严格双宽【当前】
+#   PingFang SC             苹方，macOS 默认中文回退，字面最大、最“无感”
+#   Hiragino Sans GB        冬青黑体简体 W3，笔画细、清秀（粗体会自动用 W6）
+#   Heiti SC                老黑体（STHeiti Light），很瘦
+#   Heiti TC                繁体黑体，港/台字形
+#   Songti SC               宋体衬线，阅读好看、代码里显稀碎
+#   LXGW WenKai             霞鹜文楷，手写楷体味（只有 Light/Regular/Medium）
+#   LXGW WenKai Mono        同上，拉丁部分等宽的版本
+#   IBM Plex Sans SC        IBM 的简中无衬线，字重 8 档，字形偏几何、很“工程”
+#   Hiragino Sans W3        日文字形，简繁字形有差异
+#   GB18030 Bitmap          点阵字体，极客风（小字号更清晰，大字号粗糙）
 [font]
-normal = ["Maple Mono Normal NF CN"]
-size = 18
+# normal = ["Iosevka", "Maple Mono Normal NF CN"]
+# normal = ["Iosevka", "PingFang SC"]
+# normal = ["Iosevka", "Hiragino Sans GB"]
+# normal = ["Iosevka", "Heiti SC"]
+# normal = ["Iosevka", "Heiti TC"]
+# normal = ["Iosevka", "Songti SC"]
+# normal = ["Iosevka", "LXGW WenKai"]
+normal = ["Iosevka", "LXGW WenKai Mono"]
+# italic = ["IBM Plex Mono"]
+# normal = ["Iosevka", "Hiragino Sans W3"]
+# normal = ["Iosevka", "GB18030 Bitmap"]
+# normal = ["Iosevka", "IBM Plex Sans SC"]
+# 换主字体（IBM Plex Mono 已装好，无编程连字）：
+# normal = ["IBM Plex Mono", "Maple Mono Normal NF CN"]
+# normal = ["IBM Plex Mono", "IBM Plex Sans SC"]
+size = 26
+
+# font features are keyed by exact family name, not appended to the font string
+[font.features]
+Iosevka = ["-calt", "-liga", "-dlig"]
 
 [box-drawing]
 # "font-glyph", "native" or "selected-native"

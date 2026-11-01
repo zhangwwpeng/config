@@ -1,0 +1,36 @@
+{
+  "appExceptions" : [
+    {
+      "bundleID" : "com.apple.finder",
+      "hide" : "whenNoWindows",
+      "ignore" : "never"
+    }
+  ],
+  "directActivationBindings" : [
+    "com.google.Chrome",
+    "com.neovide.neovide",
+    "net.kovidgoyal.kitty",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "hideMenuBarIcon" : true,
+  "nextScopedShortcutID" : 4,
+  "scopedShortcutList" : [
+    {
+      "id" : "3",
+      "name" : "scopedSwitch.3",
+      "scope" : "allAppsCurrentSpace"
+    }
+  ],
+  "shortcutOverrides" : [
+    {
+      "layoutMode" : "list",
+      "target" : "switchApps"
+    }
+  ],
+  "showMinimizedWindows" : true
+}

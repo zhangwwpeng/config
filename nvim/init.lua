@@ -1,26 +1,18 @@
 ------------------------------------------------------------------------
--- vim oion set
+-- vim option set
 ------------------------------------------------------------------------
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
-vim.g.loaded_node_provider = 0
 vim.g.loaded_gzip = 1
 vim.g.loaded_tar = 1
 vim.g.loaded_tarPlugin = 1
 vim.g.loaded_zip = 1
 vim.g.loaded_zipPlugin = 1
-vim.g.loaded_getscript = 1
-vim.g.loaded_getscriptPlugin = 1
-vim.g.loaded_vimball = 1
-vim.g.loaded_vimballPlugin = 1
-vim.g.loaded_2html_plugin = 1
-vim.g.loaded_logiPat = 1
-vim.g.loaded_rrhelper = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.mapleader = " " -- set to leader key
-vim.g.maplocalleader = "\\" -- disable maplocalleader
+vim.g.maplocalleader = "\\" -- localleader（grug-far 等 buffer 内操作用）
 
 vim.o.inccommand = "split" -- Preview substitutions live, as you type!
 vim.o.scrolloff = 10
@@ -37,7 +29,7 @@ vim.o.cursorline = true -- 当前行高亮
 vim.o.splitbelow = true -- 窗口打开位置
 vim.o.splitright = true -- 窗口打开位置
 vim.o.tabstop = 4 -- 一个 tab 显示为 4 个空格
-vim.o.shiftwidth = 0 -- 首行缩进时用 4 个空格
+vim.o.shiftwidth = 0 -- 0 = 跟随 tabstop（即 4）
 vim.o.softtabstop = 4 -- 插入模式按 Tab = 4 个空格
 vim.o.expandtab = true -- Tab 转换为空格
 vim.o.incsearch = true -- search as characters are entered
@@ -62,12 +54,12 @@ vim.o.linebreak = true
 vim.o.smoothscroll = true
 -- vim.o.textwidth = 80
 -- vim.o.colorcolumn = "+0"
--- vim.o.winborder = "rounded"
--- vim.o.laststatus = 0
+vim.o.laststatus = 0
 vim.o.signcolumn = "yes"
 -- vim.opt.signcolumn = "yes"
 -- vim.opt.statuscolumn = "%C%=%l %s"
 vim.o.updatetime = 600
+vim.o.winborder = "rounded" -- 浮窗默认圆角边框（LSP hover / diag float 等）
 
 -- 设置折叠方法为表达式 (expr)
 -- 用 vim.o（全局默认）而不是 vim.wo[0][0]（只作用于启动窗口），否则 :tabnew 出来的
@@ -80,21 +72,29 @@ vim.opt.foldlevelstart = 99
 -- vim.o.messagesopt = "hit-enter,history:500,progress:"
 
 vim.cmd.colorscheme("bamboo_bamboo")
+
+vim.g.float_win_blend = 20
+
 ------------------------------------------------------------------------
 -- neovide config
 ------------------------------------------------------------------------
 if vim.g.neovide then
-    -- for macos keybind
-    -- Allow clipboard copy paste in neovim
-    vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
-    vim.keymap.set("v", "<D-c>", '"+y') -- Copy
-    vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
-    vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
-    vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
-    vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
-    vim.keymap.set("t", "<D-v>", function()
-        vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
-    end, { noremap = true, silent = true })
+    -- 字体统一在 ~/.config/neovide/config.toml 的 [font] / [font.features] 里配。
+    -- 不要在 init.lua 里 set guifont：它会把 config.toml 的 normal 列表和 size 整个覆盖掉
+    -- （neovide 只有在 guifont "was_set" 时才用 nvim 的值，没 set 才读 config.toml）。
+
+    -- macOS 的 Cmd 键（<D-*>）；Linux 下 <D-*> 是 Super 键，一般被桌面环境占用，不映射
+    if vim.fn.has("mac") == 1 then
+        vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
+        vim.keymap.set("v", "<D-c>", '"+y') -- Copy
+        vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
+        vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
+        vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+        vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+        vim.keymap.set("t", "<D-v>", function()
+            vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
+        end, { noremap = true, silent = true })
+    end
 
     -- 控制缩放
     vim.g.neovide_scale_factor = 1.0
@@ -113,6 +113,9 @@ if vim.g.neovide then
     vim.g.neovide_floating_blur_amount_x = 5.0
     vim.g.neovide_floating_blur_amount_y = 5.0
 
+    -- 浮窗透明度见上面的 vim.g.float_win_blend：正常窗口 / 桌面保持不透明
+    -- （neovide_opacity 与 neovide_normal_opacity 都是 1），只有 float 半透明 + 背景模糊。
+
     -- float showdown
     vim.g.neovide_floating_shadow = true
     vim.g.neovide_floating_z_height = 10
@@ -121,7 +124,7 @@ if vim.g.neovide then
     vim.g.neovide_floating_corner_radius = 0.5
 
     -- background not opacity , windows opacity
-    vim.g.neovide_opacity = 0.8
+    vim.g.neovide_opacity = 1
     vim.g.neovide_show_border = true
 
     -- disable some animal
@@ -144,8 +147,10 @@ if vim.g.neovide then
     vim.g.neovide_progress_bar_hide_delay = 0.2
     vim.g.neovide_cursor_hack = false
 
-    -- alt
-    vim.g.neovide_input_macos_option_key_is_meta = "both"
+    -- alt（只对 macOS 的 Option 键有意义）
+    if vim.fn.has("mac") == 1 then
+        vim.g.neovide_input_macos_option_key_is_meta = "both"
+    end
 
     -- 输入法
     vim.g.neovide_input_ime = true
@@ -156,32 +161,44 @@ if vim.g.neovide then
 
     -- scrollbar
     -- vim.g.neovide_system_scrollbar = true
+    ------------------------------------------------------------------------
+    -- cwd / $PWD
+    ------------------------------------------------------------------------
+    -- nvim 的 :cd 只改进程 cwd，不改环境变量 $PWD。终端里 zsh 会替我们维护 PWD，
+    -- 但 neovide 直接把自己的 PWD 透给 nvim 子进程，之后就不再管了（neovide 源码里
+    -- 没有 DirChanged 处理，它的 cwd 是进程级、启动时定死）。所以 neovide 下 :cd 之后
+    -- $PWD 还是启动目录，凡是读 env PWD 的插件/子进程都会看到旧目录。这里手动同步。
+    local function sync_pwd()
+        vim.env.PWD = vim.uv.cwd()
+    end
+    vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, { callback = sync_pwd })
 end
 
-------------------------------------------------------------------------
--- cwd / $PWD
-------------------------------------------------------------------------
--- nvim 的 :cd 只改进程 cwd，不改环境变量 $PWD。终端里 zsh 会替我们维护 PWD，
--- 但 neovide 直接把自己的 PWD 透给 nvim 子进程，之后就不再管了（neovide 源码里
--- 没有 DirChanged 处理，它的 cwd 是进程级、启动时定死）。所以 neovide 下 :cd 之后
--- $PWD 还是启动目录，凡是读 env PWD 的插件/子进程都会看到旧目录。这里手动同步。
-local function sync_pwd()
-    vim.env.PWD = vim.uv.cwd()
-end
-vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, { callback = sync_pwd })
+---浮窗透明度唯一来源（0 = 不透明，100 = 全透明）。
+---Neovide 把 'winblend' 当作浮动窗口的背景 alpha；TUI 下则是跟后面的内容混色。
+---注意：ui2 的 msg/pager/dialog 用 noautocmd 建窗、blink / pi-agent / 诊断浮窗会自己写
+---winblend，这些地方（ui.lua / code_completion.lua / pi_agent_cfg.lua）要各自读这个值。
+---（不要放进 if vim.g.neovide 里：TUI 下浮窗也要这个透明度）
+local float_blend_group = vim.api.nvim_create_augroup("FloatWinBlend", { clear = true })
+vim.api.nvim_create_autocmd("WinNew", {
+    group = float_blend_group,
+    callback = function()
+        local win = vim.api.nvim_get_current_win()
+        if vim.api.nvim_win_get_config(win).relative ~= "" then
+            vim.wo[win].winblend = tonumber(vim.g.float_win_blend) or 0
+        end
+    end,
+    desc = "apply float_win_blend to every new floating window",
+})
 
 ------------------------------------------------------------------------
 -- lazy load plugin
 ------------------------------------------------------------------------
 vim.schedule(function()
-    -- loading the clipboard provider at startup costs a few ms
-    -- vim.o.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
     vim.o.quickfixtextfunc = require("quickfix").quickfixtextfunc
     vim.cmd.packadd("nohlsearch")
     vim.cmd.packadd("nvim.undotree")
     vim.cmd("clearjumps")
-    vim.t.tab_title = "main"
-    vim.cmd("redrawtabline")
     vim.pack.add({
         { src = "https://github.com/L3MON4D3/LuaSnip", version = vim.version.range("2.*") },
         { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("*") },
@@ -191,22 +208,25 @@ vim.schedule(function()
         "https://github.com/esmuellert/codediff.nvim",
         "https://github.com/juniorsundar/refer.nvim",
         "https://github.com/folke/lazydev.nvim",
-        "https://github.com/stevearc/overseer.nvim",
         "https://github.com/zhangwwpeng/pi-agent.nvim",
+        "https://github.com/coder/claudecode.nvim",
         "https://github.com/nvim-mini/mini.diff",
         "https://github.com/milanglacier/minuet-ai.nvim",
         "https://github.com/cursortab/cursortab.nvim",
         "https://github.com/obsidian-nvim/obsidian.nvim",
-        "https://github.com/ellisonleao/gruvbox.nvim",
         "https://github.com/nvim-treesitter/nvim-treesitter-context",
-        "https://github.com/neanias/everforest-nvim",
-        "https://github.com/ribru17/bamboo.nvim",
-        "https://github.com/folke/tokyonight.nvim",
+        "https://github.com/zbirenbaum/copilot.lua",
+        "https://github.com/DNLHC/glance.nvim",
+        "https://github.com/MagicDuck/grug-far.nvim",
+        "https://github.com/danymat/neogen",
     })
+    require("bigfile").setup() -- 最先加载：后面模块的 FileType 回调要能看到 vim.b.bigfile
     require("grep")
     require("run")
     require("code_lint").setup()
     require("code_format").setup()
+    -- lazydev 必须在 vim.lsp.enable 之前 setup，lua_ls 首次 attach 就能拿到 nvim runtime 类型
+    require("lazydev").setup()
     require("code_lsp").setup()
     require("code_edit").setup()
     require("code_treesitter").setup()
@@ -216,19 +236,17 @@ vim.schedule(function()
     require("focus_tab").setup()
     require("cmd_panel").setup()
     require("code_picker").setup()
+    require("glance_cfg").setup()
+    require("grug_far_cfg").setup()
     require("indent")
     require("imselect").setup()
     require("dir").setup()
     require("terminal").setup()
-    require("pi-agent").setup()
-    require("pi_diff").setup()
     require("flash_cfg")
     require("keymaps")
     require("ui").setup()
-    require("markdown_tabfmt").setup()
     require("markdown_hlcode").setup()
-    require("ai").setup()
     require("obsidian_cfg").setup()
     require("treesitter_context_cfg").setup()
-    require("side_bar").setup()
+    require("neogen").setup()
 end)

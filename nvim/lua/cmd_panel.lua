@@ -158,23 +158,38 @@ function session.setup()
     })
     M.registry_cmd({
         cmd_name = "piagent start",
-        desc = "pi start",
+        desc = "pi start（和 claude 二选一）",
         cmd = function()
-            require("pi_diff").ask_enable()
-            require("pi-agent").start()
+            require("agent").start("pi")
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "claude start",
+        desc = "claude code start（和 pi 二选一）",
+        cmd = function()
+            require("agent").start("claude")
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "enable ai",
+        desc = "enable copilot / minuet / cursortab / ai_select",
+        cmd = function()
+            require("ai").setup()
+            require("ai_select").setup()
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "grep",
+        desc = "use rg to grep",
+        cmd = function()
+            vim.cmd("GrugFar") -- grug-far 已在 init.lua 里 setup，不要重复 setup
         end,
     })
     M.registry_cmd({
         cmd_name = "markdown fmt",
         desc = "toggle markdown fmt",
         cmd = function()
-            vim.cmd("Mtm")
-        end,
-    })
-    M.registry_cmd({
-        cmd_name = "ai review code",
-        desc = "ai review code",
-        cmd = function()
+            require("markdown_tabfmt").setup()
             vim.cmd("Mtm")
         end,
     })
@@ -186,10 +201,32 @@ function session.setup()
             require("mini.diff").toggle_overlay()
         end,
     })
+    M.registry_cmd({
+        cmd_name = "change pwd to cwd",
+        desc = "change working directory to current working directory",
+        cmd = function()
+            vim.cmd("cd %:p:h")
+        end,
+    })
+    M.registry_cmd({
+        cmd_name = "pi diff",
+        desc = "pi: diff 本轮改动 (codediff)",
+        cmd = function()
+            require("pi_diff").review()
+        end,
+    })
+
+    M.registry_cmd({
+        cmd_name = "pi diff rollback",
+        desc = "pi: 回滚本轮改动",
+        cmd = function()
+            require("pi_diff").rollback()
+        end,
+    })
 end
 
 ------------------------------------------------------------------------
--- Plugin Manger
+-- Plugin Manager
 ------------------------------------------------------------------------
 
 local plugin_manger = {}

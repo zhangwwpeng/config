@@ -9,7 +9,8 @@ export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_pr
 
 # === Aliases ===
 # alias ff='cd $(fd --type d --hidden --exclude .git --exclude node_module --exclude .cache --exclude .npm --exclude .mozilla --exclude .meteor --exclude .nv | fzf)'
-alias nd='neovide'
+# neovide 0.16.2 (brew) 无法解析 nvim 0.13-dev 的 api-info，必须用 nightly 版 neovide
+alias nd='/Applications/Neovide.app/Contents/MacOS/neovide --neovim-bin ~/nvim-macos-arm64/bin/nvim'
 
 alias nvim="nvim_wrapper"
 alias vim="nvim_wrapper"
@@ -31,24 +32,55 @@ alias lz='lazygit'
 
 alias c='clear'
 
-export EDITOR="nvim"
-export VISUAL="nvim"
+# nvim 二进制：wrapper / EDITOR / nvim_term_remote.py 统一用它，
+# 避免 PATH 里另一个版本的 nvim 去连本实例的 socket。
+NVIM_BIN="${NVIM_BIN:-$HOME/nvim-macos-arm64/bin/nvim}"
+if [ ! -x "$NVIM_BIN" ]; then
+    NVIM_BIN="$(command -v nvim 2>/dev/null || printf 'nvim')"
+fi
+export NVIM_BIN
 
-# === nvim wrapper (remote trigger when NVIM_PIP_FATHER is set) ===
+export EDITOR="$NVIM_BIN"
+export VISUAL="$NVIM_BIN"
+
+# === nvim wrapper（在 nvim 终端里转发给父 nvim 实例）===
+# 父实例 RPC 地址：优先 NVIM_PIP_FATHER（显式注入），否则用 nvim 给 :terminal 子进程
+# 设置的 $NVIM（== vim.v.servername）。$NVIM 可能已失效（nvim 退出后 tmux/terminal 残留），
+# 所以本地 unix socket 不存在时直接忽略，避免每次都要先失败一次。
+__nvim_father() {
+    local f="${NVIM_PIP_FATHER:-${NVIM:-}}"
+    case "$f" in
+        "") return 0 ;;
+        /*) [ -S "$f" ] && printf '%s\n' "$f" ;;
+        *) printf '%s\n' "$f" ;;   # 非路径形式（127.0.0.1:port 等）无法用 -S 判断
+    esac
+}
+
+# 转发成功返回 0；父实例已退出 / 转发失败返回非 0，由 wrapper 回退到本地 nvim
+__nvim_remote() {
+    ~/.config/nvim/scripts/nvim_term_remote.py "$@"
+}
+
 nvim_wrapper() {
-    if [ -n "${NVIM_PIP_FATHER:-}" ]; then
-        ~/.config/nvim/scripts/nvim_term_remote.py "$NVIM_PIP_FATHER" "$@"
-    else
-        command nvim "$@"
+    local father
+    if [ "$#" -gt 0 ]; then
+        father=$(__nvim_father)
+        if [ -n "$father" ] && __nvim_remote "$father" "$@"; then
+            return 0
+        fi
     fi
+    command "$NVIM_BIN" "$@"
 }
 
 vimdiff_wrapper() {
-    if [ -n "${NVIM_PIP_FATHER:-}" ]; then
-        ~/.config/nvim/scripts/nvim_term_remote.py "$NVIM_PIP_FATHER" --diff "$@"
-    else
-        command nvim -d "$@"
+    local father
+    if [ "$#" -gt 0 ]; then
+        father=$(__nvim_father)
+        if [ -n "$father" ] && __nvim_remote "$father" --diff "$@"; then
+            return 0
+        fi
     fi
+    command "$NVIM_BIN" -d "$@"
 }
 
 # === fzf ===
@@ -65,14 +97,15 @@ fi
 # shellcheck source=/dev/null
 [ -f ~/.secrets_sh ] && source ~/.secrets_sh
 
-# === Claude Code ===
-export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
-export ANTHROPIC_MODEL='deepseek-v4-pro[1m]'
-export ANTHROPIC_DEFAULT_OPUS_MODEL='deepseek-v4-pro[1m]'
-export ANTHROPIC_DEFAULT_SONNET_MODEL='deepseek-v4-pro[1m]'
-export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
-export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
-export CLAUDE_CODE_EFFORT_LEVEL=max
+# this for deepseek-v4-flash
+# === Claude Code === 
+# export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+# export ANTHROPIC_MODEL='deepseek-v4-flash[1m]'
+# export ANTHROPIC_DEFAULT_OPUS_MODEL='deepseek-v4-flash[1m]'
+# export ANTHROPIC_DEFAULT_SONNET_MODEL='deepseek-v4-flash[1m]'
+# export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash
+# export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash
+# export CLAUDE_CODE_EFFORT_LEVEL=max
 
 # === ls color ===
 export CLICOLOR=1

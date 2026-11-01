@@ -1,4 +1,3 @@
-local treesitter, fn = vim.treesitter, vim.fn
 vim.api.nvim_create_autocmd("FileType", {
     desc = "QuickFix Tweaks",
     pattern = "qf",
@@ -143,29 +142,6 @@ function M.text(info)
         apply_highlights(list.qfbufnr, ttt)
     end)
     return get_lines(ttt)
-end
-
-function M.qf_text(info)
-    local items
-    if info.quickfix == 1 then
-        items = fn.getqflist({ id = info.id, items = 0 }).items
-    else
-        items = fn.getloclist(info.winid, { id = info.id, items = 0 }).items
-    end
-
-    local lines = {}
-    for i = info.start_idx, info.end_idx do
-        local item = items[i]
-        if not item then
-            lines[#lines + 1] = ""
-        elseif (item.lnum or 0) == 0 then
-            local name = item.bufnr and item.bufnr > 0 and fn.bufname(item.bufnr) or ""
-            lines[#lines + 1] = string.format("▸ %s", name)
-        else
-            lines[#lines + 1] = string.format("  %4d:%-3d │ %s", item.lnum, item.col or 0, item.text or "")
-        end
-    end
-    return lines
 end
 
 M.quickfixtextfunc = "v:lua.require'quickfix'.text"

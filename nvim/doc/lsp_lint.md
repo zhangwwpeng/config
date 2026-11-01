@@ -18,7 +18,7 @@
 | python | ruff | `lsp/ruff.lua` | lint 诊断、organize imports | `brew install ruff` |
 | python | basedpyright | `lsp/basedpyright.lua` | 类型检查诊断 | `brew install basedpyright` |
 | python | pyrefly | `lsp/pyrefly.lua` | 补全 / 跳转 | `brew install pyrefly` |
-| systemverilog | slang_server | lsp/slang_server.lua | 补全 / 诊断 / 跳转 | Manual install（见下）|
+| systemverilog / verilog | slang-server | `lsp/systemverilog.lua` | 补全 / 诊断 / 跳转 | Manual install（见下）|
 
 
 ### clangd
@@ -67,13 +67,13 @@ vim.lsp.enable({
 
 ### 诊断显示策略
 
-在 `lua/code_lsp.lua` 中额外配置了 Insert 模式诊断切换：
+诊断显示统一在 `lua/ui.lua` 的 `M.setup()` 里配置（`code_lsp.lua` 不再调用 `vim.diagnostic.config`，避免浅合并互相覆盖）：
 
-- `InsertEnter`：`vim.diagnostic.hide(nil, args.buf)`，隐藏当前 buffer 的诊断展示
-- `InsertLeave`：`vim.diagnostic.show(nil, args.buf)`，恢复当前 buffer 的诊断展示
-- `<leader>0`：在当前窗口内展开当前行诊断面板（一条诊断一行；移动光标/进入 Insert 后自动关闭）
-
-这样可以避免输入时视觉噪音，同时保持离开 Insert 后诊断状态一致。
+- `virtual_text`：只在当前行显示，格式 `(message)`；`gK` 切换“只当前行 / 所有行”
+- `]d` / `[d` 跳转后自动弹出诊断浮窗（`jump.on_jump`）
+- 不画 underline，Insert 模式不更新
+- `<leader>d` / `<leader>D`：所有 buffer / 当前 buffer 的诊断汇总到 quickfix
+- 所有 server 的 semantic tokens 都在 `LspAttach` 时关掉，高亮统一交给 treesitter；inlay hint 全局开启
 
 ### slang_server
 

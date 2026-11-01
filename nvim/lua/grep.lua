@@ -93,8 +93,9 @@ local function update_preview()
   local ft = vim.filetype.match({ buf = item.bufnr })
   if ft then
     local lang = treesitter.language.get_lang(ft)
-    if lang and pcall(treesitter.get_parser, item.bufnr, lang) then
-      treesitter.start(item.bufnr, lang)
+    -- get_parser 找不到 parser 时返回 nil 不抛错，pcall 判断无效；start 失败直接吞掉，退回 regex 高亮
+    if lang then
+      pcall(treesitter.start, item.bufnr, lang)
     end
   end
 

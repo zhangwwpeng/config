@@ -24,8 +24,8 @@ local function build_query_from_node_types(node_types)
 end
 
 local function collect_nodes(bufnr, language, node_types)
-    local parser = ts.get_parser(bufnr, language)
-    local tree = parser:parse()[1]
+    local parser = ts.get_parser(bufnr, language, { error = false })
+    local tree = parser and parser:parse()[1]
     if not tree then
         return {}
     end
@@ -63,12 +63,11 @@ local function format_module(bufnr)
         align_col = 48,
         target_col = 80,
     }
-    local has_parser = pcall(ts.get_parser, bufnr, spec.language)
-    if not has_parser then
+    -- 0.12+ 的 get_parser 找不到 parser 时返回 nil 而不是抛错，用 pcall 判断无效
+    local parser = ts.get_parser(bufnr, spec.language, { error = false })
+    if not parser then
         return false
     end
-
-    local parser = ts.get_parser(bufnr, spec.language)
     local tree = parser:parse()[1]
     if not tree then
         return false

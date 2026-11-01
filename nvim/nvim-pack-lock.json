@@ -5,14 +5,14 @@
       "src": "https://github.com/L3MON4D3/LuaSnip",
       "version": "2.0.0 - 3.0.0"
     },
-    "bamboo.nvim": {
-      "rev": "1309bc88bffcf1bedc3e84e7fa9004de93da774a",
-      "src": "https://github.com/ribru17/bamboo.nvim"
-    },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
       "version": ">=0.0.0"
+    },
+    "claudecode.nvim": {
+      "rev": "5d117c8bfffaab676d113ce67edc9086220cb1a9",
+      "src": "https://github.com/coder/claudecode.nvim"
     },
     "codediff.nvim": {
       "rev": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e",
@@ -22,21 +22,25 @@
       "rev": "016802de402556da54c36bd7359b441266b01cdd",
       "src": "https://github.com/stevearc/conform.nvim"
     },
+    "copilot.lua": {
+      "rev": "82607bbb8528222a9a28bfcab0aceb3a7fed7e85",
+      "src": "https://github.com/zbirenbaum/copilot.lua"
+    },
     "cursortab.nvim": {
       "rev": "2f3db57fd3f8e1497131b1c04fea08dca97b46e2",
       "src": "https://github.com/cursortab/cursortab.nvim"
-    },
-    "everforest-nvim": {
-      "rev": "a0e9edc57379e8feafc6ba207c26dbb12fc1b6d8",
-      "src": "https://github.com/neanias/everforest-nvim"
     },
     "flash.nvim": {
       "rev": "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a",
       "src": "https://github.com/folke/flash.nvim"
     },
-    "gruvbox.nvim": {
-      "rev": "154eb5ff5b96d0641307113fa385eaf0d36d9796",
-      "src": "https://github.com/ellisonleao/gruvbox.nvim"
+    "glance.nvim": {
+      "rev": "5a8eab1c1c48bfa19a33b556328a3c553138366e",
+      "src": "https://github.com/DNLHC/glance.nvim"
+    },
+    "grug-far.nvim": {
+      "rev": "91b7e58b6ffc6ddad5acb7a7c1df21257724449e",
+      "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
@@ -50,6 +54,10 @@
       "rev": "50bf63b031c0391e926fdf0b3d044d37846e6e34",
       "src": "https://github.com/milanglacier/minuet-ai.nvim"
     },
+    "neogen": {
+      "rev": "23e7e9f883d01289ebd90e98025acc860ea26366",
+      "src": "https://github.com/danymat/neogen"
+    },
     "nvim-lint": {
       "rev": "3d55c8f67c6ae5c15e1042571e107c7a3d5c5f4e",
       "src": "https://github.com/mfussenegger/nvim-lint"
@@ -62,10 +70,6 @@
       "rev": "4eec5b1319e15154002931ce4eaf4d8e2952c519",
       "src": "https://github.com/obsidian-nvim/obsidian.nvim"
     },
-    "overseer.nvim": {
-      "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
-      "src": "https://github.com/stevearc/overseer.nvim"
-    },
     "pi-agent.nvim": {
       "rev": "fa4209dd99dd55cacdc3e1395b9e1670358a12c9",
       "src": "https://github.com/zhangwwpeng/pi-agent.nvim"
@@ -73,10 +77,6 @@
     "refer.nvim": {
       "rev": "fc042733153a61428eb062776a3c61c0df433524",
       "src": "https://github.com/juniorsundar/refer.nvim"
-    },
-    "tokyonight.nvim": {
-      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
-      "src": "https://github.com/folke/tokyonight.nvim"
     }
   }
 }

@@ -1,26 +1,9 @@
 local M = {}
 
----@alias CompletionBackend "blink" | "mini"
---- Change this value and restart Neovim to switch completion backend.
----@type CompletionBackend
-M.backend = "blink"
-
-local tiny_cmdline = {
-    position = {
-        x = "50%",
-        y = "10%",
-    },
-}
-
-local function setup_mini()
-    require("mini.completion").setup()
-    require("mini.cmdline").setup({
-        autocorrect = { enable = false },
-    })
-    require("tiny-cmdline").setup(tiny_cmdline)
-end
-
-local function setup_blink()
+function M.setup()
+    -- 补全菜单/文档/签名窗都是浮窗，统一跟 float 透明度走（blink 会自己写 winblend，
+    -- 会覆盖 init.lua 里 WinNew autocmd 设的值，所以这里必须显式传）
+    local float_blend = tonumber(vim.g.float_win_blend) or 0
     require("blink.cmp").setup({
         keymap = {
             preset = "none",
@@ -28,13 +11,13 @@ local function setup_blink()
             ["<C-n>"] = { "select_next", "fallback_to_mappings" },
 
             -- 显式确认：有选中项时插入，否则退回普通回车（换行）
-            -- ["<Enter>"] = { "accept", "fallback" },
+            ["<Enter>"] = { "accept", "fallback" },
             ["<C-l>"] = { "hide", "fallback" },
 
             ["<C-u>"] = { "scroll_documentation_up", "fallback" },
             ["<C-d>"] = { "scroll_documentation_down", "fallback" },
         },
-        signature = { enabled = true, window = { border = "single" } },
+        signature = { enabled = true, window = { border = "rounded", winblend = float_blend } },
         appearance = {
             use_nvim_cmp_as_default = true,
         },
@@ -76,14 +59,15 @@ local function setup_blink()
             -- },
             ghost_text = { enabled = true },
             menu = {
-                -- border = "single",
+                border = "none",
+                winblend = float_blend,
                 draw = {
                     columns = { { "label" }, { "kind" } },
                 },
             },
             documentation = {
                 auto_show = true,
-                window = { border = "single" },
+                window = { border = "rounded", winblend = float_blend },
             },
             list = {
                 selection = {
@@ -105,18 +89,6 @@ local function setup_blink()
             },
         },
     })
-    -- require("tiny-cmdline").setup(vim.tbl_extend("force", tiny_cmdline, {
-    --    on_reposition = require("tiny-cmdline").adapters.blink,
-    -- }))
-end
-
-local backends = {
-    mini = setup_mini,
-    blink = setup_blink,
-}
-
-function M.setup()
-    backends[M.backend]()
 end
 
 return M

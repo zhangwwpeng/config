@@ -4,8 +4,29 @@ local ui2 = require("vim._core.ui2")
 local msgs = require("vim._core.ui2.messages")
 local orig_set_pos = msgs.set_pos
 
+---浮窗透明度：'winblend' 是窗口局部选项，Neovide 拿它当浮动窗口的背景 alpha
+---（值来自 init.lua 的 vim.g.float_win_blend，0 = 不透明）
+---注意：ui2 用 noautocmd 建这些窗口，init.lua 的 WinNew autocmd 不会触发，只能在这里手动套
+local function float_blend()
+    return tonumber(vim.g.float_win_blend) or 0
+end
+
+---给 ui2 的浮窗设半透明（cmd 是命令行窗口，不算浮层，想一起透明就把 "cmd" 加进来）
+local function apply_ui_blend()
+    local blend = float_blend()
+    for _, kind in ipairs({ "msg", "pager", "dialog" }) do
+        local w = ui2.wins[kind]
+        if w and vim.api.nvim_win_is_valid(w) then
+            vim.wo[w].winblend = blend
+        end
+    end
+end
+
 msgs.set_pos = function(tgt, focus)
     orig_set_pos(tgt, focus)
+
+    -- ui2 会（换 tab / 窗口不再是浮窗时）随手重建这些窗口，所以每次定位都重套一遍
+    apply_ui_blend()
 
     if (tgt == "msg" or tgt == nil) and vim.api.nvim_win_is_valid(ui2.wins.msg) then
         if not vim.api.nvim_win_get_config(ui2.wins.msg).hide then
@@ -17,14 +38,14 @@ msgs.set_pos = function(tgt, focus)
                 anchor = "NW", -- 锚点是左下角
                 row = 0, -- 行坐标设为屏幕底部（减 2 是为了避开底部的状态栏和命令行）
                 col = 0,
-                border = "rounded",
+                border = "none",
             })
         end
     end
 
     if (tgt == "pager" or tgt == nil) and vim.api.nvim_win_is_valid(ui2.wins.pager) then
         pcall(vim.api.nvim_win_set_config, ui2.wins.pager, {
-            border = "rounded",
+            border = "none",
         })
     end
 end
@@ -39,6 +60,24 @@ function M.setup(opts)
 
             format = function(d)
                 return "(" .. d.message .. ")"
+            end,
+        },
+        -- ]d / [d 跳转后弹诊断浮窗。
+        -- 注意：只认识顶层的 jump，写在 virtual_text.jump 里是无效配置（会被直接忽略，
+        -- 所以之前 ]d / [d 看起来“没有浮窗”）。
+        -- 用 on_jump 而不是已废弃的 jump.float（0.13 会把 jump.float 当 deprecated 警告）。
+        jump = {
+            on_jump = function(d, bufnr)
+                if not d then
+                    return
+                end
+                vim.diagnostic.open_float({
+                    bufnr = bufnr,
+                    scope = "cursor",
+                    focus = false,
+                    border = "rounded",
+                    source = "if_many",
+                })
             end,
         },
         virtual_lines = false,
@@ -65,6 +104,70 @@ function M.setup(opts)
         end
         return string.format("[x%d][>%d]", counts[1], counts[2])
     end
+
+    ---按 title 找已有的 quickfix 列表，找到就更新（保留当前选择），找不到就新建
+    ---@param title string
+    ---@return integer? id
+    local function qf_id_by_title(title)
+        for i = 1, vim.fn.getqflist({ nr = "$" }).nr do
+            local qf = vim.fn.getqflist({ nr = i, id = 0, title = 0 })
+            if qf.title == title then
+                return qf.id
+            end
+        end
+        return nil
+    end
+
+    ---把所有 diagnostic 汇总到 quickfix（quickfix.lua 里已有自定义显示：带上下文行）
+    ---注：0.13 的 vim.diagnostic.setqflist 不再支持 bufnr 过滤，所以自己 toqflist 后 setqflist
+    ---@param bufnr integer? nil = 所有已加载的 buffer
+    local function diagnostics_to_qflist(bufnr)
+        local diags = vim.diagnostic.get(bufnr)
+        local scope = bufnr and "当前 buffer" or "所有 buffer"
+        if #diags == 0 then
+            vim.notify("没有诊断（" .. scope .. "）", vim.log.levels.INFO)
+            return
+        end
+        local counts = { 0, 0, 0, 0 }
+        for _, d in ipairs(diags) do
+            counts[d.severity] = (counts[d.severity] or 0) + 1
+        end
+
+        -- title 不带数量：这样重复按是在同一个 quickfix 列表上原地更新，不会把 history 刷满
+        local title = "Diagnostics · " .. scope
+        local prev_win = vim.api.nvim_get_current_win()
+        local id = qf_id_by_title(title)
+
+        -- 诊断消息里经常带换行（ruff/pyright 的 help 段），压成一行，quickfix 列表才好看
+        local items = vim.diagnostic.toqflist(diags)
+        for _, item in ipairs(items) do
+            item.text = vim.trim((item.text or ""):gsub("%s*\n+%s*", " "))
+        end
+
+        vim.fn.setqflist({}, id and "u" or " ", {
+            id = id,
+            title = title,
+            items = items,
+        })
+        vim.cmd("botright cwindow")
+        -- cwindow 会把光标挪到 quickfix 窗口，退回原来的窗口，继续在代码里干活
+        if vim.api.nvim_win_is_valid(prev_win) then
+            vim.api.nvim_set_current_win(prev_win)
+        end
+        vim.notify(
+            ("诊断 %d 条（x%d >%d ?%d）→ quickfix"):format(#diags, counts[1], counts[2], counts[3] + counts[4]),
+            vim.log.levels.INFO
+        )
+    end
+
+    -- 所有 buffer 的 diagnostic -> quickfix
+    vim.keymap.set("n", "<leader>d", function()
+        diagnostics_to_qflist(nil)
+    end, { desc = "All diagnostics -> quickfix" })
+    -- 当前 buffer 的 diagnostic -> quickfix
+    vim.keymap.set("n", "<leader>D", function()
+        diagnostics_to_qflist(vim.api.nvim_get_current_buf())
+    end, { desc = "Buffer diagnostics -> quickfix" })
 
     vim.keymap.set("n", "gK", function()
         local vt = vim.diagnostic.config().virtual_text
@@ -155,6 +258,9 @@ function M.setup(opts)
             },
         },
     })
+
+    -- ui2.enable 建出来的窗口先统一下透明度
+    apply_ui_blend()
 
     -- lsp message
     local function should_quiet_lsp_progress(client, title, message)

@@ -58,6 +58,13 @@ end
 
 --- 启用: 映射 <C-[> 切换输入法，进入 insert 时按需恢复
 function M.setup()
+    -- 只在 macOS 且装了 im-select 时启用；Linux / 远程机器上什么都不做，避免每次 <Esc> 都起一个失败的 shell
+    if vim.fn.has("mac") == 0 or vim.fn.executable("im-select") == 0 then
+        M.to_en = function() end
+        M.switch = function() end
+        return
+    end
+
     vim.keymap.set("i", "<C-[>", function()
         M.to_en()
         return "<Esc>"

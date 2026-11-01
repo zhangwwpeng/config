@@ -28,10 +28,12 @@ function M.setup()
         "systemverilog", -- verilog,systemverilog
     })
 
-    -- lsp close lsp highlight
+    -- inlay hint 全局开启一次即可（不需要每次 attach 都调）
+    vim.lsp.inlay_hint.enable(true)
+
+    -- 关闭所有 server 的 semantic tokens，高亮统一交给 treesitter
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
-            vim.lsp.inlay_hint.enable(true)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client and client.server_capabilities.semanticTokensProvider then
                 client.server_capabilities.semanticTokensProvider = nil
@@ -39,11 +41,10 @@ function M.setup()
         end,
     })
 
-    -- 诊断显示配置统一在 ui.lua 的 M.setup() 里设置。
-    -- 注意：ui.setup() 在 init.lua 里同步执行，而本模块在 vim.schedule 里、更晚执行；
-    -- vim.diagnostic.config 是顶层浅合并，这里再设一次会把 ui.lua 的
-    -- virtual_text={source="if_many"} / virtual_lines={current_line=true} 覆盖掉，
-    -- 所以这里不要再调用 vim.diagnostic.config。
+    vim.lsp.codelens.enable(true)
+
+    -- 诊断显示配置统一在 ui.lua 的 M.setup() 里设置，这里不要再调用 vim.diagnostic.config：
+    -- 它是顶层浅合并，两处都设会互相覆盖（比如 virtual_text 整张表被替换）。
 
     -- -- 1. 创建一个独立的自动命令组，防止重复注册
     -- local diag_insert_group = vim.api.nvim_create_augroup("LspDiagInsertToggle", { clear = true })

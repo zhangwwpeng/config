@@ -5,7 +5,7 @@
 -- 用 codediff 的目录模式对比 snapshot 与当前 cwd，或用 rsync 精确回滚。
 -- 不依赖 pi-workspace-history。
 --
--- 键位：<leader>aD 看本轮改动  <leader>aR 回滚本轮
+-- 入口：<C-p> 命令面板里的 "pi diff" / "pi diff rollback"（没有单独绑键）
 --
 -- 调用 require("pi_diff").ask_enable() 询问当前 cwd 是否启用；
 -- 未启用时 review/rollback 会被拒绝，快照也不刷新。

@@ -5,7 +5,12 @@ local lint = require("lint")
 function M.setup()
     -- lint config
     vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-        callback = function()
+        callback = function(args)
+            -- 大文件 / 二进制 / 特殊 filetype（log 等）不跑任何 lint，包括 typos（见 bigfile.lua）
+            if vim.b[args.buf].bigfile then
+                return
+            end
+
             -- try_lint without arguments runs the linters defined in `linters_by_ft`
             -- for the current filetype
             lint.try_lint()
@@ -137,6 +142,26 @@ function M.setup()
         end,
     }
 
+    -- NOTE: nvim-lint's built-in rumdl def
+    --   * parses stderr, but rumdl >= 0.3 prints the JSON report on stdout
+    --   * uses `--output json` (relying on clap prefix matching)
+    -- Also disable MD013 (line-length) here instead of using a rumdl.toml.
+    lint.linters.rumdl = vim.tbl_deep_extend("force", lint.linters.rumdl, {
+        stream = "stdout",
+        args = {
+            "check",
+            "--stdin-filename",
+            function()
+                return vim.api.nvim_buf_get_name(0)
+            end,
+            "--output-format",
+            "json",
+            "--disable",
+            "MD013",
+            "-",
+        },
+    })
+
     lint.linters_by_ft = {
         -- python lint is handled by ruff LSP (see lsp/ruff.lua)
         c = { "clangtidy" },
@@ -147,6 +172,7 @@ function M.setup()
         toml = { "taplo" },
         systemverilog = { "svlint", "verilator", "verible" },
         verilog = { "svlint", "verilator", "verible" },
+        markdown = { "rumdl" },
     }
 end
 
