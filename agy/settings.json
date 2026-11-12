@@ -1,6 +1,7 @@
 {
   "allowNonWorkspaceAccess": true,
   "model": "Gemini 4 Carbon (Medium)",
+  "notifications": true,
   "permissions": {
     "allow": [
       "command(ls)",
@@ -11,7 +12,7 @@
       "command(git branch)",
       "command(grep)",
       "command(git -C ../config status)",
-      "command(find /Users/wpzhang/workspace -name \"*solouvm.conf*\" 2>/dev/null)",
+      "command(find /Users/wpzhang/workspace -name \"*solouvm.conf*\" 2\u003e/dev/null)",
       "command(find /Users/wpzhang/workspace -maxdepth 3 -mtime -2 -not -path \"*/.*\")",
       "command(find . -name \"*.py\" -not -path \"*/.*\")",
       "command(.venv/bin/python -m solouvm -c examples/demo/solouvm.conf.py gen)",
@@ -26,15 +27,15 @@
       "command(python3 -m py_compile kitty/tab_bar.py)",
       "command(bash -n sketchybar/sketchybarrc)",
       "command(find nvim -name \"*.lua\")",
-      "command(find nvim -name \"*.lua\" -exec luac -p {} + && echo \"All Lua files passed luac syntax check\")",
+      "command(find nvim -name \"*.lua\" -exec luac -p {} + \u0026\u0026 echo \"All Lua files passed luac syntax check\")",
       "command(make -n install)",
       "command(brew search)",
-      "command(mkdir -p /tmp/verible_ref && cd /tmp/verible_ref && git init && git remote add origin https://github.com/chipsalliance/verible.git && git config core.sparseCheckout true && echo \"verilog/formatting/*\" >> .git/info/sparse-checkout && git pull --depth=1 origin master)",
+      "command(mkdir -p /tmp/verible_ref \u0026\u0026 cd /tmp/verible_ref \u0026\u0026 git init \u0026\u0026 git remote add origin https://github.com/chipsalliance/verible.git \u0026\u0026 git config core.sparseCheckout true \u0026\u0026 echo \"verilog/formatting/*\" \u003e\u003e .git/info/sparse-checkout \u0026\u0026 git pull --depth=1 origin master)",
       "command(git checkout)",
       "command(git ls-files)",
-      "command(cd /tmp/verible_ref && echo \"verible/verilog/formatting/*\" > .git/info/sparse-checkout && git checkout)",
+      "command(cd /tmp/verible_ref \u0026\u0026 echo \"verible/verilog/formatting/*\" \u003e .git/info/sparse-checkout \u0026\u0026 git checkout)",
       "command(find /tmp/verible_ref -name \"basic-format-style.h\")",
-      "command(cd /tmp/verible_ref && echo \"verible/common/formatting/*\" >> .git/info/sparse-checkout && git checkout)",
+      "command(cd /tmp/verible_ref \u0026\u0026 echo \"verible/common/formatting/*\" \u003e\u003e .git/info/sparse-checkout \u0026\u0026 git checkout)",
       "command(mkdir)",
       "command(find /tmp/slang_ref/include -name \"TokenKind*\")",
       "command(find /tmp/slang_ref/source /tmp/slang_ref/include -name \"*Token*\")",
@@ -42,12 +43,12 @@
       "command(python3 -m pip install pyslang --dry-run)",
       "command(cmake -B build -DSLANG_INCLUDE_TESTS=OFF -DSLANG_INCLUDE_TOOLS=OFF -DCMAKE_BUILD_TYPE=Release -G Ninja)",
       "command(which)",
-      "command(brew --prefix ninja 2>/dev/null)",
+      "command(brew --prefix ninja 2\u003e/dev/null)",
       "command(cmake -B build -G \"Unix Makefiles\" -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DSLANG_INCLUDE_TESTS=OFF -DSLANG_INCLUDE_TOOLS=OFF -DCMAKE_BUILD_TYPE=Release)",
       "command(rm -rf /tmp/slang_ref/build)",
       "command(make svlang)",
       "command(make help)",
-      "command(cd /tmp/slang_ref/build && make slang_slang -j$(sysctl -n hw.ncpu))",
+      "command(cd /tmp/slang_ref/build \u0026\u0026 make slang_slang -j$(sysctl -n hw.ncpu))",
       "command(find /tmp/slang_ref/build -name \"*SyntaxKind*\")",
       "command(du)",
       "command(clang++)",
@@ -56,11 +57,11 @@
       "command(rm -rf third_party/slang/build)",
       "command(find third_party/slang -name \"SyntaxVisitor.h\")",
       "command(/tmp/dump_ast)",
-      "command(which codexbar && file $(which codexbar) && codexbar --version 2>&1 || true)",
+      "command(which codexbar \u0026\u0026 file $(which codexbar) \u0026\u0026 codexbar --version 2\u003e\u00261 || true)",
       "command(find . -maxdepth 4 -not -path '*/.*' -not -path './target*')",
       "command(ctest)",
       "command(find src tools -type f)",
-      "command(go tool nm $(realpath /Users/wpzhang/.local/bin/agy) 2>/dev/null | grep -E \"renderWithImages|generateImageSummary|transmitImagesIfNeeded|warmArtifactImages\")",
+      "command(go tool nm $(realpath /Users/wpzhang/.local/bin/agy) 2\u003e/dev/null | grep -E \"renderWithImages|generateImageSummary|transmitImagesIfNeeded|warmArtifactImages\")",
       "command(find src examples tests out docs README.md pyproject.toml -maxdepth 4 -not -path '*/.*')"
     ]
   },
@@ -76,6 +77,5 @@
     "/Users/wpzhang/workspace/svfmt",
     "/Users/wpzhang/workspace/doc",
     "/Users/wpzhang/workspace/waveview"
-  ],
-  "notifications": true
+  ]
 }

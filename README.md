@@ -32,7 +32,7 @@ make omp        # 只同步 omp 模型/provider、主题和扩展
 make -n install # 预览命令
 ```
 
-部署是 `rsync --delete` 复制（不是符号链接），以仓库为准：目标目录里仓库没有的文件会被删除（`.git`、缓存等已排除）。`claude/`、`agy/`、`omp/` 只覆盖设置文件及其子目录，不会碰会话、历史、数据库和日志。不做备份，回滚请用 git。
+部署是 `rsync --delete` 复制（不是符号链接），以仓库为准：目标目录里仓库没有的文件会被删除（`.git`、缓存等已排除）。`claude/`、`agy/`、`omp/` 只覆盖设置文件及其子目录，不会碰会话、历史、数据库和日志。不做备份，回滚请用 git。完整步骤、路径映射和故障排查见 [DEPLOY.md](DEPLOY.md)。
 
 ## 关键依赖
 
@@ -69,5 +69,6 @@ chmod 600 ~/.secrets_sh
 
 ## 文档索引
 
+- [部署指南](DEPLOY.md)
 - [Neovim 架构](nvim/README.md)
 - [LSP、lint、format 与 Tree-sitter](nvim/doc/lsp_lint.md)
