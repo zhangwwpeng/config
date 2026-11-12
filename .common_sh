@@ -130,3 +130,4 @@ rm() {
   done
   command rm "${opts[@]}" -- "${files[@]}"
 }
+export PATH="/Users/wpzhang/.local/bin:$PATH"

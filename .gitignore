@@ -22,3 +22,6 @@ build/
 
 # Claude
 .claude/
+
+# macOS
+.DS_Store

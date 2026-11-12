@@ -3,10 +3,13 @@ local M = {}
 local format = require("conform")
 local sv_format = require("sv_format")
 
+-- The tree-sitter based sv_format pass runs after svfmt; off for now.
+local ENABLE_SV_FORMAT = false
+
 function M.run_all_formatters(done)
     local bufnr = vim.api.nvim_get_current_buf()
     local filetype = vim.bo[bufnr].filetype
-    local needs_sv_format = filetype == "systemverilog" or filetype == "verilog"
+    local needs_sv_format = ENABLE_SV_FORMAT and (filetype == "systemverilog" or filetype == "verilog")
     local finished = false
 
     local function finish(conform_err, conform_did_edit, sv_err, sv_did_edit)
@@ -60,8 +63,8 @@ function M.setup()
             python = { "ruff_format" },
             c = { lsp_format = "fallback" },
             cpp = { lsp_format = "fallback" },
-            verilog = { "verible" },
-            systemverilog = { "verible" },
+            verilog = { "svfmt" },
+            systemverilog = { "svfmt" },
             make = { lsp_format = "fallback" },
             bash = { "shfmt" },
             sh = { "shfmt" },
@@ -85,8 +88,13 @@ function M.setup()
             rumdl = {
                 append_args = { "--disable", "MD013" },
             },
-            verible = {
-                command = vim.fn.expand("~/.config/nvim/scripts/verible-format-wrapper.sh"),
+            -- svfmt: Verible's formatter on slang (~/workspace/svfmt), same flags.
+            -- --failsafe_success=false: a file it cannot format safely exits 1,
+            -- so conform reports the error and leaves the buffer unchanged.
+            svfmt = {
+                command = "svfmt",
+                args = { "--failsafe_success=false", "--stdin_name", "$FILENAME", "-" },
+                stdin = true,
                 append_args = {
                     "--column_limit",
                     "120",

@@ -12,3 +12,7 @@ if command -v fzf >/dev/null 2>&1; then
     }
     bind -x '"\C-r": __fzf_history'
 fi
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/wpzhang/.local/bin:$PATH"

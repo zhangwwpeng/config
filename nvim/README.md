@@ -37,8 +37,8 @@ doc/                     专题文档
 | `python_lsp.lua` | ruff / basedpyright / pyrefly 共用的 `root_dir`（跳过 site-packages） |
 | `code_completion.lua` | blink.cmp 补全 |
 | `code_snip.lua` | LuaSnip，`<C-;>` 展开 / 下一个占位符 |
-| `code_format.lua` | conform 格式化；verilog/systemverilog 额外跑 `sv_format.lua` |
-| `sv_format.lua` | 自写的 SystemVerilog 补充格式化 |
+| `code_format.lua` | conform 格式化；verilog/systemverilog 用 svfmt；`sv_format.lua` 暂时关闭（`ENABLE_SV_FORMAT`） |
+| `sv_format.lua` | 自写的 SystemVerilog 补充格式化（暂时关闭） |
 | `code_lint.lua` | nvim-lint，保存时触发；自定义 taplo / svlint / verible / rumdl 解析 |
 | `code_treesitter.lua` | 对指定 filetype 启动 treesitter（parser 缺失时静默退回 regex）；有 `indents.scm` 的语言缩进改用 `ts_indent.lua` |
 | `ts_indent.lua` | 通用 treesitter 缩进（移植自 nvim-treesitter），执行 `queries/<lang>/indents.scm`；`queries/c/indents.scm` 取自 nvim-treesitter main 分支 |
@@ -193,14 +193,14 @@ save session / load session / last session / session open dir / restart / piagen
 | Python | ruff + basedpyright + pyrefly（分工见文档） | ruff format | ruff (LSP) |
 | Bash/sh | bashls | shfmt | — |
 | Make | make-ls | LSP | — |
-| (System)Verilog | slang-server | verible + sv_format | svlint + verilator + verible-lint |
+| (System)Verilog | slang-server | svfmt | svlint + verilator + verible-lint |
 | JSON | — | jq | jsonlint |
 | YAML | — | yamlfmt | yamllint |
 | TOML | — | taplo | taplo |
 | Markdown | — | rumdl | rumdl |
 | 所有文件 | — | trim_whitespace | typos（保存时跑，bigfile 除外） |
 
-外部工具（全部需在 PATH 中）：`lua-language-server clangd bash-language-server make-ls slang-server ruff basedpyright pyrefly stylua shfmt jq yamlfmt taplo rumdl typos jsonlint yamllint clang-tidy svlint verilator verible-verilog-lint verible-verilog-format rg rsync im-select`。
+外部工具（全部需在 PATH 中）：`lua-language-server clangd bash-language-server make-ls slang-server ruff basedpyright pyrefly stylua shfmt jq yamlfmt taplo rumdl typos jsonlint yamllint clang-tidy svlint verilator verible-verilog-lint svfmt rg rsync im-select`。
 
 Treesitter parser 用 `scripts/treesitter_install.sh` 安装到 `~/.local/share/nvim/site/parser`。
 

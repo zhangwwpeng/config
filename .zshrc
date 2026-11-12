@@ -23,3 +23,8 @@ if command -v fzf >/dev/null 2>&1; then
     zle -N fzf-history-widget
     bindkey '^R' fzf-history-widget
 fi
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/wpzhang/.local/bin:$PATH"
+
