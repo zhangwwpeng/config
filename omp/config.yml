@@ -40,3 +40,5 @@ startup:
   quiet: false
   setupWizard: true
 hideThinkingBlock: true
+title:
+  icons: boring
