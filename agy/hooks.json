@@ -1,0 +1,12 @@
+{
+  "notify-stop": {
+    "enabled": true,
+    "Stop": [
+      {
+        "type": "command",
+        "command": "kitten notify --app-name 'agy' 'agy' 'Complete'",
+        "timeout": 10
+      }
+    ]
+  }
+}

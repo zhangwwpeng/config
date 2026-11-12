@@ -1,0 +1,42 @@
+modelRoles:
+  default: magpie/mistral/deepseek-v4-1-flash-1017
+  web: web/kimi
+symbolPreset: unicode
+composer:
+  shape: user.kitty-band
+theme:
+  dark: kitty-bamboo
+  light: kitty-bamboo
+setupVersion: 3
+update:
+  auto: true
+statusLine:
+  preset: custom
+  separator: slash
+  contextLine: "off"
+  sessionAccent: false
+  transparent: true
+  compactThinkingLevel: true
+  showHookStatus: false
+  leftSegments:
+    - vim
+    - model
+    - mode
+    - pr
+  rightSegments:
+    - session_name
+    - git
+    - cost
+    - context_pct
+  segmentOptions:
+    model:
+      showThinkingLevel: false
+    git:
+      showBranch: true
+      showStaged: true
+      showUnstaged: true
+      showUntracked: false
+startup:
+  quiet: false
+  setupWizard: true
+hideThinkingBlock: true
