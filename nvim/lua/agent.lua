@@ -132,11 +132,9 @@ function M.toggle()
     end
     if b.in_win() then
         b.hide()
-        require("imselect").to_en()
     else
         require("terminal").hide_float() -- 同时只留一个全屏浮窗
         b.focus()
-        require("imselect").switch("zh")
     end
 end
 
@@ -149,7 +147,6 @@ function M.send_selection()
     end
     require("terminal").hide_float()
     b.send_selection()
-    require("imselect").switch("zh")
 end
 
 ---隐藏正在运行的 agent 的浮窗（进程继续跑），给浮动终端让位
