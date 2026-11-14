@@ -4,6 +4,8 @@ The native renderer owns the sizing, title truncation and tab colors.  This
 only replaces the plain tab shape with rounded powerline caps.
 """
 
+import re
+
 from kitty.fast_data_types import Screen
 from kitty.rgb import color_as_int
 from kitty.tab_bar import DrawData, ExtraData, TabBarData, as_rgb, draw_title
@@ -32,6 +34,13 @@ def _claude_mark(title: str) -> str:
     return title
 
 
+TITLE_ICON = re.compile(r'[\U0001F300-\U0001FAFF\u2600-\u27BF]\uFE0F?\s+(?:[A-Z][A-Z0-9]{1,7}:\s+)?')
+
+
+def _strip_emoji(title: str) -> str:
+    return TITLE_ICON.sub('', title, count=1)
+
+
 def draw_tab(
     draw_data: DrawData,
     screen: Screen,
@@ -50,7 +59,7 @@ def draw_tab(
     default_bg = as_rgb(color_as_int(draw_data.default_bg))
 
     # Hide omp's leading "π " mark in the tab label.
-    tab = tab._replace(title=_claude_mark(_strip_omp_mark(tab.title)))
+    tab = tab._replace(title=_strip_emoji(_claude_mark(_strip_omp_mark(tab.title))))
 
     # A cap on each side needs two cells.  Fall back to the native-looking
     # ellipsis for very narrow tab bars.

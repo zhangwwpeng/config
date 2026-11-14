@@ -20,8 +20,5 @@ build/
 .mypy_cache/
 *.log
 
-# Claude
-.claude/
-
 # macOS
 .DS_Store

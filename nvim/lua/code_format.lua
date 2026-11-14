@@ -91,17 +91,18 @@ function M.setup()
             -- svfmt: Verible's formatter on slang (~/workspace/svfmt), same flags.
             -- --failsafe_success=false: a file it cannot format safely exits 1,
             -- so conform reports the error and leaves the buffer unchanged.
+            -- --verify_convergence=false: skip the second (idempotency) pass;
+            -- the raw lexer check still guarantees the token stream is unchanged.
+            -- svfmt has no built-in conform formatter, so append_args is not
+            -- applied; every flag goes into args.
             svfmt = {
                 command = "svfmt",
-                args = { "--failsafe_success=false", "--stdin_name", "$FILENAME", "-" },
-                stdin = true,
-                append_args = {
-                    "--column_limit",
-                    "120",
-                    "-indentation_spaces",
-                    "4",
-                    "--alignment_group_boundary",
-                    "blank-lines-and-separator-comments",
+                args = {
+                    "--failsafe_success=false",
+                    "--verify_convergence=false",
+                    "--column_limit", "120",
+                    "-indentation_spaces", "4",
+                    "--alignment_group_boundary", "blank-lines-and-separator-comments",
                     "--assignment_statement_alignment=align",
                     "--case_items_alignment=align",
                     "--class_member_variable_alignment=align",
@@ -119,7 +120,9 @@ function M.setup()
                     "--port_declarations_indentation=indent",
                     "--port_declarations_right_align_packed_dimensions=true",
                     "--port_declarations_right_align_unpacked_dimensions=true",
+                    "--stdin_name", "$FILENAME", "-",
                 },
+                stdin = true,
             },
         },
     })

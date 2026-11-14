@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(brew update *)",
-      "Bash(brew unlink *)",
-      "Bash(brew link *)"
-    ]
-  }
-}

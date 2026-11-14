@@ -19,7 +19,7 @@ make -n install   # 先预览将执行的命令
 make              # 等同 make install
 ```
 
-`make install` 依次执行 `config`、`dotfiles`、`claude`、`agy`、`omp`。
+`make install` 依次执行 `config`、`dotfiles`、`agy`、`omp`。
 
 ## 路径映射
 
@@ -32,8 +32,6 @@ make              # 等同 make install
 | `nvim/` | `~/.config/nvim` | `rsync --delete` |
 | `sketchybar/` | `~/.config/sketchybar` | `rsync --delete` |
 | `.common_sh`、`.zshrc`、`.bashrc` | `~/` | `install -m 0644` |
-| `claude/settings.json`、`settings.local.json` | `~/.claude/` | `install -m 0600` |
-| `claude/themes/` | `~/.claude/themes/` | `rsync --delete` |
 | `agy/settings.json` | `~/.gemini/antigravity-cli/` | `install -m 0600` |
 | `agy/title.sh` | `~/.gemini/antigravity-cli/` | `install -m 0755` |
 | `agy/hooks.json` | `~/.gemini/config/` | `install -m 0644` |
@@ -47,7 +45,6 @@ make              # 等同 make install
 make nvim        # 只同步一个 ~/.config 目录
 make kitty
 make dotfiles    # 只同步 .common_sh/.zshrc/.bashrc
-make claude      # Claude Code 设置 + 主题；之后在 /theme 选 bamboo
 make agy         # Antigravity CLI 设置、标题脚本、Stop hook
 make omp         # omp 模型/provider、主题、composer 扩展
 ```
@@ -56,11 +53,11 @@ make omp         # omp 模型/provider、主题、composer 扩展
 
 ## 覆盖语义
 
-- `config`、`claude/themes`、`omp/themes`、`omp/extensions` 使用 `rsync -a --delete`：目标目录中仓库没有的文件会被删除。
-- `dotfiles`、`claude/settings*.json`、`agy/*`、`omp/*.yml` 使用 `install`：只覆盖单个文件，不删除同目录其他内容。
-- 排除项：`.git/`、`.claude/`、`.DS_Store`、`.venv/`、`.ruff_cache/`、`.rumdl_cache/`、`__pycache__/`、`*.pyc`、`node_modules/`。
-- 不会触碰工具自身的状态数据：`~/.claude.json`、`~/.claude/{projects,sessions,history.jsonl,plugins/cache}`、`~/.omp/agent/*.db`、`~/.omp/logs`、agy 的 `conversations/`、`log/`、`brain/`、`cache/`。
-- 部署前建议退出 Claude Code、agy、omp，避免运行中的进程在部署后回写设置。
+- `config`、`omp/themes`、`omp/extensions` 使用 `rsync -a --delete`：目标目录中仓库没有的文件会被删除。
+- `dotfiles`、`agy/*`、`omp/*.yml` 使用 `install`：只覆盖单个文件，不删除同目录其他内容。
+- 排除项：`.git/`、`.DS_Store`、`.venv/`、`.ruff_cache/`、`.rumdl_cache/`、`__pycache__/`、`*.pyc`、`node_modules/`。
+- 不会触碰工具自身的状态数据：`~/.omp/agent/*.db`、`~/.omp/logs`、agy 的 `conversations/`、`log/`、`brain/`、`cache/`。
+- 部署前建议退出 agy、omp，避免运行中的进程在部署后回写设置。
 
 ## 密钥与隐私
 
@@ -98,14 +95,13 @@ make <target>
 - 代理：`.common_sh` 固定 `127.0.0.1:7897`，代理未启动时网络命令会失败。
 - 输入法：英文 `com.apple.keylayout.Australian`，中文 Squirrel/Rime。
 - 路径：Karabiner shell command 和 Homebrew 均假设 `/opt/homebrew`。
-- 模型服务：`omp/models.yml` 指向 `http://127.0.0.1:3425/v1` 的 magpie 本地网关；Claude/agy 的模型与 endpoint 是个人服务约定。
+- 模型服务：`omp/models.yml` 指向 `http://127.0.0.1:3425/v1` 的 magpie 本地网关；omp/agy 的模型与 endpoint 是个人服务约定。
 - Neovim 外部工具：`git`、`im-select`、LSP、formatter、linter、Tree-sitter CLI，见 [nvim/doc/lsp_lint.md](nvim/doc/lsp_lint.md)。
 
 ## 验证
 
 ```bash
 make -n install                                  # 命令预览
-diff -q claude/settings.json ~/.claude/settings.json
 diff -q agy/settings.json ~/.gemini/antigravity-cli/settings.json
 diff -q omp/config.yml ~/.omp/agent/config.yml
 nvim --version                                   # 确认 >= 0.12
@@ -118,8 +114,7 @@ python3 -c 'compile(open("kitty/tab_bar.py").read(), "kitty/tab_bar.py", "exec")
 | 现象 | 处理 |
 |---|---|
 | `rsync: command not found` | `brew install rsync` |
-| `Permission denied` 写 `~/.claude`、`~/.omp` | 检查目录属主；设置文件目标权限为 `600` |
+| `Permission denied` 写 `~/.omp` | 检查目录属主；设置文件目标权限为 `600` |
 | Neovim 启动报 `vim.pack` 不存在 | 升级到 0.12+ |
 | 网络命令超时 | 启动 `127.0.0.1:7897` 代理，或临时注释 `.common_sh` 中的 proxy 行 |
-| Claude 主题未生效 | 部署后进入 Claude Code 执行 `/theme` 选 `bamboo` |
 | omp 设置被改回 | 退出 omp 后重新 `make omp`；运行中的实例会回写 `config.yml` |

@@ -1,6 +1,6 @@
 {
   "allowNonWorkspaceAccess": true,
-  "model": "Gemini 4 Carbon (Medium)",
+  "model": "Orchestrator (Carbon)",
   "notifications": true,
   "permissions": {
     "allow": [
@@ -62,7 +62,9 @@
       "command(ctest)",
       "command(find src tools -type f)",
       "command(go tool nm $(realpath /Users/wpzhang/.local/bin/agy) 2\u003e/dev/null | grep -E \"renderWithImages|generateImageSummary|transmitImagesIfNeeded|warmArtifactImages\")",
-      "command(find src examples tests out docs README.md pyproject.toml -maxdepth 4 -not -path '*/.*')"
+      "command(find src examples tests out docs README.md pyproject.toml -maxdepth 4 -not -path '*/.*')",
+      "command(uv run python)",
+      "command(uv run pytest)"
     ]
   },
   "title": {

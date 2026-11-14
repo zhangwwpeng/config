@@ -1,5 +1,5 @@
 modelRoles:
-  default: magpie/mistral/deepseek-v4-1-flash-1017
+  default: magpie/group/smart-split
   web: web/kimi
 symbolPreset: unicode
 composer:
@@ -42,3 +42,8 @@ startup:
 hideThinkingBlock: true
 title:
   icons: boring
+advisor:
+  enabled: false
+  reviewMode: turn
+display:
+  hideToolActivity: true
