@@ -61,6 +61,7 @@ doc/                     专题文档
 | `ai_select.lua` | 选区 → OpenAI 兼容接口流式解释（同上，"enable ai" 后才加载） |
 | `agent.lua` | pi / claude 统一入口：两者只能启动一个，`<C-;>` 自动分发给正在运行的那个 |
 | `pi_agent_cfg.lua` / `pi_diff.lua` | pi-agent 浮窗 + 每轮 rsync 快照 / codediff 对比 / 回滚 |
+| `omp_external.lua` | `:OmpExternal` / 命令面板 "omp external"：只起 pi-agent socket，生成 `/tmp/omp-nvim-*.sh` 并复制命令；在别的 kitty 里跑，omp 仍能调 `nvim_get_qflist` / `nvim_get_diagnostics` |
 | `claude_cfg.lua` | claudecode.nvim 配置 + 自写的全屏浮窗终端 provider（不依赖 snacks）；diff 开在新 tab，不被浮窗盖住 |
 | `flash_cfg.lua` / `glance_cfg.lua` / `grug_far_cfg.lua` / `obsidian_cfg.lua` / `treesitter_context_cfg.lua` | 对应插件的 setup |
 

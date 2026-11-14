@@ -13,6 +13,22 @@ local M = {}
 ---@field hide fun()
 ---@field send_selection fun() x 模式下把选区发过去并进入浮窗
 
+---pi 是否在外部终端里跑（omp_external 起的 socket，没有 nvim 浮窗）
+---@return boolean
+local function pi_external()
+    local pi = package.loaded["pi-agent"]
+    return pi ~= nil and pi.omp_external == true
+end
+
+---C-; 聚焦 pi：外部 omp 没有浮窗、或客户端还没连上时静默返回
+local function pi_focus()
+    local pi = require("pi-agent")
+    if not pi.ready() or pi_external() then
+        return
+    end
+    pi.focus()
+end
+
 ---@type table<string, AgentBackend>
 local backends = {
     pi = {
@@ -22,9 +38,15 @@ local backends = {
             return pi ~= nil and pi.server ~= nil
         end,
         start = function()
+            local pi = require("pi-agent")
+            if pi_external() and pi.ready() then
+                vim.notify("外部 omp 已连接，先退出它再开浮窗", vim.log.levels.INFO)
+                return
+            end
+            pi.omp_external = false
             require("pi_agent_cfg").setup()
             require("pi_diff").ask_enable()
-            require("pi-agent").start()
+            pi.start()
         end,
         visible = function()
             local flt = require("pi-agent.surfaces.nvim_flt")
@@ -36,15 +58,17 @@ local backends = {
                 and vim.api.nvim_win_is_valid(flt.win_id)
                 and vim.api.nvim_get_current_win() == flt.win_id
         end,
-        focus = function()
-            require("pi-agent").focus()
-        end,
+        focus = pi_focus,
         hide = function()
             require("pi-agent").close()
         end,
         send_selection = function()
-            require("pi-agent").paste_selection_contents()
-            require("pi-agent").focus()
+            local pi = require("pi-agent")
+            if not pi.ready() then
+                return
+            end
+            pi.paste_selection_contents()
+            pi_focus()
         end,
     },
     claude = {

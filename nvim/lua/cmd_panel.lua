@@ -171,6 +171,13 @@ function session.setup()
         end,
     })
     M.registry_cmd({
+        cmd_name = "omp external",
+        desc = "生成外部 omp 启动命令（另一 kitty 里跑，接回 nvim quickfix）",
+        cmd = function()
+            require("omp_external").generate()
+        end,
+    })
+    M.registry_cmd({
         cmd_name = "enable ai",
         desc = "enable copilot / minuet / cursortab / ai_select",
         cmd = function()

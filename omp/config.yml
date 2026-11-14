@@ -26,6 +26,7 @@ statusLine:
   rightSegments:
     - session_name
     - git
+    - token_rate
     - cost
     - context_pct
   segmentOptions:
