@@ -64,8 +64,13 @@
       "command(go tool nm $(realpath /Users/wpzhang/.local/bin/agy) 2\u003e/dev/null | grep -E \"renderWithImages|generateImageSummary|transmitImagesIfNeeded|warmArtifactImages\")",
       "command(find src examples tests out docs README.md pyproject.toml -maxdepth 4 -not -path '*/.*')",
       "command(uv run python)",
-      "command(uv run pytest)"
+      "command(uv run pytest)",
+      "command(gh)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "/Users/wpzhang/workspace/tmp/tps_statusline.py"
   },
   "title": {
     "type": "command",
@@ -78,6 +83,7 @@
     "/Users/wpzhang",
     "/Users/wpzhang/workspace/svfmt",
     "/Users/wpzhang/workspace/doc",
-    "/Users/wpzhang/workspace/waveview"
+    "/Users/wpzhang/workspace/waveview",
+    "/Users/wpzhang/workspace/tmp"
   ]
 }

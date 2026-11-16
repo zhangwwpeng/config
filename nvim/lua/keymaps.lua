@@ -311,54 +311,56 @@ map("x", "<C-q>", function()
 end, { silent = true, expr = true, desc = "Replay last executed macro on selected lines" })
 map("n", "Q", "q", { desc = "Record macro (was q)" })
 map("n", "q", function()
-    -- -- 正在录制宏时，q 应该停录制（normal! 绕过映射，才是内置的 q）
-    -- if vim.fn.reg_recording() ~= "" then
-    --     vim.cmd("normal! q")
-    --     return
-    -- end
-
-    local buf = vim.api.nvim_get_current_buf()
-    local name = vim.api.nvim_buf_get_name(buf)
-    local path = name ~= "" and vim.fn.fnamemodify(name, ":~:.") or "[No Name]"
-
-    local lines = vim.api.nvim_buf_line_count(buf)
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local size = name ~= "" and vim.fn.getfsize(name) or -1
-
-    local clients = {}
-    for _, c in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
-        clients[#clients + 1] = c.name
+    -- 正在录制宏时，expr 返回原生 "q" 干净停录（normal! q 会把 q 录进寄存器）
+    if vim.fn.reg_recording() ~= "" then
+        return "q"
     end
 
-    table.sort(clients)
+    vim.schedule(function()
+        local buf = vim.api.nvim_get_current_buf()
+        local name = vim.api.nvim_buf_get_name(buf)
+        local path = name ~= "" and vim.fn.fnamemodify(name, ":~:.") or "[No Name]"
 
-    local flags = table.concat(
-        vim.tbl_filter(function(f)
-            local on = ({
-                modified = vim.bo[buf].modified,
-                readonly = vim.bo[buf].readonly,
-                new = name == "",
-                terminal = vim.bo[buf].buftype == "terminal",
-            })[f]
-            return on and f or false
-        end, { "modified", "readonly", "new", "terminal" }),
-        ","
-    )
+        local lines = vim.api.nvim_buf_line_count(buf)
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        local size = name ~= "" and vim.fn.getfsize(name) or -1
 
-    local info = {
-        ("file    : %s"):format(path),
-        ("ft      : %s    lines: %d    size: %s"):format(
-            vim.bo[buf].filetype ~= "" and vim.bo[buf].filetype or "unknown",
-            lines,
-            human_size(size)
-        ),
-        ("cursor  : %d:%d (%d%%)"):format(row, col + 1, math.floor(row / lines * 100)),
-        ("flags   : %s"):format(flags ~= "" and flags or "-"),
-        ("lsp     : %s"):format(#clients > 0 and table.concat(clients, ", ") or "none"),
-    }
+        local clients = {}
+        for _, c in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+            clients[#clients + 1] = c.name
+        end
 
-    vim.notify(table.concat(info, "\n"), vim.log.levels.INFO, { title = "file info" })
-end, { desc = "Print current file info" })
+        table.sort(clients)
+
+        local flags = table.concat(
+            vim.tbl_filter(function(f)
+                local on = ({
+                    modified = vim.bo[buf].modified,
+                    readonly = vim.bo[buf].readonly,
+                    new = name == "",
+                    terminal = vim.bo[buf].buftype == "terminal",
+                })[f]
+                return on and f or false
+            end, { "modified", "readonly", "new", "terminal" }),
+            ","
+        )
+
+        local info = {
+            ("file    : %s"):format(path),
+            ("ft      : %s    lines: %d    size: %s"):format(
+                vim.bo[buf].filetype ~= "" and vim.bo[buf].filetype or "unknown",
+                lines,
+                human_size(size)
+            ),
+            ("cursor  : %d:%d (%d%%)"):format(row, col + 1, math.floor(row / lines * 100)),
+            ("flags   : %s"):format(flags ~= "" and flags or "-"),
+            ("lsp     : %s"):format(#clients > 0 and table.concat(clients, ", ") or "none"),
+        }
+
+        vim.notify(table.concat(info, "\n"), vim.log.levels.INFO, { title = "file info" })
+    end)
+    return ""
+end, { expr = true, desc = "Print current file info (or stop macro recording)" })
 
 -- surround add
 vim.keymap.set("x", "a", function()
@@ -579,7 +581,7 @@ end, { desc = "Search selection in browser" })
 
 -- lsp glance
 map("n", "gD", "<CMD>Glance definitions<CR>", { desc = "Glance definitions" })
-map("n", "gr", "<CMD>Glance references<CR>", { desc = "Glance references" })
+map("n", "grr", "<CMD>Glance references<CR>", { desc = "Glance references" })
 map("n", "gt", "<CMD>Glance type_definitions<CR>", { desc = "Glance type definitions" })
 map("n", "gi", "<CMD>Glance implementations<CR>", { desc = "Glance implementations" })
 

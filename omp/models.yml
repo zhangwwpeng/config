@@ -123,27 +123,9 @@ providers:
             - medium
             - high
           mode: effort
-      - api: anthropic-messages
-        # magpie: points at magpie's local gateway; Disconnect in magpie or `magpie uninstall` undoes it, or remove this entry and pick another model
-        baseUrl: http://127.0.0.1:3425
-        contextWindow: 200000
-        cost:
-          cacheRead: 0.2
-          cacheWrite: 5
-          input: 4
-          output: 20
-        id: copilot/claude-opus-5.5
+      - id: copilot/auto
         input:
           - text
           - image
-        maxTokens: 128000
-        name: Claude Opus 5.5
-        reasoning: true
-        thinking:
-          efforts:
-            - low
-            - medium
-            - high
-            - xhigh
-            - max
-          mode: anthropic-adaptive
+        name: Auto
+        reasoning: false

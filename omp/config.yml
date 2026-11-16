@@ -21,6 +21,7 @@ statusLine:
   leftSegments:
     - vim
     - model
+    - status
     - mode
     - pr
   rightSegments:
@@ -48,3 +49,7 @@ advisor:
   reviewMode: turn
 display:
   hideToolActivity: true
+extensionRenderers:
+  assistantText: true
+extensions:
+  - /Users/wpzhang/.local/lib/node_modules/billion-context/dist/agent/omp-native.js

@@ -13,8 +13,8 @@
 | `karabiner/` | `~/.config/karabiner` | 全局按键重映射和应用快捷键 |
 | `sketchybar/` | `~/.config/sketchybar` | Space、前台应用、时间、电池和消息角标 |
 | `bettercmdtab/` | `~/.config/bettercmdtab` | Cmd+Tab 应用切换器 |
-| `agy/` | `~/.gemini/antigravity-cli/`、`~/.gemini/config/` | Antigravity CLI 设置、终端标题脚本和 Stop 通知 hook |
-| `omp/` | `~/.omp/agent/` | omp 模型/provider、主题和 composer 扩展 |
+| `agy/` | `~/.gemini/antigravity-cli/`、`~/.gemini/config/` | Antigravity CLI 设置、终端标题脚本、Stop 通知 hook 与 MCP 配置 |
+| `omp/` | `~/.omp/agent/` | omp 模型/provider、MCP 配置、主题与扩展 |
 
 `karabiner/automatic_backups/` 是历史备份，不参与日常配置审计。`nvim/queries/` 是随 Tree-sitter parser 配套的 query，原则上按上游版本整体更新。
 
@@ -36,7 +36,7 @@ make -n install # 预览命令
 
 - macOS + Homebrew；配置中的 `/opt/homebrew` 明确面向 Apple Silicon。
 - Neovim 0.12+。配置使用 `vim.pack.add()`，不能在 0.11 上启动。
-- 字体：`Maple Mono Normal NF CN`（Kitty/Neovide）和 `Hack Nerd Font`（SketchyBar）。
+- 字体：`Iosevka`、`LXGW WenKai Mono`（Kitty/Neovide）和 `Hack Nerd Font`（SketchyBar）。
 - GUI：Kitty、Neovide、Karabiner-Elements、SketchyBar。
 - Neovim 外部工具：`git`、`im-select`、LSP、formatter、linter 和 Tree-sitter CLI，详见 [nvim/doc/lsp_lint.md](nvim/doc/lsp_lint.md)。
 
@@ -67,6 +67,8 @@ chmod 600 ~/.secrets_sh
 
 ## 文档索引
 
+- [全局键位速查](KEYMAPS.md)
 - [部署指南](DEPLOY.md)
+- [Kitty 配置速查](kitty/README.md)
 - [Neovim 架构](nvim/README.md)
 - [LSP、lint、format 与 Tree-sitter](nvim/doc/lsp_lint.md)

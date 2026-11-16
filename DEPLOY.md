@@ -7,7 +7,7 @@
 - macOS（Apple Silicon）+ Homebrew。
 - `rsync`、`neovim`：`brew install rsync neovim`。
 - 需要 GUI 时另装：Kitty、Neovide、Karabiner-Elements、SketchyBar。
-- 字体：`Maple Mono Normal NF CN`（Kitty/Neovide）、`Hack Nerd Font`（SketchyBar）。
+- 字体：`Iosevka`、`LXGW WenKai Mono`（Kitty/Neovide）、`Hack Nerd Font`（SketchyBar）。
 - Neovim 0.12+，配置使用 `vim.pack.add()`，0.11 无法启动。
 
 ## 首次部署
@@ -35,7 +35,9 @@ make              # 等同 make install
 | `agy/settings.json` | `~/.gemini/antigravity-cli/` | `install -m 0600` |
 | `agy/title.sh` | `~/.gemini/antigravity-cli/` | `install -m 0755` |
 | `agy/hooks.json` | `~/.gemini/config/` | `install -m 0644` |
+| `agy/mcp_config.json` | `~/.gemini/config/` | `install -m 0644` |
 | `omp/config.yml`、`models.yml` | `~/.omp/agent/` | `install -m 0600` |
+| `omp/mcp.json` | `~/.omp/agent/` | `install -m 0644` |
 | `omp/themes/` | `~/.omp/agent/themes/` | `rsync --delete` |
 | `omp/extensions/` | `~/.omp/agent/extensions/` | `rsync --delete` |
 
@@ -45,8 +47,8 @@ make              # 等同 make install
 make nvim        # 只同步一个 ~/.config 目录
 make kitty
 make dotfiles    # 只同步 .common_sh/.zshrc/.bashrc
-make agy         # Antigravity CLI 设置、标题脚本、Stop hook
-make omp         # omp 模型/provider、主题、composer 扩展
+make agy         # Antigravity CLI 设置、标题脚本、Stop hook、MCP 配置
+make omp         # omp 模型/provider、MCP、主题、扩展
 ```
 
 `make nvim` 中的目录名可替换为 `bettercmdtab`、`karabiner`、`kitty`、`neovide`、`sketchybar`。
@@ -54,7 +56,7 @@ make omp         # omp 模型/provider、主题、composer 扩展
 ## 覆盖语义
 
 - `config`、`omp/themes`、`omp/extensions` 使用 `rsync -a --delete`：目标目录中仓库没有的文件会被删除。
-- `dotfiles`、`agy/*`、`omp/*.yml` 使用 `install`：只覆盖单个文件，不删除同目录其他内容。
+- `dotfiles`、`agy/*`、`omp/*.yml`、`omp/mcp.json` 使用 `install`：只覆盖单个文件，不删除同目录其他内容。
 - 排除项：`.git/`、`.DS_Store`、`.venv/`、`.ruff_cache/`、`.rumdl_cache/`、`__pycache__/`、`*.pyc`、`node_modules/`。
 - 不会触碰工具自身的状态数据：`~/.omp/agent/*.db`、`~/.omp/logs`、agy 的 `conversations/`、`log/`、`brain/`、`cache/`。
 - 部署前建议退出 agy、omp，避免运行中的进程在部署后回写设置。
@@ -103,7 +105,9 @@ make <target>
 ```bash
 make -n install                                  # 命令预览
 diff -q agy/settings.json ~/.gemini/antigravity-cli/settings.json
+diff -q agy/mcp_config.json ~/.gemini/config/mcp_config.json
 diff -q omp/config.yml ~/.omp/agent/config.yml
+diff -q omp/mcp.json ~/.omp/agent/mcp.json
 nvim --version                                   # 确认 >= 0.12
 bash -n sketchybar/sketchybarrc
 python3 -c 'compile(open("kitty/tab_bar.py").read(), "kitty/tab_bar.py", "exec")'

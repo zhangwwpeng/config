@@ -55,7 +55,7 @@
     "mdLinkUrl": "dim",
     "mdCode": "yellow",
     "mdCodeBlock": "white",
-    "mdCodeBlockBorder": "tabInactiveBg",
+    "mdCodeBlockBorder": "muted",
     "mdQuote": "muted",
     "mdQuoteBorder": "dim",
     "mdHr": "dim",

@@ -46,7 +46,7 @@ doc/                     专题文档
 | `code_git.lua` | mini.diff 符号列 |
 | `code_picker.lua` | refer.nvim picker，并接管 `vim.ui.select` |
 | `cmd_panel.lua` | `<C-p>` 命令面板：session、插件管理、AI、pi diff 等 |
-| `grep.lua` | 自写异步 grep → quickfix（`:Grep` / `:GREP`），见 [doc/grep.md](doc/grep.md) |
+| `grep.lua` | 自写异步 grep → quickfix（`:Grep` / `:GREP`，含 `p` 预览），见 `lua/grep.lua` |
 | `run.lua` | `:Run <cmd>` / `:Rerun` 异步运行命令，输出进 quickfix，可在 qf 里 `i` 发 stdin、`E` 发 EOF |
 | `quickfix.lua` | quickfix 自定义渲染 + `dd`/`d` 删除条目、`o` 打开并关闭 |
 | `terminal.lua` | `<C-t>` 全屏浮动终端，`<C-w>t` 轮换 float/below/left/above/right |
@@ -97,25 +97,25 @@ doc/                     专题文档
 | 模式 | 键 | 作用 |
 |------|----|------|
 | n/x/s | `<C-s>` | 保存 |
-| n | `<leader>l` | 格式化（conform + sv_format） |
+| n/v | `<leader>l` | 格式化（conform + sv_format） |
 | n | `<C-p>` | 命令面板 |
 | n | `<leader><leader>` | buffer 列表（在浮动终端里打开时只列 term buffer） |
 | n | `<leader>f` / `<leader>g` / `<leader>o` | 找文件 / live grep / 最近文件 |
 | | `搜索词; -参数` | 在 `<leader>f` / `<leader>g` 的输入框里给 fd / rg 传参数，如 `init; -g '*.lua'`、`init; -e py`。`;` 后面紧跟 `-` 才算分隔符，`a = b;` 照常搜；要搜字面的 `; -` 写 `\;` |
 | n | `<leader>e` / `<leader>E` | 打开当前文件所在目录 / cwd |
-| n | `<leader>u` | undotree（树里 `<CR>` 用 CodeDiff 对比） |
+| n | `<leader>u` | undotree（树里 `<CR>` 用 CodeDiff 对比，`q` 关闭） |
 | n | `<leader>r` | `:Rerun` |
 | n | `<leader>t` | 在当前窗口开 `:terminal` |
 | n/t | `<C-t>` | 浮动终端开关 |
-| n | `<C-w>t` | 终端布局轮换 |
+| n | `<C-w>t` | 终端布局轮换（float / below / left / above / right） |
 | n/v | `<C-f>` | focus tab 开关 |
 | n | `<leader>/` | neogen 生成注释 |
 | n | `<Up>/<Down>/<Left>/<Right>` | 调整窗口大小 |
 | n | `H` / `L` | 上/下一个 tab |
 | n | `J` / `D` | 切到上一个 buffer / 删除 buffer |
-| n | `q` | 显示文件信息（路径、ft、大小、光标、LSP） |
+| n | `q` | 显示文件信息（路径、ft、大小、光标、LSP）；录制宏时停止录制 |
 | n | `Q` | 录制宏（原 `q`） |
-| n | `<C-q>` | 重放上一次宏；x 模式（行选择）对选中行执行上次执行过的宏 |
+| n | `<C-q>` | 重放上一次宏；x 模式（行选择 `V`）对选中行执行上次执行过的宏 |
 | n/x | `m` / `m=` | 内置 multicursor（原 `Q` / `q=`） |
 | n | `<leader>m{a-z/A-Z}` | 打 mark（原生 `m`） |
 | n | `<leader>M` | 列出 mark（当前 buffer 的 a-z + 全局 A-Z），选中后跳过去 |
@@ -127,21 +127,29 @@ doc/                     专题文档
 | x | `Y` / `P` | 复制到 / 从系统剪贴板粘贴；n 模式 `P` 也粘系统剪贴板 |
 | x | `p` | 粘贴不覆盖寄存器 |
 | x | `O` | 浏览器 Google 搜索选中文本 |
-| n/i/x | `<C-/>` | 注释 |
-| c/i | `<C-a>` / `<C-e>` / `<C-b>` | emacs 风格行首 / 行尾 / 左移（n/x 下 `<C-e>` 也是行尾） |
+| n/i/x | `<C-/>` | 注释（insert 空行直接插入注释符） |
+| i/t | `<C-[>` | 退回 Normal（终端下发 `<C-\><C-n>`）并记录且切回英文输入法，进入 Insert 自动恢复中文 |
+| n/o/i/c | `<C-a>` | n：光标下是数字则加一，否则跳行首非空 `^`；o：`^`；i：`<C-o>^`；c：`<Home>` |
+| n/o/x/i/c | `<C-e>` | 行尾（n/o：`$`；i：`<C-o>$`；c/x：`<End>`） |
+| i/c | `<C-b>` / `<C-f>` | 左移 / 右移一格（仅 insert 启用 AI 且有 ghost text 时 `<C-f>` 先接受建议） |
+| c | `<C-;>` | 打开命令行窗口（等价原生 `<C-f>`） |
 
 `gg` / `G` / `n` / `N` 都加了 `keepjumps`，不会污染 jumplist。
 
-### LSP / 诊断
+### LSP / 诊断 / Quickfix
 
-| 键 | 作用 |
-|----|------|
-| `gD` / `gr` / `gt` / `gi` | Glance 定义 / 引用 / 类型定义 / 实现 |
-| `]d` / `[d` | 跳诊断并弹浮窗 |
-| `gK` | virtual_text 在“只当前行 / 所有行”之间切换 |
-| `<leader>d` / `<leader>D` | 所有 / 当前 buffer 诊断 → quickfix |
+| 模式 / 位置 | 键 | 作用 |
+|-------------|----|------|
+| n | `gD` / `grr` / `gt` / `gi` | Glance 定义 / 引用 / 类型定义 / 实现 |
+| n | `]d` / `[d` | 跳诊断并弹浮窗 |
+| n | `gK` | virtual_text 在“只当前行 / 所有行”之间切换 |
+| n | `<leader>d` / `<leader>D` | 所有 / 当前 buffer 诊断 → quickfix |
+| n | `>` / `<` / `?` | Quickfix 下一项（`cnext`）/ 上一项（`cprev`）/ 开关窗口 |
+| qf | `o` / `q` / `dd` / x `d` | 打开条目并关闭 qf / 关闭 qf / 删除当前或选中条目 |
+| qf（`:Run`） | `i` / `E` | 向运行中的命令发一行 stdin / 发送 EOF（`\x04`） |
+| qf/loc（`:Grep`） | `p` / `<C-n>` / `<C-p>` / `<Esc>` / `q` | 开关代码预览浮窗 / 下一项 / 上一项 / 关预览 / 关闭列表 |
 
-> `gr` 覆盖了 0.11+ 的默认 `grn`/`gra`/`grr`/`gri`/`grt` 前缀，按 `gr` 后会等 `timeoutlen` 再执行 Glance。
+> 已保留 Neovim 内置 `grn`（重命名）/ `gra`（Code Action）/ `grx`（CodeLens），按 `grr` 无前缀冲突延迟。
 
 ### 补全 / AI
 
@@ -154,9 +162,10 @@ doc/                     专题文档
 | i/s | `<C-;>` | snippet 展开 / 下一个占位符 |
 | i | `<C-f>` | 接受 copilot / minuet 的 ghost text，都没有时右移一格 |
 | n | `<Tab>` | 接受 cursortab 建议 |
-| n/t | `<C-;>` | 打开 / 关闭正在运行的 agent 浮窗（pi 或 claude，同时切输入法） |
+| n/t | `<C-;>` | 打开 / 关闭正在运行的 agent 浮窗（pi 或 claude） |
 | x | `<C-;>` | 把选区发给正在运行的 agent |
-| x | `A` / `H`，n `M` | ai_select 提问 / 快速提问 / 进结果窗（"enable ai" 后生效；`A` 只在 `v`/`V` 下提问，块 visual 下仍是原生块尾追加） |
+| agent 浮窗 `n` | `<C-d>` / `<C-u>` / `<C-c>` | 向 pi / claude 终端发送整页向下 / 向上翻页 / Esc 中断当前回复 |
+| x | `A` / `H`，n `M` | ai_select 提问 / 快速提问 / 进结果窗（"enable ai" 后生效；`A` 只在 `v`/`V` 下提问，块 visual 下仍是原生块尾追加；浮窗内 `q`/`<Esc>`/`y`/`r`） |
 
 ### 目录 buffer（filetype=directory）
 
@@ -168,18 +177,19 @@ doc/                     专题文档
 | `d`（n/x） | 删除 / 批量删除 |
 | `p` | 粘贴（复制）上次 yank 的文件 |
 
-### 待定：覆盖了内置功能的键位
-
-这几个键位目前覆盖了内置行为，还没想好怎么重新分配，先记在这里：
+### 覆盖原生功能的键位汇总
 
 | 键 | 现在的作用 | 被覆盖的内置功能 |
 |----|-----------|------------------|
-| n `gr` | Glance references | 0.11+ 默认的 `grn`/`gra`/`grr`/`gri`/`grt` LSP 前缀（按 `gr` 后要等 `timeoutlen`） |
 | x `a` | 用成对符号包围选区 | visual 模式的 `aw` / `ap` / `a(` 等文本对象 |
+| n `J` | 切到上一个 buffer（`:b#`） | 合并上下行（`:join`） |
+| n `?` | 开关 quickfix 窗口 | 向上反向搜索 |
+| n `gI` | 跳到倒数第二次修改（`g;g;`） | 在第 1 列进入 Insert 模式 |
+| n `q` / `Q` / `m` | 文件信息 / 录制宏 / 多光标 | 原 `q` 宏改到 `Q`，原 `m` 打 mark 改到 `<leader>m` |
 
 ## 命令面板（`<C-p>`）
 
-save session / load session / last session / session open dir / restart / piagent start / claude start（两者二选一）/ enable ai / grep（GrugFar）/ markdown fmt / mini diff（overlay）/ change pwd to cwd / pi diff / pi diff rollback / update all plugin / delete plugin。
+save session / load session / last session / session open dir / restart / piagent start / claude start（两者二选一）/ omp external / enable ai / grep（GrugFar）/ markdown fmt / mini diff（overlay）/ change pwd to cwd / pi diff / pi diff rollback / update all plugin / delete plugin。
 
 退出时若打开了 ≥3 个文件 buffer，会自动按 cwd 保存 session 到 `stdpath("state")/sessions/`。
 
@@ -234,4 +244,5 @@ Treesitter parser 用 `scripts/treesitter_install.sh` 安装到 `~/.local/share/
 
 | 文件 | 内容 |
 |------|------|
+| [../KEYMAPS.md](../KEYMAPS.md) | 全栈全局键位总览（Karabiner / Kitty / Neovide / Shell / Neovim） |
 | [doc/lsp_lint.md](doc/lsp_lint.md) | LSP / lint / format / Tree-sitter |

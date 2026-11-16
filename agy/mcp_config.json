@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "magpie-memory": {
+      "command": "/Applications/magpie.app/Contents/MacOS/magpie",
+      "args": [
+        "mcp",
+        "memory"
+      ]
+    },
+    "magpie": {
+      "serverUrl": "http://127.0.0.1:3425/mcp/magpie/hub/agy"
+    }
+  }
+}
